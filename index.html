@@ -3,146 +3,134 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CCL AI Usage Summary</title>
+  <title>CCL v1.0 — AI Usage Summary Generator</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 1rem;
-      line-height: 1.6;
+      font-family: 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background: #f9f9f9;
     }
     h1 {
-      color: #369acc;
-    }
-    select {
-      margin-bottom: 1rem;
-      padding: 0.5rem;
-    }
-    .phase-block {
+      color: #2196F3;
+      font-size: 2rem;
       margin-bottom: 1.5rem;
     }
-    .summary {
-      margin-top: 2rem;
+    .slider-container {
+      margin-bottom: 1.5rem;
+      background: #fff;
       padding: 1rem;
-      background: #f0f0f0;
-      border-radius: 8px;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    footer {
-      margin-top: 3rem;
-      font-size: 0.9rem;
-      color: #555;
-      border-top: 1px solid #ccc;
-      padding-top: 1rem;
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    input[type=range] {
+      width: 100%;
+    }
+    .output {
+      font-family: monospace;
+      margin-top: 2rem;
+      background: #222;
+      color: #0f0;
+      padding: 1rem;
+      border-radius: 0.5rem;
     }
   </style>
 </head>
 <body>
   <h1>CCL v1.0 — AI Usage Summary Generator</h1>
-
   <div id="form"></div>
-
-  <div class="summary">
-    <h3>Text Summary:</h3>
-    <p id="text-summary"></p>
-
-    <h3>Icon Code:</h3>
-    <code id="icon-code"></code>
+  <div class="output">
+    <div><strong>Summary:</strong> <span id="summary"></span></div>
+    <div><strong>Icon Code:</strong> <span id="iconCode"></span></div>
   </div>
-
-  <footer>
-    This project and concept were created by Santi Fuentemilla and are licensed under:<br>
-    <strong>CC BY-NC-SA 4.0</strong> — the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
-  </footer>
 
   <script>
     const phases = [
-      "Research", "Ideation", "Design", "Coding",
-      "Prototyping", "Documentation", "ProjectManagement", "Reflection"
+      { key: "Research", label: "Research & References (R)" },
+      { key: "Ideation", label: "Ideation (I)" },
+      { key: "Design", label: "Design (D)" },
+      { key: "Coding", label: "Coding / Programming (C)" },
+      { key: "Prototyping", label: "Prototyping / Making (M)" },
+      { key: "Documentation", label: "Documentation (D)" },
+      { key: "ProjectManagement", label: "Project Management & Collaboration (P)" },
+      { key: "Reflection", label: "Reflection & Feedback (F)" }
     ];
 
-    const phaseLabels = {
-      Research: "Research & References (R)",
-      Ideation: "Ideation (I)",
-      Design: "Design (D)",
-      Coding: "Coding / Programming (C)",
-      Prototyping: "Prototyping / Making (M)",
-      Documentation: "Documentation (D)",
-      ProjectManagement: "Project Management & Collaboration (P)",
-      Reflection: "Reflection & Feedback (F)"
-    };
+    const aiLevels = [
+      { label: "Human-led", code: "H" },
+      { label: "Drafting Assistant", code: "D" },
+      { label: "Co-Creator", code: "C" },
+      { label: "AI-led", code: "R" }
+    ];
 
-    const aiLevels = {
-      human: { label: "Human-led", code: "H" },
-      drafting: { label: "Drafting Assistant", code: "D" },
-      cocreator: { label: "Co-Creator", code: "C" },
-      driver: { label: "AI-led", code: "R" }
-    };
+    const selections = {};
 
-    function createForm() {
-      const form = document.getElementById("form");
-      phases.forEach(phase => {
-        const div = document.createElement("div");
-        div.className = "phase-block";
+    const form = document.getElementById("form");
 
-        const label = document.createElement("label");
-        label.textContent = phaseLabels[phase];
+    phases.forEach(({ key, label }) => {
+      const container = document.createElement("div");
+      container.className = "slider-container";
 
-        const select = document.createElement("select");
-        select.name = phase;
-        select.id = phase;
-        select.onchange = updateSummary;
+      const lbl = document.createElement("label");
+      lbl.innerText = label;
+      container.appendChild(lbl);
 
-        for (let key in aiLevels) {
-          const option = document.createElement("option");
-          option.value = key;
-          option.textContent = aiLevels[key].label;
-          select.appendChild(option);
-        }
+      const slider = document.createElement("input");
+      slider.type = "range";
+      slider.min = 0;
+      slider.max = aiLevels.length - 1;
+      slider.value = 0;
+      slider.step = 1;
+      slider.dataset.phase = key;
 
-        div.appendChild(label);
-        div.appendChild(document.createElement("br"));
-        div.appendChild(select);
-        form.appendChild(div);
+      const display = document.createElement("div");
+      display.innerText = aiLevels[slider.value].label;
+
+      slider.addEventListener("input", e => {
+        const val = parseInt(slider.value);
+        selections[key] = aiLevels[val].code;
+        display.innerText = aiLevels[val].label;
+        updateSummary();
       });
-    }
+
+      selections[key] = aiLevels[0].code;
+
+      container.appendChild(slider);
+      container.appendChild(display);
+
+      form.appendChild(container);
+    });
 
     function updateSummary() {
-      const selections = {};
-      phases.forEach(phase => {
-        selections[phase] = document.getElementById(phase).value;
-      });
-      document.getElementById("text-summary").textContent = generateTextSummary(selections);
-      document.getElementById("icon-code").textContent = generateIconCode(selections);
-    }
-
-    function generateTextSummary(selections) {
       const used = [];
 
-      for (const phase of phases) {
-        const level = selections[phase];
-        if (level !== "human") {
-          const role = aiLevels[level].label;
-          used.push(`${role} in ${phaseLabels[phase]}`);
+      for (const { key } of phases) {
+        const levelCode = selections[key];
+        if (levelCode !== "H") {
+          const level = aiLevels.find(l => l.code === levelCode);
+          used.push(`${level.label} in ${key}`);
         }
       }
 
+      const summary = document.getElementById("summary");
+      const iconCode = document.getElementById("iconCode");
+
       if (used.length === 0) {
-        return "CCL v1.0 — All phases led by humans. AI was not used in any stage of the process.";
+        summary.innerText = "All phases led by humans. AI was not used in any stage of the process.";
+      } else {
+        const last = used.pop();
+        const base = used.length ? used.join(", ") + " and " + last : last;
+        summary.innerText = `AI contributed as ${base}. Other phases were fully human-led.`;
       }
 
-      const last = used.pop();
-      const base = used.length ? used.join(", ") + " and " + last : last;
-      return `CCL v1.0 — AI contributed as ${base}. Other phases were fully human-led.`;
+      iconCode.innerText = phases.map(({ key }) => selections[key]).join("-");
     }
 
-    function generateIconCode(selections) {
-      return "AI " +
-        phases.map(phase => aiLevels[selections[phase]].code).join(" ") +
-        " – v1.0";
-    }
-
-    createForm();
     updateSummary();
   </script>
 </body>
