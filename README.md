@@ -1,19 +1,24 @@
 # 🧠 Cognitive Contribution License (CCL)
 A simple tool for declaring how much AI contributed to your project.
 
-## 🎯 What does it do?
-The CCL tool lets you:
+## 🎯 What does it do
 
-Select how much AI was involved (0–4) in 8 project phases.
-Generate a clear summary of AI involvement.
-Create a personalized visual CCL badge.
-Download and share your seal and summary.
+The CCL tool lets you:
+- Select how much AI was involved (0–4) in 8 project phases.
+- Generate a clear summary of AI involvement.
+- Create a personalized visual CCL badge.
+- Download and share your seal and summary.
 
 ## 🔍 The 5 Levels of AI Contribution:
+
 0 – Full Human Work: Done entirely by the student.
+
 1 – AI for Insight: AI used for brainstorming or research support.
+
 2 – AI for Drafting: AI created early outputs, refined by the student.
+
 3 – AI as Co-Creator: Student and AI worked in dialogue.
+
 4 – AI as Driver: AI created most of the outcome.
 
 ## 🛠️ Project Phases
