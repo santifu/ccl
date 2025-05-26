@@ -46,6 +46,8 @@ Reflection & Feedback
 - Encourage critical thinking and self-assessment of your creative process.
 
 ## 📎 License
-This project and concept were created by Santi Fuentemilla and are licensed under:
+**This project and concept were created by Santi Fuentemilla and are licensed under:**
+
 CC BY-NC-SA 4.0 – the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+
 CCL AI D1 C4 U1 – v1.0 — AI contributed as Drafting Assistant in Design and Documentation, AI acted as AI-led in Coding. All other phases were fully human-led.
