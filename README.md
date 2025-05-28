@@ -14,31 +14,26 @@ Using a step-by-step interface, the CCL tool lets you:
 
 ## 🔍 The 5 Levels of AI Contribution:
 
-0 – Full Human Work:
-This phase was completed entirely by the student without AI assistance.
+0 – **Full Human Work:** This phase was completed entirely by the student without AI assistance.
 
-1 – AI for Insight:
-AI was used for research, inspiration, or brainstorming. The student crafted the final work.
+1 – **AI for Insight:** AI was used for research, inspiration, or brainstorming. The student crafted the final work.
 
-2 – AI for Drafting:
-AI generated early outputs that were then edited or rebuilt by the student.
+2 – **AI for Drafting:** AI generated early outputs that were then edited or rebuilt by the student.
 
-3 – AI as Co-Creator:
-An iterative collaboration between student and AI shaped the outcome together.
+3 – **AI as Co-Creator:** An iterative collaboration between student and AI shaped the outcome together.
 
-4 – **AI as Driver:**
-AI generated the majority of the content; the student curated and edited.
+4 – **AI as Driver:** AI generated the majority of the content; the student curated and edited.
 
 
 ## 🛠️ Project Phases
-Research & References
-Ideation
-Design
-Coding / Programming
-Prototyping / Making
-Documentation
-Project Management & Collaboration
-Reflection & Feedback
+- Research & References
+- Ideation
+- Design
+- Coding / Programming
+- Prototyping / Making
+- Documentation
+- Project Management & Collaboration
+- Reflection & Feedback
 
 ## 🏷️ Why use CCL?
 - Foster accountability in AI-supported education and research.

@@ -72,6 +72,7 @@ body {
 
 .level-icon {
     font-size: 1.5rem;
+    filter: grayscale(100%);
 }
 
 .level-content h3 {
@@ -158,6 +159,7 @@ body {
 
 .phase-icon {
     font-size: 1.2rem;
+    filter: grayscale(100%);
 }
 
 .phase-title {
