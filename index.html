@@ -80,7 +80,6 @@
             <!-- Phases Section -->
             <div class="phases-section">
                 <h2 class="phases-title">Select AI Usage Level for Each Phase</h2>
-
                 <div class="phases-grid">
                     <div class="phase-card">
                         <div class="phase-header">
@@ -98,7 +97,7 @@
                             All research was conducted manually (e.g., Google Scholar, physical books).
                         </div>
                     </div>
-
+                    <!-- Additional phase cards -->
                     <div class="phase-card">
                         <div class="phase-header">
                             <span class="phase-icon">💡</span>
@@ -115,7 +114,6 @@
                             Ideas emerged from personal reflection, discussion, or sketching.
                         </div>
                     </div>
-
                     <div class="phase-card">
                         <div class="phase-header">
                             <span class="phase-icon">🎨</span>
@@ -132,7 +130,6 @@
                             AI generated rough layouts, wireframes, or 3D sketches.
                         </div>
                     </div>
-
                     <div class="phase-card">
                         <div class="phase-header">
                             <span class="phase-icon">💻</span>
@@ -149,7 +146,6 @@
                             AI produced code snippets or logic flows, later edited.
                         </div>
                     </div>
-
                     <div class="phase-card">
                         <div class="phase-header">
                             <span class="phase-icon">🔧</span>
@@ -166,7 +162,6 @@
                             Materials and components chosen and assembled manually.
                         </div>
                     </div>
-
                     <div class="phase-card">
                         <div class="phase-header">
                             <span class="phase-icon">📄</span>
@@ -183,7 +178,6 @@
                             AI created draft texts, web pages, diagrams.
                         </div>
                     </div>
-
                     <div class="phase-card">
                         <div class="phase-header">
                             <span class="phase-icon">📊</span>
@@ -200,7 +194,6 @@
                             AI created schedules, content drafts, or social media posts.
                         </div>
                     </div>
-
                     <div class="phase-card">
                         <div class="phase-header">
                             <span class="phase-icon">🔄</span>
@@ -223,11 +216,9 @@
             <!-- Visualization Section -->
             <div class="visualization-section">
                 <h2>CCL Summary</h2>
-
                 <div class="chart-container">
                     <canvas id="ccl-chart" width="250" height="250"></canvas>
                 </div>
-
                 <div class="download-section">
                     <button class="download-btn" onclick="downloadBadge()">
                         📥 Download CCL Badge
@@ -236,7 +227,6 @@
                         📋 Copy CCL Summary
                     </button>
                 </div>
-
                 <div class="summary-box">
                     <div class="summary-title">CCL Summary:</div>
                     <div class="summary-content" id="summary-text" style="white-space: pre-line;">
@@ -252,10 +242,12 @@ AI D2 C2 O2 P2 F3 – v1.0
 
         <div class="footer">
             <p>This project and concept were created by Santi Fuentemilla and are licensed under:</p>
-            <p><a href="#">CC BY-NC-SA 4.0 – the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.</a></p>
+            <p><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0 – the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.</a></p>
             <p>CCL v1.0 – AI Contributed as Drafting Assistant in Design and Documentation, AI acted as AI-led in Coding. All other phases were fully human-led.</p>
+            <div class="counter-section">
+                <p>Licenses generated: <span id="license-counter">0</span></p>
+            </div>
         </div>
-    </div>
 
     <script src="script.js"></script>
 </body>

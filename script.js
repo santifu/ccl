@@ -66,6 +66,31 @@ const levelLabels = [
     "AI as Driver"
 ];
 
+// Function to shade a color
+function shadeColor(color, percent) {
+    let R = parseInt(color.substring(1, 3), 16);
+    let G = parseInt(color.substring(3, 5), 16);
+    let B = parseInt(color.substring(5, 7), 16);
+
+    R = parseInt(R * (100 + percent) / 100);
+    G = parseInt(G * (100 + percent) / 100);
+    B = parseInt(B * (100 + percent) / 100);
+
+    R = (R < 255) ? R : 255;
+    G = (G < 255) ? G : 255;
+    B = (B < 255) ? B : 255;
+
+    R = Math.round(R);
+    G = Math.round(G);
+    B = Math.round(B);
+
+    const RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
+    const GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
+    const BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
+
+    return "#" + RR + GG + BB;
+}
+
 // Initialize chart
 let chart;
 const canvas = document.getElementById('ccl-chart');
@@ -177,142 +202,4 @@ function updateSummary() {
     levels.forEach((level, index) => {
         if (level > 0) {
             const desc = levelDesc[level];
-            if (!levelsByRole[desc]) levelsByRole[desc] = [];
-            levelsByRole[desc].push(phaseNames[index]);
-        }
-    });
-
-    let summary = "";
-    const fullHuman = Object.keys(levelsByRole).length === 0;
-
-    if (fullHuman) {
-        summary = "CCL v1.0 — All phases led by humans. AI was not used in any stage of the process.";
-    } else {
-        const rolePhrases = Object.entries(levelsByRole).map(([role, phaseList]) => {
-            const joined = phaseList.length > 1
-                ? phaseList.slice(0, -1).join(", ") + " and " + phaseList.slice(-1)
-                : phaseList[0];
-            return `AI ${role === "Drafting Assistant" ? "contributed as" : "acted as"} ${role} in ${joined}`;
-        });
-
-        summary = `CCL v1.0 — ${rolePhrases.join(", ")}.`;
-
-        const totalPhases = phases.length;
-        const aiPhases = levels.filter(level => level > 0).length;
-        if (aiPhases < totalPhases) {
-            summary += " All other phases were fully human-led.";
-        }
-    }
-
-    // Add short code
-    const shortCode = `${summaryCode.join(" ")} – v1.0`;
-
-    // Combine project info with summary
-    let finalSummary = "";
-    if (projectTitle) {
-        finalSummary += `"${projectTitle}"`;
-        if (yourName) {
-            finalSummary += ` by ${yourName}`;
-        }
-        finalSummary += "\n\n";
-    }
-
-    finalSummary += summary + "\n\n" + shortCode;
-
-    document.getElementById('summary-text').textContent = finalSummary;
-}
-
-function downloadBadge() {
-    // Create a temporary canvas for the badge
-    const badgeCanvas = document.createElement('canvas');
-    badgeCanvas.width = 400;
-    badgeCanvas.height = 200;
-    const badgeCtx = badgeCanvas.getContext('2d');
-
-    // Draw badge background
-    badgeCtx.fillStyle = '#2d3748';
-    badgeCtx.fillRect(0, 0, 400, 200);
-
-    // Draw badge content
-    badgeCtx.fillStyle = 'white';
-    badgeCtx.font = 'bold 20px sans-serif';
-    badgeCtx.textAlign = 'center';
-    badgeCtx.fillText('Cognitive Contribution License', 200, 40);
-
-    badgeCtx.font = '14px sans-serif';
-    badgeCtx.fillText(document.getElementById('projectTitle').value, 200, 70);
-    badgeCtx.fillText('by ' + document.getElementById('yourName').value, 200, 90);
-
-    // Add mini chart
-    const miniChart = document.getElementById('ccl-chart');
-    badgeCtx.drawImage(miniChart, 250, 100, 70, 70);
-
-    // Add summary
-    badgeCtx.font = '10px sans-serif';
-    badgeCtx.textAlign = 'left';
-    const summaryText = document.getElementById('summary-text').textContent;
-    const words = summaryText.split(' ');
-    let line = '';
-    let y = 120;
-
-    for (let n = 0; n < words.length && y < 180; n++) {
-        const testLine = line + words[n] + ' ';
-        const metrics = badgeCtx.measureText(testLine);
-        const testWidth = metrics.width;
-        if (testWidth > 230 && n > 0) {
-            badgeCtx.fillText(line, 10, y);
-            line = words[n] + ' ';
-            y += 12;
-        } else {
-            line = testLine;
-        }
-    }
-    badgeCtx.fillText(line, 10, y);
-
-    // Download
-    const link = document.createElement('a');
-    link.download = 'ccl-badge.png';
-    link.href = badgeCanvas.toDataURL();
-    link.click();
-}
-
-function downloadSummary() {
-    const summaryText = document.getElementById('summary-text').textContent;
-
-    navigator.clipboard.writeText(summaryText).then(() => {
-        alert('CCL Summary copied to clipboard!');
-    }).catch(() => {
-        // Fallback for older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = summaryText;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        alert('CCL Summary copied to clipboard!');
-    });
-}
-
-// Add event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
-
-    // Initialize all phase descriptions and chart
-    phases.forEach(phase => {
-        updatePhaseDescription(phase);
-        const slider = document.getElementById(phase);
-        slider.addEventListener('input', function() {
-            updatePhaseDescription(phase);
-            drawChart();
-            updateSummary();
-        });
-    });
-
-    // Add listeners for project info inputs
-    document.getElementById('projectTitle').addEventListener('input', updateSummary);
-    document.getElementById('yourName').addEventListener('input', updateSummary);
-
-    // Initial draw
-    drawChart();
-    updateSummary();
-});
+            if (!levelsByRole[desc]) levelsByRole[desc] = []
