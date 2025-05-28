@@ -46,7 +46,7 @@ Reflection & Feedback
 - Encourage critical thinking and self-assessment of your creative process.
 
 ## 📎 License
-**This project and concept were created by Santi Fuentemilla and are licensed under:**
+**This project and concept were created by Santi Fuentemilla, at Fab Lab Barcelona and are licensed under:**
 
 CC BY-NC-SA 4.0 – the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
 
