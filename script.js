@@ -322,6 +322,8 @@ function downloadSummary() {
 
     navigator.clipboard.writeText(summaryText).then(() => {
         alert('CCL Summary copied to clipboard!');
+        // Update the license counter
+        updateLicenseCounter();
     }).catch(() => {
         // Fallback for older browsers
         const textArea = document.createElement('textarea');
@@ -331,6 +333,8 @@ function downloadSummary() {
         document.execCommand('copy');
         document.body.removeChild(textArea);
         alert('CCL Summary copied to clipboard!');
+        // Update the license counter
+        updateLicenseCounter();
     });
 }
 
