@@ -218,8 +218,6 @@ body {
 .form-group input:focus {
     outline: none;
     border-color: var(--ccl-ring); /* Usar color de ring */
-    box-shadow: 0 0 0 3px rgba(var(--ccl-ring-rgb-r), var(--ccl-ring-rgb-g), var(--ccl-ring-rgb-b), 0.2); /* Sombra para focus (requeriría JS para extraer RGB o hardcodear) */
-    /* Para simplificar, una sombra de enfoque simple puede ser: */
     box-shadow: 0 0 0 3px rgba(13, 23, 42, 0.2); /* Usar RGB de --ccl-foreground o --ccl-ring */
 }
 
@@ -416,39 +414,40 @@ body {
 }
 
 .footer {
-    background: var(--ccl-primary);
-    color: var(--ccl-primary-foreground);
+    background: var(--ccl-primary); /* Fondo azul */
+    color: var(--ccl-primary-foreground); /* Texto blanco para contraste */
     padding: 30px;
     text-align: center;
-    margin-top: 30px; /* Añadido margen superior, ya que no tiene un container que lo envuelva */
+    margin-top: 30px;
+    border-top: 1px solid var(--ccl-border); /* Mantener un borde superior sutil */
 }
 
 .footer p {
     margin-bottom: 10px;
-    opacity: 0.9; /* Menos opaco */
+    opacity: 0.9;
     font-size: 0.9rem;
 }
 
 .footer a {
-    color: var(--ccl-accent-foreground); /* Usar el color del texto de acento (foreground) */
-    text-decoration: underline; /* Subrayado por defecto para enlaces */
+    color: var(--ccl-primary-foreground); /* Enlaces en blanco para verse sobre el azul */
+    text-decoration: underline;
 }
 
 .footer a:hover {
-    color: var(--ccl-primary-foreground); /* Color de hover para enlaces */
-    text-decoration: none; /* Quitar subrayado en hover */
+    color: #D0D0D0; /* Un blanco ligeramente más oscuro en hover */
+    text-decoration: none;
 }
 
 .counter-section {
     margin-top: 10px;
     font-size: 0.85rem;
-    color: var(--ccl-primary-foreground);
+    color: var(--ccl-primary-foreground); /* Contador en blanco */
     opacity: 0.8;
 }
 
 .counter-section span {
     font-weight: bold;
-    color: var(--ccl-primary-foreground); /* Mantener color de texto primario */
+    color: var(--ccl-primary-foreground); /* Número del contador en blanco */
 }
 
 /* Media Queries para responsividad */
