@@ -188,6 +188,8 @@ function drawChart() {
     ctx.fillText('Summary', centerX, centerY + 6);
 }
 
+
+
 // Colores de los sliders
 const sliderColors = {
     research: '#6f1926',

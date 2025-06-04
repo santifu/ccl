@@ -1,90 +1,189 @@
+/* Importar la nueva fuente */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+/* Definición de colores base - equivalentes aproximados en HEX para el modo claro */
+:root {
+    --ccl-background: #FFFFFF; /* 0 0% 100% */
+    --ccl-foreground: #0D172A; /* 222.2 84% 4.9% */
+    --ccl-primary: #0F1B38;    /* 222.2 47.4% 11.2% */
+    --ccl-primary-foreground: #F7FAFD; /* 210 40% 98% */
+    --ccl-secondary: #F0F4F8; /* 210 40% 96.1% */
+    --ccl-secondary-foreground: #0D172A; /* Equivalente a foreground */
+    --ccl-muted: #F0F4F8;     /* 210 40% 96.1% */
+    --ccl-muted-foreground: #667484; /* 215.4 16.3% 46.9% */
+    --ccl-accent: #F0F4F8;    /* 210 40% 96.1% */
+    --ccl-accent-foreground: #0D172A; /* Equivalente a foreground */
+    --ccl-destructive: #E53E3E; /* 0 84.2% 60.2% */
+    --ccl-destructive-foreground: #F7FAFD; /* 210 40% 98% */
+    --ccl-border: #E8EDF4;    /* 214.3 31.8% 91.4% */
+    --ccl-input: #E8EDF4;     /* 214.3 31.8% 91.4% */
+    --ccl-ring: #0D172A;      /* 222.2 84% 4.9% */
+    --ccl-radius: 0.5rem;
+
+    /* Colores para las franjas de nivel del badge */
+    --ccl-level-0: #4299e1; /* Azul (original) */
+    --ccl-level-1: #48bb78; /* Verde (original) */
+    --ccl-level-2: #f56565; /* Rojo (original) */
+    --ccl-level-3: #9f7aea; /* Morado (original) */
+    --ccl-level-4: #6b7280; /* Gris (original) */
+
+    /* Colores de las fases (para el badge y los sliders) */
+    --ccl-phase-research: #6f1926;
+    --ccl-phase-ideation: #de324c;
+    --ccl-phase-design: #f4895f;
+    --ccl-phase-coding: #f8e16f;
+    --ccl-phase-prototyping: #95cf92;
+    --ccl-phase-documentation: #369acc;
+    --ccl-phase-management: #9656a2;
+    --ccl-phase-reflection: #cbabd1;
+}
+
+/* Modo oscuro (se puede activar añadiendo la clase 'dark' al <body> o <html>) */
+.dark {
+    --ccl-background: #0D172A; /* 222.2 84% 4.9% */
+    --ccl-foreground: #F7FAFD; /* 210 40% 98% */
+    --ccl-primary: #F7FAFD;    /* 210 40% 98% */
+    --ccl-primary-foreground: #0F1B38; /* 222.2 47.4% 11.2% */
+    --ccl-secondary: #2E4057; /* 217.2 32.6% 17.5% */
+    --ccl-secondary-foreground: #F7FAFD; /* 210 40% 98% */
+    --ccl-muted: #2E4057;     /* 217.2 32.6% 17.5% */
+    --ccl-muted-foreground: #9EA5B4; /* 215 20.2% 65.1% */
+    --ccl-accent: #2E4057;    /* 217.2 32.6% 17.5% */
+    --ccl-accent-foreground: #F7FAFD; /* 210 40% 98% */
+    --ccl-destructive: #9C2C2C; /* 0 62.8% 30.6% */
+    --ccl-destructive-foreground: #F7FAFD; /* 210 40% 98% */
+    --ccl-border: #2E4057;    /* 217.2 32.6% 17.5% */
+    --ccl-input: #2E4057;     /* 217.2 32.6% 17.5% */
+    --ccl-ring: #D7DEE8;      /* 212.7 26.8% 83.9% */
+}
+
+
+/* Restablecimiento global y estilos base */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    border-color: var(--ccl-border); /* Aplicar el color de borde de Tailwind */
 }
 
 body {
-    font-family: 'Inter', sans-serif;
-    background: #f8f9fa;
+    font-family: 'Space Grotesk', sans-serif; /* Usar la nueva fuente */
+    background: var(--ccl-background);
+    color: var(--ccl-foreground);
     min-height: 100vh;
     padding: 20px;
+    line-height: 1.5; /* Ajuste para mejor legibilidad */
 }
 
 .container {
     max-width: 1000px;
     margin: 0 auto;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    background: var(--ccl-card); /* Usar el color de fondo de tarjeta */
+    border-radius: var(--ccl-radius); /* Usar el radio de borde de Tailwind */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Mantener sombra similar */
     overflow: hidden;
 }
 
 .header {
-    background: #2d3748;
-    color: white;
+    background: var(--ccl-primary);
+    color: var(--ccl-primary-foreground);
     padding: 30px;
     text-align: center;
 }
 
 .header h1 {
-    font-size: 2rem;
+    font-size: 2.2rem; /* Ligeramente más grande */
     margin-bottom: 10px;
     font-weight: 700;
 }
 
 .header p {
-    font-size: 1rem;
-    opacity: 0.8;
+    font-size: 1.1rem; /* Ligeramente más grande */
+    opacity: 0.9; /* Más opaco */
 }
 
 .content {
     padding: 30px;
 }
 
+.section {
+    margin-bottom: 30px;
+}
+
+.section h2 {
+    font-size: 1.6rem; /* Ligeramente más grande */
+    margin-bottom: 15px;
+    color: var(--ccl-foreground);
+}
+
+.section p {
+    font-size: 1rem;
+    line-height: 1.7; /* Mayor interlineado para legibilidad */
+    color: var(--ccl-muted-foreground); /* Texto más suave */
+}
+
+.section ul, .section ol {
+    margin-top: 10px;
+    margin-left: 20px;
+    color: var(--ccl-muted-foreground);
+}
+
+.section li {
+    margin-bottom: 8px;
+}
+
+.section strong {
+    color: var(--ccl-foreground);
+}
+
+
+/* Estilos específicos de generator.html (adaptados) */
 .levels-section {
     margin-bottom: 30px;
 }
 
 .levels-title {
     margin-bottom: 20px;
-    font-size: 1.2rem;
+    font-size: 1.3rem; /* Ligeramente más grande */
     font-weight: 600;
-    color: #2d3748;
+    color: var(--ccl-foreground);
 }
 
 .level-item {
     display: flex;
-    align-items: center;
+    /* align-items: center; */ /* Descomentar si el icono/número debe estar centrado verticalmente con el texto */
     gap: 10px;
     padding: 15px;
     margin-bottom: 10px;
-    background: #f8fafc;
-    border-radius: 8px;
-    border-left: 4px solid transparent;
+    background: var(--ccl-secondary); /* Usar color secundario para los ítems */
+    border-radius: var(--ccl-radius);
+    border-left: 4px solid transparent; /* Se definirá por JS o clases específicas */
 }
 
-.level-item.level-0 { border-left-color: #4299e1; }
-.level-item.level-1 { border-left-color: #48bb78; }
-.level-item.level-2 { border-left-color: #f56565; }
-.level-item.level-3 { border-left-color: #9f7aea; }
-.level-item.level-4 { border-left-color: #6b7280; }
+/* Colores de las barras laterales de los ítems de nivel (basados en original) */
+.level-item.level-0 { border-left-color: var(--ccl-level-0); }
+.level-item.level-1 { border-left-color: var(--ccl-level-1); }
+.level-item.level-2 { border-left-color: var(--ccl-level-2); }
+.level-item.level-3 { border-left-color: var(--ccl-level-3); }
+.level-item.level-4 { border-left-color: var(--ccl-level-4); }
 
-.level-icon {
-    font-size: 1.5rem;
-    filter: grayscale(100%);
+
+.level-icon { /* Si se usaran iconos en el futuro */
+    font-size: 1.6rem; /* Ajuste para iconos */
+    filter: none; /* Eliminar grayscale si los iconos son a color */
+    color: var(--ccl-muted-foreground); /* Color para iconos si son monocromáticos */
 }
 
 .level-content h3 {
-    font-size: 1.1rem;
+    font-size: 1.2rem; /* Ligeramente más grande */
     margin-bottom: 5px;
-    color: #2d3748;
+    color: var(--ccl-foreground);
 }
 
 .level-content p {
-    font-size: 0.9rem;
-    color: #4a5568;
-    line-height: 1.4;
+    font-size: 0.95rem; /* Ajuste sutil */
+    color: var(--ccl-muted-foreground);
+    line-height: 1.5;
 }
 
 .form-section {
@@ -102,21 +201,26 @@ body {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #2d3748;
+    color: var(--ccl-foreground);
 }
 
 .form-group input {
     width: 100%;
     padding: 12px;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
+    border: 1px solid var(--ccl-input); /* Borde más delgado */
+    background: var(--ccl-background); /* Fondo blanco */
+    border-radius: var(--ccl-radius);
     font-size: 1rem;
-    transition: border-color 0.3s ease;
+    color: var(--ccl-foreground);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Transición para focus */
 }
 
 .form-group input:focus {
     outline: none;
-    border-color: #4299e1;
+    border-color: var(--ccl-ring); /* Usar color de ring */
+    box-shadow: 0 0 0 3px rgba(var(--ccl-ring-rgb-r), var(--ccl-ring-rgb-g), var(--ccl-ring-rgb-b), 0.2); /* Sombra para focus (requeriría JS para extraer RGB o hardcodear) */
+    /* Para simplificar, una sombra de enfoque simple puede ser: */
+    box-shadow: 0 0 0 3px rgba(13, 23, 42, 0.2); /* Usar RGB de --ccl-foreground o --ccl-ring */
 }
 
 .phases-section {
@@ -124,10 +228,10 @@ body {
 }
 
 .phases-title {
-    font-size: 1.2rem;
+    font-size: 1.3rem; /* Ligeramente más grande */
     font-weight: 600;
     margin-bottom: 20px;
-    color: #2d3748;
+    color: var(--ccl-foreground);
 }
 
 .phases-grid {
@@ -137,17 +241,17 @@ body {
 }
 
 .phase-card {
-    background: #f8fafc;
-    border-radius: 10px;
+    background: var(--ccl-secondary); /* Usar color secundario */
+    border-radius: var(--ccl-radius);
     padding: 20px;
-    border: 2px solid #e2e8f0;
-    transition: all 0.3s ease;
+    border: 1px solid var(--ccl-border); /* Borde más sutil */
+    transition: all 0.2s ease; /* Transición más rápida */
 }
 
 .phase-card:hover {
-    border-color: #4299e1;
+    border-color: var(--ccl-ring); /* Borde de enfoque en hover */
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08); /* Sombra de hover más sutil */
 }
 
 .phase-header {
@@ -158,13 +262,14 @@ body {
 }
 
 .phase-icon {
-    font-size: 1.2rem;
-    filter: grayscale(100%);
+    font-size: 1.4rem; /* Iconos ligeramente más grandes */
+    filter: none; /* Mantener color si son emojis */
+    color: var(--ccl-foreground); /* Color de texto normal para el icono */
 }
 
 .phase-title {
     font-weight: 600;
-    color: #2d3748;
+    color: var(--ccl-foreground);
 }
 
 .slider-container {
@@ -173,75 +278,88 @@ body {
 
 .slider {
     width: 100%;
-    height: 8px;
-    border-radius: 4px;
-    background: #e2e8f0;
+    height: 6px; /* Más delgado */
+    border-radius: 3px; /* Más redondeado */
+    background: var(--ccl-muted); /* Fondo del slider como muted */
     outline: none;
     -webkit-appearance: none;
+    appearance: none;
 }
+
+/* Colores de las fases en el slider (basados en el script.js) */
+#research::-webkit-slider-runnable-track { background: var(--ccl-phase-research); }
+#ideation::-webkit-slider-runnable-track { background: var(--ccl-phase-ideation); }
+#design::-webkit-slider-runnable-track { background: var(--ccl-phase-design); }
+#coding::-webkit-slider-runnable-track { background: var(--ccl-phase-coding); }
+#prototyping::-webkit-slider-runnable-track { background: var(--ccl-phase-prototyping); }
+#documentation::-webkit-slider-runnable-track { background: var(--ccl-phase-documentation); }
+#management::-webkit-slider-runnable-track { background: var(--ccl-phase-management); }
+#reflection::-webkit-slider-runnable-track { background: var(--ccl-phase-reflection); }
+
+#research::-moz-range-track { background: var(--ccl-phase-research); }
+#ideation::-moz-range-track { background: var(--ccl-phase-ideation); }
+#design::-moz-range-track { background: var(--ccl-phase-design); }
+#coding::-moz-range-track { background: var(--ccl-phase-coding); }
+#prototyping::-moz-range-track { background: var(--ccl-phase-prototyping); }
+#documentation::-moz-range-track { background: var(--ccl-phase-documentation); }
+#management::-moz-range-track { background: var(--ccl-phase-management); }
+#reflection::-moz-range-track { background: var(--ccl-phase-reflection); }
+
 
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 16px; /* Más pequeño */
+    height: 16px; /* Más pequeño */
     border-radius: 50%;
-    background: white;
-    border: 3px solid #2d3748;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background: var(--ccl-primary); /* Pulgar del slider con color primario */
+    border: 2px solid var(--ccl-primary-foreground); /* Borde blanco alrededor */
+    cursor: grab;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Sombra más sutil */
+    margin-top: -5px; /* Ajuste para centrar el pulgar */
 }
 
 .slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
-    background: white;
-    border: 3px solid #2d3748;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-
+    background: var(--ccl-primary);
+    border: 2px solid var(--ccl-primary-foreground);
+    cursor: grab;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
-
-/* Individual slider colors */
-#research { background: #6f1926; }
-#ideation { background: #de324c; }
-#design { background: #f4895f; }
-#coding { background: #f8e16f; }
-#prototyping { background: #95cf92; }
-#documentation { background: #369acc; }
-#management { background: #9656a2; }
-#reflection { background: #cbabd1; }
 
 .slider-labels {
     display: flex;
     justify-content: space-between;
     margin-top: 8px;
-    font-size: 0.8rem;
-    color: #4a5568;
+    font-size: 0.75rem; /* Más pequeño */
+    color: var(--ccl-muted-foreground);
 }
 
 .phase-description {
     margin-top: 15px;
     padding: 12px;
-    background: white;
-    border-radius: 8px;
+    background: var(--ccl-background); /* Fondo blanco */
+    border-radius: var(--ccl-radius);
     font-size: 0.9rem;
-    color: #4a5568;
-    line-height: 1.4;
+    color: var(--ccl-muted-foreground);
+    line-height: 1.6;
+    border: 1px solid var(--ccl-border); /* Borde suave */
 }
 
 .visualization-section {
-    background: #f8fafc;
-    border-radius: 12px;
+    background: var(--ccl-secondary); /* Fondo secundario */
+    border-radius: var(--ccl-radius);
     padding: 30px;
     text-align: center;
+    border: 1px solid var(--ccl-border); /* Borde suave */
 }
 
 .chart-container {
-    width: 300px;
-    height: 300px;
+    width: 280px; /* Ajuste de tamaño */
+    height: 280px; /* Ajuste de tamaño */
     margin: 0 auto 30px;
     position: relative;
 }
@@ -253,95 +371,110 @@ body {
     flex-wrap: wrap;
 }
 
-.download-btn {
-    background: #2d3748;
-    color: white;
+.download-btn,
+.button { /* Aplicar estilos de botón a ambos */
+    background: var(--ccl-primary);
+    color: var(--ccl-primary-foreground);
     border: none;
     padding: 12px 24px;
-    border-radius: 8px;
+    border-radius: var(--ccl-radius);
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease; /* Transición más rápida */
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    font-size: 1rem;
 }
 
-.download-btn:hover {
-    background: #4a5568;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+.download-btn:hover,
+.button:hover {
+    background: var(--ccl-foreground); /* Color de hover más oscuro */
+    transform: translateY(-1px); /* Menos movimiento */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra de hover más suave */
 }
 
 .summary-box {
-    background: white;
-    border-radius: 12px;
+    background: var(--ccl-background);
+    border-radius: var(--ccl-radius);
     padding: 20px;
     margin-top: 20px;
-    border: 2px solid #e2e8f0;
+    border: 1px solid var(--ccl-border); /* Borde suave */
 }
 
 .summary-title {
     font-weight: 600;
     margin-bottom: 10px;
-    color: #2d3748;
+    color: var(--ccl-foreground);
 }
 
 .summary-content {
-    font-size: 0.9rem;
-    color: #4a5568;
-    line-height: 1.5;
+    font-size: 0.95rem; /* Ajuste sutil */
+    color: var(--ccl-muted-foreground);
+    line-height: 1.6;
 }
 
 .footer {
-    background: #2d3748;
-    color: white;
+    background: var(--ccl-primary);
+    color: var(--ccl-primary-foreground);
     padding: 30px;
     text-align: center;
+    margin-top: 30px; /* Añadido margen superior, ya que no tiene un container que lo envuelva */
 }
 
 .footer p {
     margin-bottom: 10px;
-    opacity: 0.8;
+    opacity: 0.9; /* Menos opaco */
+    font-size: 0.9rem;
 }
 
 .footer a {
-    color: #4299e1;
-    text-decoration: none;
+    color: var(--ccl-accent-foreground); /* Usar el color del texto de acento (foreground) */
+    text-decoration: underline; /* Subrayado por defecto para enlaces */
 }
 
 .footer a:hover {
-    text-decoration: underline;
+    color: var(--ccl-primary-foreground); /* Color de hover para enlaces */
+    text-decoration: none; /* Quitar subrayado en hover */
 }
 
 .counter-section {
     margin-top: 10px;
-    font-size: 0.9rem;
-    color: white;
-    opacity: 0.7;
+    font-size: 0.85rem;
+    color: var(--ccl-primary-foreground);
+    opacity: 0.8;
 }
 
 .counter-section span {
     font-weight: bold;
-    color: #4299e1;
+    color: var(--ccl-primary-foreground); /* Mantener color de texto primario */
 }
 
+/* Media Queries para responsividad */
 @media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    .container {
+        border-radius: 0; /* Sin bordes redondeados en móviles si es full-width */
+        box-shadow: none; /* Sin sombra en móviles */
+    }
     .form-section {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 15px;
     }
-
     .phases-grid {
         grid-template-columns: 1fr;
     }
-
     .header h1 {
         font-size: 1.8rem;
     }
-
     .content {
         padding: 20px;
+    }
+    .download-section {
+        flex-direction: column; /* Botones apilados en móviles */
+        gap: 10px;
     }
 }
