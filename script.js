@@ -226,7 +226,7 @@ function drawChart() {
 function updateSummary() {
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
     const phaseNames = ['Research', 'Ideation', 'Design', 'Coding', 'Prototyping', 'Documentation', 'Management', 'Reflection'];
-    const phaseAbbreviations = ['R', 'I', 'D', 'C', 'M', 'O', 'P', 'F'];
+    const phaseAbbreviations = ['R', 'I', 'D', 'C', 'P', 'O', 'M', 'F'];
 
     const levels = phases.map(phase => parseInt(document.getElementById(phase).value));
     const projectTitle = document.getElementById('projectTitle').value;
@@ -306,167 +306,92 @@ function updateSummary() {
 function downloadBadge() {
     // Create a temporary canvas for the badge with transparent background
     const badgeCanvas = document.createElement('canvas');
-    badgeCanvas.width = 300;
-    badgeCanvas.height = 300;
+    badgeCanvas.width = 400;
+    badgeCanvas.height = 200;
     const badgeCtx = badgeCanvas.getContext('2d');
 
     // Don't fill background - keep it transparent for PNG
 
-    // Get phase data
+    // Draw mini chart (enlarged)
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
-    const phaseLabels = ['R', 'I', 'D', 'C', 'P', 'O', 'M', 'F'];
+    const phaseLabels = ['Research', 'Ideation', 'Design', 'Coding', 'Prototyping', 'Documentation', 'Management', 'Reflection'];
     const data = phases.map(phase => parseInt(document.getElementById(phase).value));
 
-    const centerX = 150;
-    const centerY = 150;
-    const diamondSize = 120;
+    const centerX = 200;
+    const centerY = 100;
+    const outerRadius = 80;
+    const innerRadius = 25;
+    const angleStep = (Math.PI * 2) / phases.length;
 
-    // Helper function to draw rotated diamond
-    function drawDiamond(ctx, x, y, size, fillColor, strokeColor = '#000', lineWidth = 2) {
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(Math.PI / 4); // 45 degree rotation
+    // Draw chart segments
+    phases.forEach((phase, index) => {
+        const level = data[index];
+        const startAngle = index * angleStep - Math.PI / 2;
+        const endAngle = (index + 1) * angleStep - Math.PI / 2;
+
+        // Get color based on phase and level
+        const segmentColor = getPhaseColor(phase, level);
+
+        // Draw segment
+        badgeCtx.beginPath();
+        badgeCtx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
+        badgeCtx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
+        badgeCtx.closePath();
+        badgeCtx.fillStyle = segmentColor;
+        badgeCtx.fill();
+        badgeCtx.strokeStyle = '#fff';
+        badgeCtx.lineWidth = 2;
+        badgeCtx.stroke();
+
+        // Draw phase label inside the segment
+        const labelAngle = startAngle + angleStep / 2;
+        const labelRadius = (outerRadius + innerRadius) / 2;
+        const labelX = centerX + Math.cos(labelAngle) * labelRadius;
+        const labelY = centerY + Math.sin(labelAngle) * labelRadius;
+
+        // Set text style
+        badgeCtx.fillStyle = '#ffffff';
+        badgeCtx.font = 'bold 12px sans-serif';
+        badgeCtx.textAlign = 'center';
+        badgeCtx.textBaseline = 'middle';
         
-        ctx.beginPath();
-        ctx.rect(-size/2, -size/2, size, size);
-        ctx.fillStyle = fillColor;
-        ctx.fill();
-        ctx.strokeStyle = strokeColor;
-        ctx.lineWidth = lineWidth;
-        ctx.stroke();
+        // Add text shadow for better readability
+        badgeCtx.shadowColor = 'rgba(0,0,0,0.7)';
+        badgeCtx.shadowBlur = 3;
+        badgeCtx.shadowOffsetX = 1;
+        badgeCtx.shadowOffsetY = 1;
         
-        ctx.restore();
-    }
+        // Draw the first letter of each phase
+        badgeCtx.fillText(phaseLabels[index].charAt(0), labelX, labelY);
+        
+        // Reset shadow
+        badgeCtx.shadowColor = 'transparent';
+        badgeCtx.shadowBlur = 0;
+        badgeCtx.shadowOffsetX = 0;
+        badgeCtx.shadowOffsetY = 0;
+    });
 
-    // Create diamond layout similar to hazmat diamonds
-    // Main diamond divided into 4 quadrants
-    drawDiamond(badgeCtx, centerX, centerY, diamondSize, '#ffffff', '#000', 3);
-
-    // Divide the diamond into 4 sections
-    const sectionSize = diamondSize / 2;
-    
-    // Top section (Research + Ideation)
-    const topColor = data[0] > data[1] ? getPhaseColor('research', data[0]) : getPhaseColor('ideation', data[1]);
-    const topLevel = Math.max(data[0], data[1]);
-    const topLabel = data[0] > data[1] ? 'R' : (data[1] > data[0] ? 'I' : 'R');
-    
-    badgeCtx.save();
-    badgeCtx.translate(centerX, centerY);
-    badgeCtx.rotate(Math.PI / 4);
-    badgeCtx.fillStyle = topColor;
-    badgeCtx.fillRect(-sectionSize/2, -sectionSize, sectionSize, sectionSize);
-    badgeCtx.strokeStyle = '#fff';
+    // Draw center circle
+    badgeCtx.beginPath();
+    badgeCtx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
+    badgeCtx.fillStyle = '#f8fafc';
+    badgeCtx.fill();
+    badgeCtx.strokeStyle = '#e2e8f0';
     badgeCtx.lineWidth = 2;
-    badgeCtx.strokeRect(-sectionSize/2, -sectionSize, sectionSize, sectionSize);
-    
-    // Top section text
-    badgeCtx.rotate(-Math.PI / 4);
-    badgeCtx.fillStyle = '#ffffff';
-    badgeCtx.font = 'bold 24px sans-serif';
+    badgeCtx.stroke();
+
+    // Center text
+    badgeCtx.fillStyle = '#2d3748';
+    badgeCtx.font = 'bold 14px sans-serif';
     badgeCtx.textAlign = 'center';
     badgeCtx.textBaseline = 'middle';
-    badgeCtx.shadowColor = 'rgba(0,0,0,0.7)';
-    badgeCtx.shadowBlur = 3;
-    badgeCtx.fillText(topLevel, 0, -sectionSize/2);
-    badgeCtx.font = 'bold 12px sans-serif';
-    badgeCtx.fillText(topLabel, 0, -sectionSize/2 + 20);
-    badgeCtx.restore();
-
-    // Right section (Design + Coding)
-    const rightColor = data[2] > data[3] ? getPhaseColor('design', data[2]) : getPhaseColor('coding', data[3]);
-    const rightLevel = Math.max(data[2], data[3]);
-    const rightLabel = data[2] > data[3] ? 'D' : (data[3] > data[2] ? 'C' : 'D');
-    
-    badgeCtx.save();
-    badgeCtx.translate(centerX, centerY);
-    badgeCtx.rotate(Math.PI / 4);
-    badgeCtx.fillStyle = rightColor;
-    badgeCtx.fillRect(0, -sectionSize/2, sectionSize, sectionSize);
-    badgeCtx.strokeStyle = '#fff';
-    badgeCtx.lineWidth = 2;
-    badgeCtx.strokeRect(0, -sectionSize/2, sectionSize, sectionSize);
-    
-    // Right section text
-    badgeCtx.rotate(-Math.PI / 4);
-    badgeCtx.fillStyle = '#ffffff';
-    badgeCtx.font = 'bold 24px sans-serif';
-    badgeCtx.textAlign = 'center';
-    badgeCtx.textBaseline = 'middle';
-    badgeCtx.shadowColor = 'rgba(0,0,0,0.7)';
-    badgeCtx.shadowBlur = 3;
-    badgeCtx.fillText(rightLevel, sectionSize/2, 0);
-    badgeCtx.font = 'bold 12px sans-serif';
-    badgeCtx.fillText(rightLabel, sectionSize/2, 20);
-    badgeCtx.restore();
-
-    // Bottom section (Prototyping + Documentation)
-    const bottomColor = data[4] > data[5] ? getPhaseColor('prototyping', data[4]) : getPhaseColor('documentation', data[5]);
-    const bottomLevel = Math.max(data[4], data[5]);
-    const bottomLabel = data[4] > data[5] ? 'P' : (data[5] > data[4] ? 'O' : 'P');
-    
-    badgeCtx.save();
-    badgeCtx.translate(centerX, centerY);
-    badgeCtx.rotate(Math.PI / 4);
-    badgeCtx.fillStyle = bottomColor;
-    badgeCtx.fillRect(-sectionSize/2, 0, sectionSize, sectionSize);
-    badgeCtx.strokeStyle = '#fff';
-    badgeCtx.lineWidth = 2;
-    badgeCtx.strokeRect(-sectionSize/2, 0, sectionSize, sectionSize);
-    
-    // Bottom section text
-    badgeCtx.rotate(-Math.PI / 4);
-    badgeCtx.fillStyle = '#ffffff';
-    badgeCtx.font = 'bold 24px sans-serif';
-    badgeCtx.textAlign = 'center';
-    badgeCtx.textBaseline = 'middle';
-    badgeCtx.shadowColor = 'rgba(0,0,0,0.7)';
-    badgeCtx.shadowBlur = 3;
-    badgeCtx.fillText(bottomLevel, 0, sectionSize/2);
-    badgeCtx.font = 'bold 12px sans-serif';
-    badgeCtx.fillText(bottomLabel, 0, sectionSize/2 + 20);
-    badgeCtx.restore();
-
-    // Left section (Management + Reflection)
-    const leftColor = data[6] > data[7] ? getPhaseColor('management', data[6]) : getPhaseColor('reflection', data[7]);
-    const leftLevel = Math.max(data[6], data[7]);
-    const leftLabel = data[6] > data[7] ? 'M' : (data[7] > data[6] ? 'F' : 'M');
-    
-    badgeCtx.save();
-    badgeCtx.translate(centerX, centerY);
-    badgeCtx.rotate(Math.PI / 4);
-    badgeCtx.fillStyle = leftColor;
-    badgeCtx.fillRect(-sectionSize, -sectionSize/2, sectionSize, sectionSize);
-    badgeCtx.strokeStyle = '#fff';
-    badgeCtx.lineWidth = 2;
-    badgeCtx.strokeRect(-sectionSize, -sectionSize/2, sectionSize, sectionSize);
-    
-    // Left section text
-    badgeCtx.rotate(-Math.PI / 4);
-    badgeCtx.fillStyle = '#ffffff';
-    badgeCtx.font = 'bold 24px sans-serif';
-    badgeCtx.textAlign = 'center';
-    badgeCtx.textBaseline = 'middle';
-    badgeCtx.shadowColor = 'rgba(0,0,0,0.7)';
-    badgeCtx.shadowBlur = 3;
-    badgeCtx.fillText(leftLevel, -sectionSize/2, 0);
-    badgeCtx.font = 'bold 12px sans-serif';
-    badgeCtx.fillText(leftLabel, -sectionSize/2, 20);
-    badgeCtx.restore();
-
-    // Reset shadow
-    badgeCtx.shadowColor = 'transparent';
-    badgeCtx.shadowBlur = 0;
-
-    // Add CCL label at the bottom
-    badgeCtx.fillStyle = '#000';
-    badgeCtx.font = 'bold 16px sans-serif';
-    badgeCtx.textAlign = 'center';
-    badgeCtx.textBaseline = 'middle';
-    badgeCtx.fillText('CCL v1.0', centerX, centerY + diamondSize/2 + 30);
+    badgeCtx.fillText('CCL', centerX, centerY - 3);
+    badgeCtx.font = '10px sans-serif';
+    badgeCtx.fillText('v1.0', centerX, centerY + 10);
 
     // Download as PNG with transparent background
     const link = document.createElement('a');
-    link.download = 'ccl-diamond-badge.png';
+    link.download = 'ccl-badge.png';
     link.href = badgeCanvas.toDataURL('image/png');
     link.click();
 
