@@ -66,16 +66,16 @@ const levelLabels = [
     "AI as Driver"
 ];
 
-// Base colors for each phase - matching the slider colors
+// Base colors for each phase - matching the exact slider colors
 const phaseBaseColors = {
-    research: '#3b82f6',      // Blue
-    ideation: '#10b981',      // Green
-    design: '#f59e0b',        // Amber
-    coding: '#ef4444',        // Red
-    prototyping: '#8b5cf6',   // Purple
-    documentation: '#06b6d4', // Cyan
-    management: '#f97316',    // Orange
-    reflection: '#84cc16'     // Lime
+    research: '#4299e1',      // Blue
+    ideation: '#48bb78',      // Green
+    design: '#f56565',        // Red
+    coding: '#9f7aea',        // Purple
+    prototyping: '#6b7280',   // Gray
+    documentation: '#38b2ac', // Teal
+    management: '#ed8936',    // Orange
+    reflection: '#975a16'     // Brown
 };
 
 // Function to create gradient colors based on level (0-4)
