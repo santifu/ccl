@@ -1,3 +1,4 @@
+
 // Phase descriptions for each level
 const phaseDescriptions = {
     research: [
@@ -58,15 +59,19 @@ const phaseDescriptions = {
     ]
 };
 
-const levelLabels = [
-    "Full Human Work",
-    "AI for Insight",
-    "AI for Drafting",
-    "AI as Co-Creator",
-    "AI as Driver"
-];
+// Definición de abreviaturas consistentes
+const phaseAbbreviations = {
+    research: 'R',
+    ideation: 'I',
+    design: 'D',
+    coding: 'C',
+    prototyping: 'P',
+    documentation: 'O',
+    management: 'M',
+    reflection: 'F'
+};
 
-// Base colors for each phase - matching the exact slider colors
+// Base colors for each phase
 const phaseBaseColors = {
     research: '#4299e1',      // Blue
     ideation: '#48bb78',      // Green
@@ -83,7 +88,6 @@ function getPhaseColor(phase, level) {
     const baseColor = phaseBaseColors[phase];
     
     if (level === 0) {
-        // Very light version for "Full Human Work"
         return lightenColor(baseColor, 80);
     } else if (level === 1) {
         return lightenColor(baseColor, 50);
@@ -92,7 +96,6 @@ function getPhaseColor(phase, level) {
     } else if (level === 3) {
         return baseColor;
     } else if (level === 4) {
-        // Darker version for "AI as Driver"
         return darkenColor(baseColor, 20);
     }
     return baseColor;
@@ -122,41 +125,31 @@ function darkenColor(color, percent) {
         (B > 255 ? 255 : B < 0 ? 0 : B)).toString(16).slice(1);
 }
 
-// Initialize chart
-let chart;
-const canvas = document.getElementById('ccl-chart');
-const ctx = canvas.getContext('2d');
-
-// Function to update the license counter (using in-memory storage instead of localStorage)
-let licenseCounter = 0;
-function updateLicenseCounter() {
-    licenseCounter += 1;
-    document.getElementById('license-counter').textContent = licenseCounter;
-}
+// Initialize badge
+const badgeCanvas = document.getElementById('ccl-badge');
+const badgeCtx = badgeCanvas.getContext('2d');
 
 function updatePhaseDescription(phaseId) {
     const slider = document.getElementById(phaseId);
     const description = document.getElementById(phaseId + '-desc');
     const level = parseInt(slider.value);
     description.textContent = phaseDescriptions[phaseId][level];
+    drawBadge();
 }
 
-function drawChart() {
+function drawBadge() {
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
-    const phaseLabels = ['Research', 'Ideation', 'Design', 'Coding', 'Prototyping', 'Documentation', 'Management', 'Reflection'];
     const data = phases.map(phase => parseInt(document.getElementById(phase).value));
-
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
+    
+    badgeCtx.clearRect(0, 0, badgeCanvas.width, badgeCanvas.height);
+    
+    const centerX = badgeCanvas.width / 2;
+    const centerY = badgeCanvas.height / 2;
     const outerRadius = 100;
     const innerRadius = 30;
-
-    // Draw segments
     const angleStep = (Math.PI * 2) / phases.length;
 
+    // Draw segments
     phases.forEach((phase, index) => {
         const level = data[index];
         const startAngle = index * angleStep - Math.PI / 2;
@@ -166,15 +159,15 @@ function drawChart() {
         const segmentColor = getPhaseColor(phase, level);
 
         // Draw segment
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
-        ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
-        ctx.closePath();
-        ctx.fillStyle = segmentColor;
-        ctx.fill();
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        badgeCtx.beginPath();
+        badgeCtx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
+        badgeCtx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
+        badgeCtx.closePath();
+        badgeCtx.fillStyle = segmentColor;
+        badgeCtx.fill();
+        badgeCtx.strokeStyle = '#fff';
+        badgeCtx.lineWidth = 1;
+        badgeCtx.stroke();
 
         // Draw phase label inside the segment
         const labelAngle = startAngle + angleStep / 2;
@@ -183,51 +176,38 @@ function drawChart() {
         const labelY = centerY + Math.sin(labelAngle) * labelRadius;
 
         // Set text style
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 9px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
+        badgeCtx.fillStyle = '#ffffff';
+        badgeCtx.font = 'bold 12px sans-serif';
+        badgeCtx.textAlign = 'center';
+        badgeCtx.textBaseline = 'middle';
         
-        // Add text shadow for better readability
-        ctx.shadowColor = 'rgba(0,0,0,0.7)';
-        ctx.shadowBlur = 3;
-        ctx.shadowOffsetX = 1;
-        ctx.shadowOffsetY = 1;
-        
-        // Draw the first letter of each phase
-        ctx.fillText(phaseLabels[index].charAt(0), labelX, labelY);
-        
-        // Reset shadow
-        ctx.shadowColor = 'transparent';
-        ctx.shadowBlur = 0;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
+        // Use consistent abbreviations
+        badgeCtx.fillText(phaseAbbreviations[phase], labelX, labelY);
     });
 
     // Draw center circle
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
-    ctx.fillStyle = '#f8fafc';
-    ctx.fill();
-    ctx.strokeStyle = '#e2e8f0';
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    badgeCtx.beginPath();
+    badgeCtx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
+    badgeCtx.fillStyle = '#f8f9fa';
+    badgeCtx.fill();
+    badgeCtx.strokeStyle = '#e9ecef';
+    badgeCtx.lineWidth = 1;
+    badgeCtx.stroke();
 
     // Center text
-    ctx.fillStyle = '#2d3748';
-    ctx.font = 'bold 12px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('CCL', centerX, centerY - 5);
-    ctx.font = '8px sans-serif';
-    ctx.fillText('v1.0', centerX, centerY + 8);
+    badgeCtx.fillStyle = '#495057';
+    badgeCtx.font = 'bold 14px sans-serif';
+    badgeCtx.textAlign = 'center';
+    badgeCtx.textBaseline = 'middle';
+    badgeCtx.fillText('CCL', centerX, centerY - 5);
+    badgeCtx.font = '10px sans-serif';
+    badgeCtx.fillText('v1.0', centerX, centerY + 10);
 }
 
 function updateSummary() {
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
     const phaseNames = ['Research', 'Ideation', 'Design', 'Coding', 'Prototyping', 'Documentation', 'Management', 'Reflection'];
-    const phaseAbbreviations = ['R', 'I', 'D', 'C', 'P', 'O', 'M', 'F'];
-
+    
     const levels = phases.map(phase => parseInt(document.getElementById(phase).value));
     const projectTitle = document.getElementById('projectTitle').value;
     const yourName = document.getElementById('yourName').value;
@@ -246,7 +226,7 @@ function updateSummary() {
     const phaseLevels = {};
 
     levels.forEach((level, index) => {
-        const phaseCode = phaseAbbreviations[index];
+        const phaseCode = phaseAbbreviations[phases[index]];
         phaseLevels[phaseCode] = level;
         if (level > 0) {
             summaryCode.push(`${phaseCode}${level}`);
@@ -305,25 +285,22 @@ function updateSummary() {
 
 function downloadBadge() {
     // Create a temporary canvas for the badge with transparent background
-    const badgeCanvas = document.createElement('canvas');
-    badgeCanvas.width = 400;
-    badgeCanvas.height = 200;
-    const badgeCtx = badgeCanvas.getContext('2d');
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = 600;
+    tempCanvas.height = 600;
+    const tempCtx = tempCanvas.getContext('2d');
 
-    // Don't fill background - keep it transparent for PNG
+    // Draw badge with higher resolution
+    const centerX = tempCanvas.width / 2;
+    const centerY = tempCanvas.height / 2;
+    const outerRadius = 200;
+    const innerRadius = 60;
+    const angleStep = (Math.PI * 2) / 8;
 
-    // Draw mini chart (enlarged)
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
-    const phaseLabels = ['Research', 'Ideation', 'Design', 'Coding', 'Prototyping', 'Documentation', 'Management', 'Reflection'];
     const data = phases.map(phase => parseInt(document.getElementById(phase).value));
 
-    const centerX = 200;
-    const centerY = 100;
-    const outerRadius = 80;
-    const innerRadius = 25;
-    const angleStep = (Math.PI * 2) / phases.length;
-
-    // Draw chart segments
+    // Draw segments
     phases.forEach((phase, index) => {
         const level = data[index];
         const startAngle = index * angleStep - Math.PI / 2;
@@ -333,15 +310,15 @@ function downloadBadge() {
         const segmentColor = getPhaseColor(phase, level);
 
         // Draw segment
-        badgeCtx.beginPath();
-        badgeCtx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
-        badgeCtx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
-        badgeCtx.closePath();
-        badgeCtx.fillStyle = segmentColor;
-        badgeCtx.fill();
-        badgeCtx.strokeStyle = '#fff';
-        badgeCtx.lineWidth = 2;
-        badgeCtx.stroke();
+        tempCtx.beginPath();
+        tempCtx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
+        tempCtx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
+        tempCtx.closePath();
+        tempCtx.fillStyle = segmentColor;
+        tempCtx.fill();
+        tempCtx.strokeStyle = '#fff';
+        tempCtx.lineWidth = 3;
+        tempCtx.stroke();
 
         // Draw phase label inside the segment
         const labelAngle = startAngle + angleStep / 2;
@@ -350,53 +327,38 @@ function downloadBadge() {
         const labelY = centerY + Math.sin(labelAngle) * labelRadius;
 
         // Set text style
-        badgeCtx.fillStyle = '#ffffff';
-        badgeCtx.font = 'bold 12px sans-serif';
-        badgeCtx.textAlign = 'center';
-        badgeCtx.textBaseline = 'middle';
+        tempCtx.fillStyle = '#ffffff';
+        tempCtx.font = 'bold 24px sans-serif';
+        tempCtx.textAlign = 'center';
+        tempCtx.textBaseline = 'middle';
         
-        // Add text shadow for better readability
-        badgeCtx.shadowColor = 'rgba(0,0,0,0.7)';
-        badgeCtx.shadowBlur = 3;
-        badgeCtx.shadowOffsetX = 1;
-        badgeCtx.shadowOffsetY = 1;
-        
-        // Draw the first letter of each phase
-        badgeCtx.fillText(phaseLabels[index].charAt(0), labelX, labelY);
-        
-        // Reset shadow
-        badgeCtx.shadowColor = 'transparent';
-        badgeCtx.shadowBlur = 0;
-        badgeCtx.shadowOffsetX = 0;
-        badgeCtx.shadowOffsetY = 0;
+        // Use consistent abbreviations
+        tempCtx.fillText(phaseAbbreviations[phase], labelX, labelY);
     });
 
     // Draw center circle
-    badgeCtx.beginPath();
-    badgeCtx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
-    badgeCtx.fillStyle = '#f8fafc';
-    badgeCtx.fill();
-    badgeCtx.strokeStyle = '#e2e8f0';
-    badgeCtx.lineWidth = 2;
-    badgeCtx.stroke();
+    tempCtx.beginPath();
+    tempCtx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
+    tempCtx.fillStyle = '#f8f9fa';
+    tempCtx.fill();
+    tempCtx.strokeStyle = '#e9ecef';
+    tempCtx.lineWidth = 3;
+    tempCtx.stroke();
 
     // Center text
-    badgeCtx.fillStyle = '#2d3748';
-    badgeCtx.font = 'bold 14px sans-serif';
-    badgeCtx.textAlign = 'center';
-    badgeCtx.textBaseline = 'middle';
-    badgeCtx.fillText('CCL', centerX, centerY - 3);
-    badgeCtx.font = '10px sans-serif';
-    badgeCtx.fillText('v1.0', centerX, centerY + 10);
+    tempCtx.fillStyle = '#495057';
+    tempCtx.font = 'bold 28px sans-serif';
+    tempCtx.textAlign = 'center';
+    tempCtx.textBaseline = 'middle';
+    tempCtx.fillText('CCL', centerX, centerY - 10);
+    tempCtx.font = '18px sans-serif';
+    tempCtx.fillText('v1.0', centerX, centerY + 20);
 
-    // Download as PNG with transparent background
+    // Download as PNG
     const link = document.createElement('a');
     link.download = 'ccl-badge.png';
-    link.href = badgeCanvas.toDataURL('image/png');
+    link.href = tempCanvas.toDataURL('image/png');
     link.click();
-
-    // Update the license counter
-    updateLicenseCounter();
 }
 
 function downloadSummary() {
@@ -404,8 +366,6 @@ function downloadSummary() {
 
     navigator.clipboard.writeText(summaryText).then(() => {
         alert('CCL Summary copied to clipboard!');
-        // Update the license counter
-        updateLicenseCounter();
     }).catch(() => {
         // Fallback for older browsers
         const textArea = document.createElement('textarea');
@@ -415,24 +375,19 @@ function downloadSummary() {
         document.execCommand('copy');
         document.body.removeChild(textArea);
         alert('CCL Summary copied to clipboard!');
-        // Update the license counter
-        updateLicenseCounter();
     });
 }
 
 // Add event listeners
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('license-counter').textContent = licenseCounter;
-
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
 
-    // Initialize all phase descriptions and chart
+    // Initialize all phase descriptions and badge
     phases.forEach(phase => {
         updatePhaseDescription(phase);
         const slider = document.getElementById(phase);
         slider.addEventListener('input', function() {
             updatePhaseDescription(phase);
-            drawChart();
             updateSummary();
         });
     });
@@ -442,6 +397,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('yourName').addEventListener('input', updateSummary);
 
     // Initial draw
-    drawChart();
+    drawBadge();
     updateSummary();
 });
