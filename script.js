@@ -66,29 +66,60 @@ const levelLabels = [
     "AI as Driver"
 ];
 
-// Function to shade a color
-function shadeColor(color, percent) {
-    let R = parseInt(color.substring(1, 3), 16);
-    let G = parseInt(color.substring(3, 5), 16);
-    let B = parseInt(color.substring(5, 7), 16);
+// Base colors for each phase - matching the slider colors
+const phaseBaseColors = {
+    research: '#3b82f6',      // Blue
+    ideation: '#10b981',      // Green
+    design: '#f59e0b',        // Amber
+    coding: '#ef4444',        // Red
+    prototyping: '#8b5cf6',   // Purple
+    documentation: '#06b6d4', // Cyan
+    management: '#f97316',    // Orange
+    reflection: '#84cc16'     // Lime
+};
 
-    R = parseInt(R * (100 + percent) / 100);
-    G = parseInt(G * (100 + percent) / 100);
-    B = parseInt(B * (100 + percent) / 100);
+// Function to create gradient colors based on level (0-4)
+function getPhaseColor(phase, level) {
+    const baseColor = phaseBaseColors[phase];
+    
+    if (level === 0) {
+        // Very light version for "Full Human Work"
+        return lightenColor(baseColor, 80);
+    } else if (level === 1) {
+        return lightenColor(baseColor, 50);
+    } else if (level === 2) {
+        return lightenColor(baseColor, 20);
+    } else if (level === 3) {
+        return baseColor;
+    } else if (level === 4) {
+        // Darker version for "AI as Driver"
+        return darkenColor(baseColor, 20);
+    }
+    return baseColor;
+}
 
-    R = (R < 255) ? R : 255;
-    G = (G < 255) ? G : 255;
-    B = (B < 255) ? B : 255;
+// Function to lighten a color
+function lightenColor(color, percent) {
+    const num = parseInt(color.replace("#", ""), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = (num >> 16) + amt;
+    const G = (num >> 8 & 0x00FF) + amt;
+    const B = (num & 0x0000FF) + amt;
+    return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+        (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+        (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+}
 
-    R = Math.round(R);
-    G = Math.round(G);
-    B = Math.round(B);
-
-    const RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
-    const GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
-    const BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
-
-    return "#" + RR + GG + BB;
+// Function to darken a color
+function darkenColor(color, percent) {
+    const num = parseInt(color.replace("#", ""), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = (num >> 16) - amt;
+    const G = (num >> 8 & 0x00FF) - amt;
+    const B = (num & 0x0000FF) - amt;
+    return "#" + (0x1000000 + (R > 255 ? 255 : R < 0 ? 0 : R) * 0x10000 +
+        (G > 255 ? 255 : G < 0 ? 0 : G) * 0x100 +
+        (B > 255 ? 255 : B < 0 ? 0 : B)).toString(16).slice(1);
 }
 
 // Initialize chart
@@ -96,12 +127,11 @@ let chart;
 const canvas = document.getElementById('ccl-chart');
 const ctx = canvas.getContext('2d');
 
-// Function to update the license counter
+// Function to update the license counter (using in-memory storage instead of localStorage)
+let licenseCounter = 0;
 function updateLicenseCounter() {
-    let counter = localStorage.getItem('licenseCounter') || 0;
-    counter = parseInt(counter) + 1;
-    localStorage.setItem('licenseCounter', counter);
-    document.getElementById('license-counter').textContent = counter;
+    licenseCounter += 1;
+    document.getElementById('license-counter').textContent = licenseCounter;
 }
 
 function updatePhaseDescription(phaseId) {
@@ -113,6 +143,7 @@ function updatePhaseDescription(phaseId) {
 
 function drawChart() {
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
+    const phaseLabels = ['Research', 'Ideation', 'Design', 'Coding', 'Prototyping', 'Documentation', 'Management', 'Reflection'];
     const data = phases.map(phase => parseInt(document.getElementById(phase).value));
 
     // Clear canvas
@@ -123,9 +154,6 @@ function drawChart() {
     const outerRadius = 100;
     const innerRadius = 30;
 
-    // Colors for each level
-    const colors = ['#4299e1', '#48bb78', '#f56565', '#9f7aea', '#6b7280'];
-
     // Draw segments
     const angleStep = (Math.PI * 2) / phases.length;
 
@@ -134,27 +162,46 @@ function drawChart() {
         const startAngle = index * angleStep - Math.PI / 2;
         const endAngle = (index + 1) * angleStep - Math.PI / 2;
 
+        // Get color based on phase and level
+        const segmentColor = getPhaseColor(phase, level);
+
         // Draw segment
         ctx.beginPath();
         ctx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
         ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
         ctx.closePath();
-        ctx.fillStyle = colors[level];
+        ctx.fillStyle = segmentColor;
         ctx.fill();
         ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Draw labels
+        // Draw phase label inside the segment
         const labelAngle = startAngle + angleStep / 2;
-        const labelRadius = outerRadius + 15;
+        const labelRadius = (outerRadius + innerRadius) / 2;
         const labelX = centerX + Math.cos(labelAngle) * labelRadius;
         const labelY = centerY + Math.sin(labelAngle) * labelRadius;
 
-        ctx.fillStyle = '#2d3748';
-        ctx.font = '10px sans-serif';
+        // Set text style
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 9px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(phase.charAt(0).toUpperCase(), labelX, labelY);
+        ctx.textBaseline = 'middle';
+        
+        // Add text shadow for better readability
+        ctx.shadowColor = 'rgba(0,0,0,0.7)';
+        ctx.shadowBlur = 3;
+        ctx.shadowOffsetX = 1;
+        ctx.shadowOffsetY = 1;
+        
+        // Draw the first letter of each phase
+        ctx.fillText(phaseLabels[index].charAt(0), labelX, labelY);
+        
+        // Reset shadow
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
     });
 
     // Draw center circle
@@ -163,16 +210,17 @@ function drawChart() {
     ctx.fillStyle = '#f8fafc';
     ctx.fill();
     ctx.strokeStyle = '#e2e8f0';
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     ctx.stroke();
 
     // Center text
     ctx.fillStyle = '#2d3748';
-    ctx.font = 'bold 10px sans-serif';
+    ctx.font = 'bold 12px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('CCL', centerX, centerY - 3);
+    ctx.textBaseline = 'middle';
+    ctx.fillText('CCL', centerX, centerY - 5);
     ctx.font = '8px sans-serif';
-    ctx.fillText('Summary', centerX, centerY + 6);
+    ctx.fillText('v1.0', centerX, centerY + 8);
 }
 
 function updateSummary() {
@@ -256,61 +304,95 @@ function updateSummary() {
 }
 
 function downloadBadge() {
-    // Create a temporary canvas for the badge
+    // Create a temporary canvas for the badge with transparent background
     const badgeCanvas = document.createElement('canvas');
     badgeCanvas.width = 400;
     badgeCanvas.height = 200;
     const badgeCtx = badgeCanvas.getContext('2d');
 
-    // Obtener el color del slider seleccionado
+    // Don't fill background - keep it transparent for PNG
+
+    // Draw mini chart (enlarged)
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
-    const colors = ['#4299e1', '#48bb78', '#f56565', '#9f7aea', '#6b7280', '#38b2ac', '#ed8936', '#975a16'];
-    const selectedColor = colors[phases.indexOf(document.querySelector('.slider:checked')?.id || 'research')];
+    const phaseLabels = ['Research', 'Ideation', 'Design', 'Coding', 'Prototyping', 'Documentation', 'Management', 'Reflection'];
+    const data = phases.map(phase => parseInt(document.getElementById(phase).value));
 
-    // Draw badge background with the selected color
-    badgeCtx.fillStyle = selectedColor;
-    badgeCtx.fillRect(0, 0, 400, 200);
+    const centerX = 200;
+    const centerY = 100;
+    const outerRadius = 80;
+    const innerRadius = 25;
+    const angleStep = (Math.PI * 2) / phases.length;
 
-    // Draw badge content
-    badgeCtx.fillStyle = 'white';
-    badgeCtx.font = 'bold 20px sans-serif';
+    // Draw chart segments
+    phases.forEach((phase, index) => {
+        const level = data[index];
+        const startAngle = index * angleStep - Math.PI / 2;
+        const endAngle = (index + 1) * angleStep - Math.PI / 2;
+
+        // Get color based on phase and level
+        const segmentColor = getPhaseColor(phase, level);
+
+        // Draw segment
+        badgeCtx.beginPath();
+        badgeCtx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
+        badgeCtx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
+        badgeCtx.closePath();
+        badgeCtx.fillStyle = segmentColor;
+        badgeCtx.fill();
+        badgeCtx.strokeStyle = '#fff';
+        badgeCtx.lineWidth = 2;
+        badgeCtx.stroke();
+
+        // Draw phase label inside the segment
+        const labelAngle = startAngle + angleStep / 2;
+        const labelRadius = (outerRadius + innerRadius) / 2;
+        const labelX = centerX + Math.cos(labelAngle) * labelRadius;
+        const labelY = centerY + Math.sin(labelAngle) * labelRadius;
+
+        // Set text style
+        badgeCtx.fillStyle = '#ffffff';
+        badgeCtx.font = 'bold 12px sans-serif';
+        badgeCtx.textAlign = 'center';
+        badgeCtx.textBaseline = 'middle';
+        
+        // Add text shadow for better readability
+        badgeCtx.shadowColor = 'rgba(0,0,0,0.7)';
+        badgeCtx.shadowBlur = 3;
+        badgeCtx.shadowOffsetX = 1;
+        badgeCtx.shadowOffsetY = 1;
+        
+        // Draw the first letter of each phase
+        badgeCtx.fillText(phaseLabels[index].charAt(0), labelX, labelY);
+        
+        // Reset shadow
+        badgeCtx.shadowColor = 'transparent';
+        badgeCtx.shadowBlur = 0;
+        badgeCtx.shadowOffsetX = 0;
+        badgeCtx.shadowOffsetY = 0;
+    });
+
+    // Draw center circle
+    badgeCtx.beginPath();
+    badgeCtx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
+    badgeCtx.fillStyle = '#f8fafc';
+    badgeCtx.fill();
+    badgeCtx.strokeStyle = '#e2e8f0';
+    badgeCtx.lineWidth = 2;
+    badgeCtx.stroke();
+
+    // Center text
+    badgeCtx.fillStyle = '#2d3748';
+    badgeCtx.font = 'bold 14px sans-serif';
     badgeCtx.textAlign = 'center';
-    badgeCtx.fillText('Cognitive Contribution License', 200, 40);
-
-    badgeCtx.font = '14px sans-serif';
-    badgeCtx.fillText(document.getElementById('projectTitle').value, 200, 70);
-    badgeCtx.fillText('by ' + document.getElementById('yourName').value, 200, 90);
-
-    // Add mini chart
-    const miniChart = document.getElementById('ccl-chart');
-    badgeCtx.drawImage(miniChart, 250, 100, 70, 70);
-
-    // Add summary
+    badgeCtx.textBaseline = 'middle';
+    badgeCtx.fillText('CCL', centerX, centerY - 3);
     badgeCtx.font = '10px sans-serif';
-    badgeCtx.textAlign = 'left';
-    const summaryText = document.getElementById('summary-text').textContent;
-    const words = summaryText.split(' ');
-    let line = '';
-    let y = 120;
+    badgeCtx.fillText('v1.0', centerX, centerY + 10);
 
-    for (let n = 0; n < words.length && y < 180; n++) {
-        const testLine = line + words[n] + ' ';
-        const metrics = badgeCtx.measureText(testLine);
-        const testWidth = metrics.width;
-        if (testWidth > 230 && n > 0) {
-            badgeCtx.fillText(line, 10, y);
-            line = words[n] + ' ';
-            y += 12;
-        } else {
-            line = testLine;
-        }
-    }
-    badgeCtx.fillText(line, 10, y);
-
-    // Download
+    // Download as PNG with transparent background
     const link = document.createElement('a');
     link.download = 'ccl-badge.png';
-    link.href = badgeCanvas.toDataURL();
+    link.href = badgeCanvas.toDataURL('image/png');
     link.click();
 
     // Update the license counter
@@ -340,8 +422,7 @@ function downloadSummary() {
 
 // Add event listeners
 document.addEventListener('DOMContentLoaded', function() {
-    const counter = localStorage.getItem('licenseCounter') || 0;
-    document.getElementById('license-counter').textContent = counter;
+    document.getElementById('license-counter').textContent = licenseCounter;
 
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
 
