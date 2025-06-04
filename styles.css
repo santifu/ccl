@@ -200,17 +200,19 @@ body {
     border: 3px solid #2d3748;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
 }
 
+
 /* Individual slider colors */
-#research { background: #4299e1; }
-#ideation { background: #48bb78; }
-#design { background: #f56565; }
-#coding { background: #9f7aea; }
-#prototyping { background: #6b7280; }
-#documentation { background: #38b2ac; }
-#management { background: #ed8936; }
-#reflection { background: #975a16; }
+#research { background: #6f1926; }
+#ideation { background: #de324c; }
+#design { background: #f4895f; }
+#coding { background: #f8e16f; }
+#prototyping { background: #95cf92; }
+#documentation { background: #369acc; }
+#management { background: #9656a2; }
+#reflection { background: #cbabd1; }
 
 .slider-labels {
     display: flex;

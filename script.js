@@ -1,4 +1,3 @@
-
 // Phase descriptions for each level
 const phaseDescriptions = {
     research: [
@@ -59,155 +58,128 @@ const phaseDescriptions = {
     ]
 };
 
-// Definición de abreviaturas consistentes
-const phaseAbbreviations = {
-    research: 'R',
-    ideation: 'I',
-    design: 'D',
-    coding: 'C',
-    prototyping: 'P',
-    documentation: 'O',
-    management: 'M',
-    reflection: 'F'
-};
+const levelLabels = [
+    "Full Human Work",
+    "AI for Insight",
+    "AI for Drafting",
+    "AI as Co-Creator",
+    "AI as Driver"
+];
 
-// Base colors for each phase
-const phaseBaseColors = {
-    research: '#4299e1',      // Blue
-    ideation: '#48bb78',      // Green
-    design: '#f56565',        // Red
-    coding: '#9f7aea',        // Purple
-    prototyping: '#6b7280',   // Gray
-    documentation: '#38b2ac', // Teal
-    management: '#ed8936',    // Orange
-    reflection: '#975a16'     // Brown
-};
+// Function to shade a color
+function shadeColor(color, percent) {
+    let R = parseInt(color.substring(1, 3), 16);
+    let G = parseInt(color.substring(3, 5), 16);
+    let B = parseInt(color.substring(5, 7), 16);
 
-// Function to create gradient colors based on level (0-4)
-function getPhaseColor(phase, level) {
-    const baseColor = phaseBaseColors[phase];
-    
-    if (level === 0) {
-        return lightenColor(baseColor, 80);
-    } else if (level === 1) {
-        return lightenColor(baseColor, 50);
-    } else if (level === 2) {
-        return lightenColor(baseColor, 20);
-    } else if (level === 3) {
-        return baseColor;
-    } else if (level === 4) {
-        return darkenColor(baseColor, 20);
-    }
-    return baseColor;
+    R = parseInt(R * (100 + percent) / 100);
+    G = parseInt(G * (100 + percent) / 100);
+    B = parseInt(B * (100 + percent) / 100);
+
+    R = (R < 255) ? R : 255;
+    G = (G < 255) ? G : 255;
+    B = (B < 255) ? B : 255;
+
+    R = Math.round(R);
+    G = Math.round(G);
+    B = Math.round(B);
+
+    const RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
+    const GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
+    const BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
+
+    return "#" + RR + GG + BB;
 }
 
-// Function to lighten a color
-function lightenColor(color, percent) {
-    const num = parseInt(color.replace("#", ""), 16);
-    const amt = Math.round(2.55 * percent);
-    const R = (num >> 16) + amt;
-    const G = (num >> 8 & 0x00FF) + amt;
-    const B = (num & 0x0000FF) + amt;
-    return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
-        (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
-        (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
-}
+// Initialize chart
+let chart;
+const canvas = document.getElementById('ccl-chart');
+const ctx = canvas.getContext('2d');
 
-// Function to darken a color
-function darkenColor(color, percent) {
-    const num = parseInt(color.replace("#", ""), 16);
-    const amt = Math.round(2.55 * percent);
-    const R = (num >> 16) - amt;
-    const G = (num >> 8 & 0x00FF) - amt;
-    const B = (num & 0x0000FF) - amt;
-    return "#" + (0x1000000 + (R > 255 ? 255 : R < 0 ? 0 : R) * 0x10000 +
-        (G > 255 ? 255 : G < 0 ? 0 : G) * 0x100 +
-        (B > 255 ? 255 : B < 0 ? 0 : B)).toString(16).slice(1);
+// Function to update the license counter
+function updateLicenseCounter() {
+    let counter = localStorage.getItem('licenseCounter') || 0;
+    counter = parseInt(counter) + 1;
+    localStorage.setItem('licenseCounter', counter);
+    document.getElementById('license-counter').textContent = counter;
 }
-
-// Initialize badge
-const badgeCanvas = document.getElementById('ccl-badge');
-const badgeCtx = badgeCanvas.getContext('2d');
 
 function updatePhaseDescription(phaseId) {
     const slider = document.getElementById(phaseId);
     const description = document.getElementById(phaseId + '-desc');
     const level = parseInt(slider.value);
     description.textContent = phaseDescriptions[phaseId][level];
-    drawBadge();
 }
 
-function drawBadge() {
+function drawChart() {
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
     const data = phases.map(phase => parseInt(document.getElementById(phase).value));
-    
-    badgeCtx.clearRect(0, 0, badgeCanvas.width, badgeCanvas.height);
-    
-    const centerX = badgeCanvas.width / 2;
-    const centerY = badgeCanvas.height / 2;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
     const outerRadius = 100;
     const innerRadius = 30;
-    const angleStep = (Math.PI * 2) / phases.length;
+
+    // Colors for each level
+    const colors = ['#4299e1', '#48bb78', '#f56565', '#9f7aea', '#6b7280'];
 
     // Draw segments
+    const angleStep = (Math.PI * 2) / phases.length;
+
     phases.forEach((phase, index) => {
         const level = data[index];
         const startAngle = index * angleStep - Math.PI / 2;
         const endAngle = (index + 1) * angleStep - Math.PI / 2;
 
-        // Get color based on phase and level
-        const segmentColor = getPhaseColor(phase, level);
-
         // Draw segment
-        badgeCtx.beginPath();
-        badgeCtx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
-        badgeCtx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
-        badgeCtx.closePath();
-        badgeCtx.fillStyle = segmentColor;
-        badgeCtx.fill();
-        badgeCtx.strokeStyle = '#fff';
-        badgeCtx.lineWidth = 1;
-        badgeCtx.stroke();
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
+        ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
+        ctx.closePath();
+        ctx.fillStyle = colors[level];
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1;
+        ctx.stroke();
 
-        // Draw phase label inside the segment
+        // Draw labels
         const labelAngle = startAngle + angleStep / 2;
-        const labelRadius = (outerRadius + innerRadius) / 2;
+        const labelRadius = outerRadius + 15;
         const labelX = centerX + Math.cos(labelAngle) * labelRadius;
         const labelY = centerY + Math.sin(labelAngle) * labelRadius;
 
-        // Set text style
-        badgeCtx.fillStyle = '#ffffff';
-        badgeCtx.font = 'bold 12px sans-serif';
-        badgeCtx.textAlign = 'center';
-        badgeCtx.textBaseline = 'middle';
-        
-        // Use consistent abbreviations
-        badgeCtx.fillText(phaseAbbreviations[phase], labelX, labelY);
+        ctx.fillStyle = '#2d3748';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(phase.charAt(0).toUpperCase(), labelX, labelY);
     });
 
     // Draw center circle
-    badgeCtx.beginPath();
-    badgeCtx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
-    badgeCtx.fillStyle = '#f8f9fa';
-    badgeCtx.fill();
-    badgeCtx.strokeStyle = '#e9ecef';
-    badgeCtx.lineWidth = 1;
-    badgeCtx.stroke();
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
+    ctx.fillStyle = '#f8fafc';
+    ctx.fill();
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    ctx.stroke();
 
     // Center text
-    badgeCtx.fillStyle = '#495057';
-    badgeCtx.font = 'bold 14px sans-serif';
-    badgeCtx.textAlign = 'center';
-    badgeCtx.textBaseline = 'middle';
-    badgeCtx.fillText('CCL', centerX, centerY - 5);
-    badgeCtx.font = '10px sans-serif';
-    badgeCtx.fillText('v1.0', centerX, centerY + 10);
+    ctx.fillStyle = '#2d3748';
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('CCL', centerX, centerY - 3);
+    ctx.font = '8px sans-serif';
+    ctx.fillText('Summary', centerX, centerY + 6);
 }
 
 function updateSummary() {
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
     const phaseNames = ['Research', 'Ideation', 'Design', 'Coding', 'Prototyping', 'Documentation', 'Management', 'Reflection'];
-    
+    const phaseAbbreviations = ['R', 'I', 'D', 'C', 'M', 'O', 'P', 'F'];
+
     const levels = phases.map(phase => parseInt(document.getElementById(phase).value));
     const projectTitle = document.getElementById('projectTitle').value;
     const yourName = document.getElementById('yourName').value;
@@ -226,7 +198,7 @@ function updateSummary() {
     const phaseLevels = {};
 
     levels.forEach((level, index) => {
-        const phaseCode = phaseAbbreviations[phases[index]];
+        const phaseCode = phaseAbbreviations[index];
         phaseLevels[phaseCode] = level;
         if (level > 0) {
             summaryCode.push(`${phaseCode}${level}`);
@@ -284,81 +256,65 @@ function updateSummary() {
 }
 
 function downloadBadge() {
-    // Create a temporary canvas for the badge with transparent background
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = 600;
-    tempCanvas.height = 600;
-    const tempCtx = tempCanvas.getContext('2d');
+    // Create a temporary canvas for the badge
+    const badgeCanvas = document.createElement('canvas');
+    badgeCanvas.width = 400;
+    badgeCanvas.height = 200;
+    const badgeCtx = badgeCanvas.getContext('2d');
 
-    // Draw badge with higher resolution
-    const centerX = tempCanvas.width / 2;
-    const centerY = tempCanvas.height / 2;
-    const outerRadius = 200;
-    const innerRadius = 60;
-    const angleStep = (Math.PI * 2) / 8;
-
+    // Obtener el color del slider seleccionado
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
-    const data = phases.map(phase => parseInt(document.getElementById(phase).value));
+    const colors = ['#4299e1', '#48bb78', '#f56565', '#9f7aea', '#6b7280', '#38b2ac', '#ed8936', '#975a16'];
+    const selectedColor = colors[phases.indexOf(document.querySelector('.slider:checked')?.id || 'research')];
 
-    // Draw segments
-    phases.forEach((phase, index) => {
-        const level = data[index];
-        const startAngle = index * angleStep - Math.PI / 2;
-        const endAngle = (index + 1) * angleStep - Math.PI / 2;
+    // Draw badge background with the selected color
+    badgeCtx.fillStyle = selectedColor;
+    badgeCtx.fillRect(0, 0, 400, 200);
 
-        // Get color based on phase and level
-        const segmentColor = getPhaseColor(phase, level);
+    // Draw badge content
+    badgeCtx.fillStyle = 'white';
+    badgeCtx.font = 'bold 20px sans-serif';
+    badgeCtx.textAlign = 'center';
+    badgeCtx.fillText('Cognitive Contribution License', 200, 40);
 
-        // Draw segment
-        tempCtx.beginPath();
-        tempCtx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
-        tempCtx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
-        tempCtx.closePath();
-        tempCtx.fillStyle = segmentColor;
-        tempCtx.fill();
-        tempCtx.strokeStyle = '#fff';
-        tempCtx.lineWidth = 3;
-        tempCtx.stroke();
+    badgeCtx.font = '14px sans-serif';
+    badgeCtx.fillText(document.getElementById('projectTitle').value, 200, 70);
+    badgeCtx.fillText('by ' + document.getElementById('yourName').value, 200, 90);
 
-        // Draw phase label inside the segment
-        const labelAngle = startAngle + angleStep / 2;
-        const labelRadius = (outerRadius + innerRadius) / 2;
-        const labelX = centerX + Math.cos(labelAngle) * labelRadius;
-        const labelY = centerY + Math.sin(labelAngle) * labelRadius;
+    // Add mini chart
+    const miniChart = document.getElementById('ccl-chart');
+    badgeCtx.drawImage(miniChart, 250, 100, 70, 70);
 
-        // Set text style
-        tempCtx.fillStyle = '#ffffff';
-        tempCtx.font = 'bold 24px sans-serif';
-        tempCtx.textAlign = 'center';
-        tempCtx.textBaseline = 'middle';
-        
-        // Use consistent abbreviations
-        tempCtx.fillText(phaseAbbreviations[phase], labelX, labelY);
-    });
+    // Add summary
+    badgeCtx.font = '10px sans-serif';
+    badgeCtx.textAlign = 'left';
+    const summaryText = document.getElementById('summary-text').textContent;
+    const words = summaryText.split(' ');
+    let line = '';
+    let y = 120;
 
-    // Draw center circle
-    tempCtx.beginPath();
-    tempCtx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
-    tempCtx.fillStyle = '#f8f9fa';
-    tempCtx.fill();
-    tempCtx.strokeStyle = '#e9ecef';
-    tempCtx.lineWidth = 3;
-    tempCtx.stroke();
+    for (let n = 0; n < words.length && y < 180; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = badgeCtx.measureText(testLine);
+        const testWidth = metrics.width;
+        if (testWidth > 230 && n > 0) {
+            badgeCtx.fillText(line, 10, y);
+            line = words[n] + ' ';
+            y += 12;
+        } else {
+            line = testLine;
+        }
+    }
+    badgeCtx.fillText(line, 10, y);
 
-    // Center text
-    tempCtx.fillStyle = '#495057';
-    tempCtx.font = 'bold 28px sans-serif';
-    tempCtx.textAlign = 'center';
-    tempCtx.textBaseline = 'middle';
-    tempCtx.fillText('CCL', centerX, centerY - 10);
-    tempCtx.font = '18px sans-serif';
-    tempCtx.fillText('v1.0', centerX, centerY + 20);
-
-    // Download as PNG
+    // Download
     const link = document.createElement('a');
     link.download = 'ccl-badge.png';
-    link.href = tempCanvas.toDataURL('image/png');
+    link.href = badgeCanvas.toDataURL();
     link.click();
+
+    // Update the license counter
+    updateLicenseCounter();
 }
 
 function downloadSummary() {
@@ -366,6 +322,8 @@ function downloadSummary() {
 
     navigator.clipboard.writeText(summaryText).then(() => {
         alert('CCL Summary copied to clipboard!');
+        // Update the license counter
+        updateLicenseCounter();
     }).catch(() => {
         // Fallback for older browsers
         const textArea = document.createElement('textarea');
@@ -375,19 +333,25 @@ function downloadSummary() {
         document.execCommand('copy');
         document.body.removeChild(textArea);
         alert('CCL Summary copied to clipboard!');
+        // Update the license counter
+        updateLicenseCounter();
     });
 }
 
 // Add event listeners
 document.addEventListener('DOMContentLoaded', function() {
+    const counter = localStorage.getItem('licenseCounter') || 0;
+    document.getElementById('license-counter').textContent = counter;
+
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
 
-    // Initialize all phase descriptions and badge
+    // Initialize all phase descriptions and chart
     phases.forEach(phase => {
         updatePhaseDescription(phase);
         const slider = document.getElementById(phase);
         slider.addEventListener('input', function() {
             updatePhaseDescription(phase);
+            drawChart();
             updateSummary();
         });
     });
@@ -397,6 +361,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('yourName').addEventListener('input', updateSummary);
 
     // Initial draw
-    drawBadge();
+    drawChart();
     updateSummary();
 });
