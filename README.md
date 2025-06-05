@@ -1,10 +1,10 @@
-# Cognitive Contribution License (CCL)
+# Cognitive Contribution Label (CCL)
 
 *A simple tool for declaring how much AI contributed to your project.*
 
 ## Description
 
-The Cognitive Contribution License (CCL) helps students, researchers, and creators transparently document the role of artificial intelligence across all stages of their work. Inspired by the spirit of Creative Commons, the CCL promotes honest reflection, responsible use of AI, and clarity in collaborative, tech-assisted creation.
+The Cognitive Contribution Label (CCL) helps students, researchers, and creators transparently document the role of artificial intelligence across all stages of their work. Inspired by the spirit of Creative Commons, the CCL promotes honest reflection, responsible use of AI, and clarity in collaborative, tech-assisted creation.
 
 ## Features
 
@@ -16,7 +16,7 @@ The Cognitive Contribution License (CCL) helps students, researchers, and creato
 ## Project Structure
 
 - `index.html`: Home page describing the project.
-- `generator.html`: CCL license generator interface.
+- `generator.html`: CCL Label generator interface.
 - `styles.css`: CSS styles for the project.
 - `script.js`: JavaScript logic for the CCL generator.
 

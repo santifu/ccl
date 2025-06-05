@@ -18,7 +18,7 @@ For more details, visit: https://creativecommons.org/licenses/by-nc-sa/4.0/
 
 CC BY-NC-SA 4.0 – the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
 
-## Cognitive Contribution License (CCL)
+## Cognitive Contribution Label (CCL)
 
 CCL R1 D1 C4 O3 – v1.0 — AI contributed as Drafting Assistant in Research and Design, AI acted as AI-led in Coding, AI acted as Hybrid AI/Human-led in Documentation. All other phases were fully human-led.
 
