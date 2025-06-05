@@ -88,15 +88,30 @@ const levelDescriptions = {
 };
 
 // Función para ajustar la intensidad del color
+// Ahora, cuanto mayor sea el nivel de IA (más alto el 'level'), más intenso/oscuro será el color.
 function adjustColor(color, level) {
     let r = parseInt(color.substring(1, 3), 16);
     let g = parseInt(color.substring(3, 5), 16);
     let b = parseInt(color.substring(5, 7), 16);
 
-    const factor = 0.2 * level;
-    r = Math.min(255, r + (255 - r) * factor);
-    g = Math.min(255, g + (255 - g) * factor);
-    b = Math.min(255, b + (255 - b) * factor);
+    // El factor ahora hace que el color se acerque a 0 (negro) a medida que el nivel aumenta.
+    // Para que el nivel 0 sea el color base, y el nivel 4 sea el más oscuro.
+    // Multiplicamos por un factor que reduce la intensidad RGB a medida que 'level' aumenta.
+    const reductionFactor = level / 4; // 0 para nivel 0, 1 para nivel 4
+    
+    // Aquí puedes experimentar con diferentes fórmulas para la intensidad.
+    // Esta opción reduce los componentes RGB, haciendo el color más oscuro.
+    // Otra opción podría ser aumentar la saturación, pero eso es más complejo con RGB.
+    r = Math.max(0, r - (r * reductionFactor)); // Reduce R hacia 0
+    g = Math.max(0, g - (g * reductionFactor)); // Reduce G hacia 0
+    b = Math.max(0, b - (b * reductionFactor)); // Reduce B hacia 0
+
+    // O una alternativa para oscurecer:
+    // const darkenAmount = level * 30; // Ajusta este valor para controlar cuánto se oscurece
+    // r = Math.max(0, r - darkenAmount);
+    // g = Math.max(0, g - darkenAmount);
+    // b = Math.max(0, b - darkenAmount);
+
 
     const adjustedColor = `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
 
@@ -187,8 +202,6 @@ function drawChart() {
     ctx.font = '8px sans-serif';
     ctx.fillText('Summary', centerX, centerY + 6);
 }
-
-
 
 // Colores de los sliders
 const sliderColors = {
