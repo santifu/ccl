@@ -88,32 +88,28 @@ const levelDescriptions = {
 };
 
 // Función para ajustar la intensidad del color
-// Ahora, cuanto mayor sea el nivel de IA (más alto el 'level'), más intenso/oscuro será el color.
+// Ahora, cuanto mayor sea el nivel de IA (más alto el 'level'), más intenso será el color,
+// yendo de blanco (nivel 0) al color base (nivel 4).
 function adjustColor(color, level) {
-    let r = parseInt(color.substring(1, 3), 16);
-    let g = parseInt(color.substring(3, 5), 16);
-    let b = parseInt(color.substring(5, 7), 16);
+    let baseR = parseInt(color.substring(1, 3), 16);
+    let baseG = parseInt(color.substring(3, 5), 16);
+    let baseB = parseInt(color.substring(5, 7), 16);
 
-    // El factor ahora hace que el color se acerque a 0 (negro) a medida que el nivel aumenta.
-    // Para que el nivel 0 sea el color base, y el nivel 4 sea el más oscuro.
-    // Multiplicamos por un factor que reduce la intensidad RGB a medida que 'level' aumenta.
-    const reductionFactor = level / 4; // 0 para nivel 0, 1 para nivel 4
-    
-    // Aquí puedes experimentar con diferentes fórmulas para la intensidad.
-    // Esta opción reduce los componentes RGB, haciendo el color más oscuro.
-    // Otra opción podría ser aumentar la saturación, pero eso es más complejo con RGB.
-    r = Math.max(0, r - (r * reductionFactor)); // Reduce R hacia 0
-    g = Math.max(0, g - (g * reductionFactor)); // Reduce G hacia 0
-    b = Math.max(0, b - (b * reductionFactor)); // Reduce B hacia 0
+    // El factor escala de 0 (para nivel 0, que será blanco) a 1 (para nivel 4, que será el color base).
+    const mixFactor = level / 4; // 0 para nivel 0, 0.25 para nivel 1, ..., 1 para nivel 4
 
-    // O una alternativa para oscurecer:
-    // const darkenAmount = level * 30; // Ajusta este valor para controlar cuánto se oscurece
-    // r = Math.max(0, r - darkenAmount);
-    // g = Math.max(0, g - darkenAmount);
-    // b = Math.max(0, b - darkenAmount);
+    // Mezclar el color base con blanco
+    // color_final = color_blanco * (1 - factor) + color_base * factor
+    let r = Math.round(255 * (1 - mixFactor) + baseR * mixFactor);
+    let g = Math.round(255 * (1 - mixFactor) + baseG * mixFactor);
+    let b = Math.round(255 * (1 - mixFactor) + baseB * mixFactor);
 
+    // Asegurarse de que los valores estén dentro del rango válido de 0-255
+    r = Math.min(255, Math.max(0, r));
+    g = Math.min(255, Math.max(0, g));
+    b = Math.min(255, Math.max(0, b));
 
-    const adjustedColor = `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
+    const adjustedColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 
     return adjustedColor;
 }
