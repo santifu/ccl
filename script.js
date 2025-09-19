@@ -1,8 +1,8 @@
-// =======================
-// CONFIGURACIÓN PRINCIPAL
-// =======================
+// --------------------
+// CCL Script.js
+// --------------------
 
-// Descripciones de las fases para cada nivel
+// ---------- Descripciones de fases ----------
 const phaseDescriptions = {
     research: [
         "All research was conducted manually (e.g., Google Scholar, physical books).",
@@ -62,7 +62,7 @@ const phaseDescriptions = {
     ]
 };
 
-// Abreviaturas consistentes
+// ---------- Abreviaturas de fases ----------
 const phaseAbbreviations = {
     research: 'R',
     ideation: 'I',
@@ -74,7 +74,7 @@ const phaseAbbreviations = {
     reflection: 'F'
 };
 
-// Colores de las fases
+// ---------- Colores base ----------
 const sliderColors = {
     research: '#6f1926',
     ideation: '#de324c',
@@ -86,49 +86,32 @@ const sliderColors = {
     reflection: '#cbabd1'
 };
 
-// Nombres completos de fases
-const phaseNames = {
-    R: "Research",
-    I: "Ideation",
-    D: "Design",
-    C: "Coding",
-    P: "Prototyping",
-    O: "Documentation",
-    M: "Management",
-    F: "Reflection"
-};
+// ---------- Niveles ----------
+const levelDescriptions = [
+    "Full Human Work",
+    "AI for Insight",
+    "AI for Drafting",
+    "AI as Co-Creator",
+    "AI as Driver"
+];
 
-// Descripciones de niveles
-const levelDescriptions = {
-    1: "Full Human Work",
-    2: "AI for Insight",
-    3: "AI for Drafting",
-    4: "AI as Co-Creator",
-    5: "AI as Driver"
-};
-
-// ============================
-// FUNCIONES DE UTILIDAD
-// ============================
-
+// ---------- Ajuste de color ----------
 function adjustColor(color, level) {
-    let baseR = parseInt(color.substring(1, 3), 16);
-    let baseG = parseInt(color.substring(3, 5), 16);
-    let baseB = parseInt(color.substring(5, 7), 16);
-
-    const mixFactor = level / 5;
-
-    let r = Math.round(255 * (1 - mixFactor) + baseR * mixFactor);
-    let g = Math.round(255 * (1 - mixFactor) + baseG * mixFactor);
-    let b = Math.round(255 * (1 - mixFactor) + baseB * mixFactor);
-
+    let baseR = parseInt(color.substring(1,3),16);
+    let baseG = parseInt(color.substring(3,5),16);
+    let baseB = parseInt(color.substring(5,7),16);
+    const mixFactor = level/4;
+    let r = Math.round(255*(1-mixFactor)+baseR*mixFactor);
+    let g = Math.round(255*(1-mixFactor)+baseG*mixFactor);
+    let b = Math.round(255*(1-mixFactor)+baseB*mixFactor);
     return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
 }
 
-// ============================
-// FUNCIONES DE INTERFAZ
-// ============================
+// ---------- Inicialización ----------
+const canvas = document.getElementById('ccl-chart');
+const ctx = canvas.getContext('2d');
 
+// ---------- Contador local ----------
 function updateLicenseCounter() {
     let counter = localStorage.getItem('licenseCounter') || 0;
     counter = parseInt(counter) + 1;
@@ -136,199 +119,223 @@ function updateLicenseCounter() {
     document.getElementById('license-counter').textContent = counter;
 }
 
+// ---------- Actualizar descripción fase ----------
 function updatePhaseDescription(phaseId) {
     const slider = document.getElementById(phaseId);
-    const description = document.getElementById(`${phaseId}-desc`);
-    const level = parseInt(slider.value);
-    description.textContent = phaseDescriptions[phaseId][level];
+    const descEl = document.getElementById(`${phaseId}-desc`);
+    descEl.textContent = phaseDescriptions[phaseId][parseInt(slider.value)];
 }
 
+// ---------- Dibujar gráfico ----------
 function drawChart() {
-    const canvas = document.getElementById('ccl-chart');
-    const ctx = canvas.getContext('2d');
-
-    const phases = Object.keys(phaseAbbreviations);
-    const data = phases.map(phase => parseInt(document.getElementById(phase).value));
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
+    const phases = ['reflection','research','ideation','design','coding','prototyping','documentation','management'];
+    const data = phases.map(p => parseInt(document.getElementById(p).value));
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const centerX = canvas.width/2;
+    const centerY = canvas.height/2;
     const outerRadius = 100;
     const innerRadius = 30;
-    const angleStep = (Math.PI * 2) / phases.length;
-
-    phases.forEach((phase, index) => {
+    const angleStep = (Math.PI*2)/phases.length;
+    phases.forEach((phase,index)=>{
+        const startAngle = index*angleStep - Math.PI/2;
+        const endAngle = (index+1)*angleStep - Math.PI/2;
         const level = data[index];
-        const startAngle = index * angleStep - Math.PI / 2;
-        const endAngle = (index + 1) * angleStep - Math.PI / 2;
-
-        const adjustedColor = adjustColor(sliderColors[phase], level);
-
+        const color = adjustColor(sliderColors[phase], level);
         ctx.beginPath();
         ctx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
         ctx.arc(centerX, centerY, innerRadius, endAngle, startAngle, true);
         ctx.closePath();
-        ctx.fillStyle = adjustedColor;
+        ctx.fillStyle=color;
         ctx.fill();
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 1;
+        ctx.strokeStyle='#fff';
+        ctx.lineWidth=1;
         ctx.stroke();
-
-        const labelAngle = startAngle + angleStep / 2;
-        const labelRadius = (outerRadius + innerRadius) / 2;
-        const labelX = centerX + Math.cos(labelAngle) * labelRadius;
-        const labelY = centerY + Math.sin(labelAngle) * labelRadius;
-
-        ctx.fillStyle = '#2d3748';
-        ctx.font = 'bold 12px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(phaseAbbreviations[phase], labelX, labelY);
+        const labelAngle = startAngle + angleStep/2;
+        const labelRadius = (outerRadius+innerRadius)/2;
+        const labelX = centerX + Math.cos(labelAngle)*labelRadius;
+        const labelY = centerY + Math.sin(labelAngle)*labelRadius;
+        ctx.fillStyle='#2d3748';
+        ctx.font='bold 12px sans-serif';
+        ctx.textAlign='center';
+        ctx.textBaseline='middle';
+        ctx.fillText(phaseAbbreviations[phase],labelX,labelY);
     });
-
     ctx.beginPath();
-    ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
-    ctx.fillStyle = '#f8fafc';
+    ctx.arc(centerX,centerY,innerRadius,0,Math.PI*2);
+    ctx.fillStyle='#f8fafc';
     ctx.fill();
-    ctx.strokeStyle = '#e2e8f0';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle='#e2e8f0';
     ctx.stroke();
-
-    ctx.fillStyle = '#2d3748';
-    ctx.font = 'bold 10px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('CCL', centerX, centerY - 3);
-    ctx.font = '8px sans-serif';
-    ctx.fillText('Summary', centerX, centerY + 6);
+    ctx.fillStyle='#2d3748';
+    ctx.font='bold 10px sans-serif';
+    ctx.fillText('CCL',centerX,centerY-3);
+    ctx.font='8px sans-serif';
+    ctx.fillText('Summary',centerX,centerY+6);
 }
 
+// ---------- Actualizar summary ----------
 function updateSummary() {
-    const phases = Object.keys(phaseAbbreviations);
-    const levels = phases.map(phase => parseInt(document.getElementById(phase).value));
+    const phases = ['research','ideation','design','coding','prototyping','documentation','management','reflection'];
+    const levels = phases.map(p=>parseInt(document.getElementById(p).value));
     const projectTitle = document.getElementById('projectTitle').value;
     const yourName = document.getElementById('yourName').value;
 
-    let licenseCode = "CCL ";
     let licenseParts = [];
+    let licenseCode = "CCL ";
 
-    phases.forEach((phase, index) => {
+    phases.forEach((phase,index)=>{
         const level = levels[index];
-        if (level > 0) {
-            const abbr = phaseAbbreviations[phase];
-            licenseCode += `${abbr}${level} `;
-            licenseParts.push(`AI contributed as ${levelDescriptions[level]} in ${phaseNames[abbr]}`);
+        if(level>0){
+            licenseCode += `${phaseAbbreviations[phase]}${level} `;
         }
     });
 
-    let licenseText = licenseCode.trim() + "v1.0 — " + licenseParts.join(", ") + ".";
-    let finalSummary = "";
+    phases.forEach((phase,index)=>{
+        const level = levels[index];
+        if(level>0){
+            const abbrev = phaseAbbreviations[phase];
+            const description = levelDescriptions[level];
+            licenseParts.push(`AI acted as ${description} in ${phase}`);
+        }
+    });
 
-    if (projectTitle) {
+    let licenseText = licenseCode.trim()+"v1.0 — "+licenseParts.join(", ") + ". All other phases were fully human-led.";
+
+    let finalSummary="";
+    if(projectTitle){
         finalSummary += `"${projectTitle}"`;
-        if (yourName) finalSummary += ` by ${yourName}`;
+        if(yourName) finalSummary += ` by ${yourName}`;
         finalSummary += "\n\n";
     }
     finalSummary += licenseText;
 
     document.getElementById('summary-text').textContent = finalSummary;
-    return finalSummary;
 }
 
-// ============================
-// SUPABASE
-// ============================
-
-const SUPABASE_URL = "https://TU-PROJECT.supabase.co";
-const SUPABASE_ANON_KEY = "tu-public-anon-key";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-function getUserId() {
-  let id = localStorage.getItem('ccl_client_id');
-  if (!id) {
-    id = 'u_' + crypto.randomUUID();
-    localStorage.setItem('ccl_client_id', id);
-  }
-  return id;
-}
-
-async function saveLabel(labelData) {
-  const userId = getUserId();
-  const { error } = await supabase
-    .from('labels')
-    .insert([{ user_id: userId, payload: labelData }]);
-  if (error) console.error('Error insertando label:', error.message);
-  else console.log('Label registrado en Supabase ✅');
-}
-
-// ============================
-// DESCARGAS + SUPABASE
-// ============================
-
+// ---------- Copiar summary ----------
 async function downloadSummary() {
-    const summaryText = updateSummary();
-    const projectTitle = document.getElementById('projectTitle').value;
-    const yourName = document.getElementById('yourName').value;
-    const phases = Object.keys(phaseAbbreviations);
-    const levels = phases.map(phase => parseInt(document.getElementById(phase).value));
-
-    // Guardar en Supabase
-    await saveLabel({ projectTitle, yourName, levels, summaryText });
-
-    const blob = new Blob([summaryText], { type: "text/plain;charset=utf-8" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "CCL_Summary.txt";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
+    const summaryText = document.getElementById('summary-text').textContent;
+    try{
+        await navigator.clipboard.writeText(summaryText);
+    }catch{
+        const ta = document.createElement('textarea');
+        ta.value = summaryText;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+    }
+    alert('CCL Summary copied!');
     updateLicenseCounter();
+    await saveLabel();
 }
 
+// ---------- Descargar badge ----------
 async function downloadBadge() {
-    const canvas = document.getElementById('ccl-chart');
-    const projectTitle = document.getElementById('projectTitle').value;
-    const yourName = document.getElementById('yourName').value;
-    const phases = Object.keys(phaseAbbreviations);
-    const levels = phases.map(phase => parseInt(document.getElementById(phase).value));
+    const badgeCanvas = document.createElement('canvas');
+    const size=400;
+    badgeCanvas.width=size;
+    badgeCanvas.height=size;
+    const ctxB = badgeCanvas.getContext('2d');
 
-    // Guardar en Supabase
-    await saveLabel({ projectTitle, yourName, levels, badge: true });
+    const phases=['reflection','research','ideation','design','coding','prototyping','documentation','management'];
+    const colors=['#cbabd1','#6f1926','#de324c','#f4895f','#f8e16f','#95cf92','#369acc','#9656a2'];
+    const levels = phases.map(p=>parseInt(document.getElementById(p).value));
+    const centerX=size/2;
+    const centerY=size/2;
+    const outerRadius=size/2-20;
+    const innerRadius=size/2-120;
+    const angleStep=(Math.PI*2)/phases.length;
 
-    const link = document.createElement('a');
-    link.download = "CCL_Badge.png";
-    link.href = canvas.toDataURL("image/png");
-    document.body.appendChild(link);
+    phases.forEach((phase,index)=>{
+        const startAngle=index*angleStep - Math.PI/2;
+        const endAngle=(index+1)*angleStep - Math.PI/2;
+        const color = adjustColor(colors[index], levels[index]);
+        ctxB.beginPath();
+        ctxB.moveTo(centerX,centerY);
+        ctxB.arc(centerX,centerY,outerRadius,startAngle,endAngle);
+        ctxB.lineTo(centerX,centerY);
+        ctxB.closePath();
+        ctxB.fillStyle=color;
+        ctxB.fill();
+        ctxB.strokeStyle='#fff';
+        ctxB.stroke();
+        const labelAngle = startAngle + angleStep/2;
+        const labelRadius = (outerRadius+innerRadius)/2;
+        const labelX=centerX+Math.cos(labelAngle)*labelRadius;
+        const labelY=centerY+Math.sin(labelAngle)*labelRadius;
+        ctxB.fillStyle='#2d3748';
+        ctxB.font='bold 16px sans-serif';
+        ctxB.textAlign='center';
+        ctxB.textBaseline='middle';
+        ctxB.fillText(phaseAbbreviations[phase],labelX,labelY);
+    });
+
+    ctxB.beginPath();
+    ctxB.arc(centerX,centerY,innerRadius,0,Math.PI*2);
+    ctxB.fillStyle='white';
+    ctxB.fill();
+    ctxB.strokeStyle='#e2e8f0';
+    ctxB.stroke();
+    ctxB.fillStyle='#2d3748';
+    ctxB.font='bold 12px sans-serif';
+    ctxB.fillText('COGNITIVE CONTRIBUTION',centerX,centerY-15);
+    ctxB.fillText('LICENSE',centerX,centerY+5);
+    ctxB.font='10px sans-serif';
+    ctxB.fillText('v1.0 (CCL)',centerX,centerY+20);
+
+    const link=document.createElement('a');
+    link.download='ccl-badge.png';
+    link.href=badgeCanvas.toDataURL('image/png');
     link.click();
-    document.body.removeChild(link);
 
     updateLicenseCounter();
+    await saveLabel();
 }
 
-// ============================
-// EVENTOS
-// ============================
+// ---------- User ID ----------
+function getUserId(){
+    let id = localStorage.getItem('ccl_client_id');
+    if(!id){
+        id='u_'+crypto.randomUUID();
+        localStorage.setItem('ccl_client_id',id);
+    }
+    return id;
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-    const counter = localStorage.getItem('licenseCounter') || 0;
-    document.getElementById('license-counter').textContent = counter;
+// ---------- Guardar label en Edge Function ----------
+const EDGE_FUNCTION_URL = 'https://TU-SUPABASE-PROJECT.functions.supabase.co/save-label';
 
-    const phases = Object.keys(phaseAbbreviations);
+async function saveLabel(){
+    const userId = getUserId();
+    const projectTitle = document.getElementById('projectTitle').value;
+    const yourName = document.getElementById('yourName').value;
+    const phases = ['research','ideation','design','coding','prototyping','documentation','management','reflection'];
+    const levels = phases.map(p=>parseInt(document.getElementById(p).value));
+    const payload={userId, projectTitle, yourName, levels, timestamp:new Date().toISOString()};
+    try{
+        await fetch(EDGE_FUNCTION_URL,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(payload)
+        });
+        console.log('Label saved ✅');
+    }catch(e){
+        console.error('Error saving label:',e);
+    }
+}
 
-    phases.forEach(phase => {
-        updatePhaseDescription(phase);
-        const slider = document.getElementById(phase);
-        slider.addEventListener('input', () => {
-            updatePhaseDescription(phase);
+// ---------- Event listeners ----------
+document.addEventListener('DOMContentLoaded',()=>{
+    const phases = ['research','ideation','design','coding','prototyping','documentation','management','reflection'];
+    phases.forEach(p=>{
+        updatePhaseDescription(p);
+        document.getElementById(p).addEventListener('input',()=>{
+            updatePhaseDescription(p);
             drawChart();
             updateSummary();
         });
     });
-
-    document.getElementById('projectTitle').addEventListener('input', updateSummary);
-    document.getElementById('yourName').addEventListener('input', updateSummary);
-
     drawChart();
     updateSummary();
 });
