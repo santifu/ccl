@@ -224,7 +224,7 @@ function getUserId(){
 
 // ---------- Guardar label en Edge Function ----------
 
-const EDGE_FUNCTION_URL = 'https://TU-PROYECTO.supabase.co/functions/v1/save-label';
+const EDGE_FUNCTION_URL = 'https://iezdsseiuskiszarpneh.supabase.co/functions/v1/saveBadge';
 
 async function saveLabel() {
     const userId = getUserId();
