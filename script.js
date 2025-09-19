@@ -1,5 +1,4 @@
-<!-- Asegúrate de tener este script en tu HTML -->
-<script type="module">
+
 // --------------------
 // CCL Script.js - versión con Supabase Client (opción 2)
 // --------------------
@@ -8,7 +7,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 // ---------- Configuración Supabase ----------
 const SUPABASE_URL = "https://iezdsseiuskiszarpneh.supabase.co"; // tu proyecto
-const SUPABASE_ANON_KEY = "TU_API_KEY_PUBLICA"; // pega tu anon key
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllemRzc2VpdXNraXN6YXJwbmVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyNDg1MDgsImV4cCI6MjA3MzgyNDUwOH0.9xDWRDr6wKckkK5VtgrCi6cPCAv0nyTfT_MLEMmkY0s"; // pega tu anon key
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ---------- Descripciones de fases ----------
@@ -367,4 +366,4 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('download-summary-btn').addEventListener('click', downloadSummary);
   document.getElementById('download-badge-btn').addEventListener('click', downloadBadge);
 });
-</script>
+
