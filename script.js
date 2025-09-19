@@ -1,3 +1,7 @@
+// =======================
+// CONFIGURACIÓN PRINCIPAL
+// =======================
+
 // Descripciones de las fases para cada nivel
 const phaseDescriptions = {
     research: [
@@ -58,16 +62,7 @@ const phaseDescriptions = {
     ]
 };
 
-// Etiquetas de nivel
-const levelLabels = [
-    "Full Human Work",
-    "AI for Insight",
-    "AI for Drafting",
-    "AI as Co-Creator",
-    "AI as Driver"
-];
-
-// Abreviaturas de las fases
+// Abreviaturas consistentes
 const phaseAbbreviations = {
     research: 'R',
     ideation: 'I',
@@ -79,39 +74,61 @@ const phaseAbbreviations = {
     reflection: 'F'
 };
 
-// Descripciones de los niveles
-const levelDescriptions = {
-    1: "Drafting Assistant",
-    2: "Co-Creator",
-    3: "Hybrid AI/Human-led",
-    4: "AI-led"
+// Colores de las fases
+const sliderColors = {
+    research: '#6f1926',
+    ideation: '#de324c',
+    design: '#f4895f',
+    coding: '#f8e16f',
+    prototyping: '#95cf92',
+    documentation: '#369acc',
+    management: '#9656a2',
+    reflection: '#cbabd1'
 };
 
-// Función para ajustar la intensidad del color
+// Nombres completos de fases
+const phaseNames = {
+    R: "Research",
+    I: "Ideation",
+    D: "Design",
+    C: "Coding",
+    P: "Prototyping",
+    O: "Documentation",
+    M: "Management",
+    F: "Reflection"
+};
+
+// Descripciones de niveles
+const levelDescriptions = {
+    1: "Full Human Work",
+    2: "AI for Insight",
+    3: "AI for Drafting",
+    4: "AI as Co-Creator",
+    5: "AI as Driver"
+};
+
+// ============================
+// FUNCIONES DE UTILIDAD
+// ============================
+
 function adjustColor(color, level) {
     let baseR = parseInt(color.substring(1, 3), 16);
     let baseG = parseInt(color.substring(3, 5), 16);
     let baseB = parseInt(color.substring(5, 7), 16);
 
-    const mixFactor = level / 4;
+    const mixFactor = level / 5;
 
     let r = Math.round(255 * (1 - mixFactor) + baseR * mixFactor);
     let g = Math.round(255 * (1 - mixFactor) + baseG * mixFactor);
     let b = Math.round(255 * (1 - mixFactor) + baseB * mixFactor);
 
-    r = Math.min(255, Math.max(0, r));
-    g = Math.min(255, Math.max(0, g));
-    b = Math.min(255, Math.max(0, b));
-
     return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
 }
 
-// Inicializar el gráfico
-let chart;
-const canvas = document.getElementById('ccl-chart');
-const ctx = canvas.getContext('2d');
+// ============================
+// FUNCIONES DE INTERFAZ
+// ============================
 
-// Función para actualizar el contador de licencias
 function updateLicenseCounter() {
     let counter = localStorage.getItem('licenseCounter') || 0;
     counter = parseInt(counter) + 1;
@@ -119,7 +136,6 @@ function updateLicenseCounter() {
     document.getElementById('license-counter').textContent = counter;
 }
 
-// Función para actualizar la descripción de la fase
 function updatePhaseDescription(phaseId) {
     const slider = document.getElementById(phaseId);
     const description = document.getElementById(`${phaseId}-desc`);
@@ -127,10 +143,11 @@ function updatePhaseDescription(phaseId) {
     description.textContent = phaseDescriptions[phaseId][level];
 }
 
-// Función para dibujar el gráfico
 function drawChart() {
-    const phases = ['reflection', 'research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management'];
-    const phaseAbbreviations = ['F', 'R', 'I', 'D', 'C', 'P', 'O', 'M'];
+    const canvas = document.getElementById('ccl-chart');
+    const ctx = canvas.getContext('2d');
+
+    const phases = Object.keys(phaseAbbreviations);
     const data = phases.map(phase => parseInt(document.getElementById(phase).value));
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -146,8 +163,7 @@ function drawChart() {
         const startAngle = index * angleStep - Math.PI / 2;
         const endAngle = (index + 1) * angleStep - Math.PI / 2;
 
-        const baseColor = sliderColors[phase];
-        const adjustedColor = adjustColor(baseColor, level);
+        const adjustedColor = adjustColor(sliderColors[phase], level);
 
         ctx.beginPath();
         ctx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
@@ -168,7 +184,7 @@ function drawChart() {
         ctx.font = 'bold 12px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(phaseAbbreviations[index], labelX, labelY);
+        ctx.fillText(phaseAbbreviations[phase], labelX, labelY);
     });
 
     ctx.beginPath();
@@ -187,163 +203,46 @@ function drawChart() {
     ctx.fillText('Summary', centerX, centerY + 6);
 }
 
-// Colores de los sliders
-const sliderColors = {
-    research: '#6f1926',
-    ideation: '#de324c',
-    design: '#f4895f',
-    coding: '#f8e16f',
-    prototyping: '#95cf92',
-    documentation: '#369acc',
-    management: '#9656a2',
-    reflection: '#cbabd1'
-};
-
-// Función para actualizar el resumen
 function updateSummary() {
-    const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
-    const phaseNames = {R:'Research', I:'Ideation', D:'Design', C:'Coding', P:'Prototyping', O:'Documentation', M:'Management', F:'Reflection'};
+    const phases = Object.keys(phaseAbbreviations);
     const levels = phases.map(phase => parseInt(document.getElementById(phase).value));
     const projectTitle = document.getElementById('projectTitle').value;
     const yourName = document.getElementById('yourName').value;
 
-    let licenseParts = [];
     let licenseCode = "CCL ";
+    let licenseParts = [];
 
     phases.forEach((phase, index) => {
         const level = levels[index];
         if (level > 0) {
-            const abbreviation = phaseAbbreviations[phase];
-            licenseCode += `${abbreviation}${level} `;
+            const abbr = phaseAbbreviations[phase];
+            licenseCode += `${abbr}${level} `;
+            licenseParts.push(`AI contributed as ${levelDescriptions[level]} in ${phaseNames[abbr]}`);
         }
     });
 
-    phases.forEach((phase, index) => {
-        const level = levels[index];
-        if (level > 0) {
-            const phaseAbbrev = phaseAbbreviations[phase];
-            const phaseName = phaseNames[phaseAbbrev];
-            const description = levelDescriptions[level];
-            const action = level === 1 ? 'contributed as' : 'acted as';
-            licenseParts.push(`AI ${action} ${description} in ${phaseName}`);
-        }
-    });
-
-    let licenseText = licenseCode.trim() + "v1.0 — " + licenseParts.join(", ") + ". All other phases were fully human-led.";
-
+    let licenseText = licenseCode.trim() + "v1.0 — " + licenseParts.join(", ") + ".";
     let finalSummary = "";
+
     if (projectTitle) {
         finalSummary += `"${projectTitle}"`;
-        if (yourName) {
-            finalSummary += ` by ${yourName}`;
-        }
+        if (yourName) finalSummary += ` by ${yourName}`;
         finalSummary += "\n\n";
     }
     finalSummary += licenseText;
+
     document.getElementById('summary-text').textContent = finalSummary;
+    return finalSummary;
 }
 
-// Función para copiar el resumen al portapapeles
-function downloadSummary() {
-    const summaryText = document.getElementById('summary-text').textContent;
+// ============================
+// SUPABASE
+// ============================
 
-    navigator.clipboard.writeText(summaryText).then(() => {
-        alert('CCL Summary copied to clipboard!');
-        updateLicenseCounter();
-        saveLabel();
-    }).catch(() => {
-        const textArea = document.createElement('textarea');
-        textArea.value = summaryText;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        alert('CCL Summary copied to clipboard!');
-        updateLicenseCounter();
-        saveLabel();
-    });
-}
-
-// Función para descargar la insignia
-function downloadBadge() {
-    const badgeCanvas = document.createElement('canvas');
-    const badgeSize = 400;
-    badgeCanvas.width = badgeSize;
-    badgeCanvas.height = badgeSize;
-    const badgeCtx = badgeCanvas.getContext('2d');
-
-    badgeCtx.clearRect(0, 0, badgeCanvas.width, badgeCanvas.height);
-
-    const centerX = badgeCanvas.width / 2;
-    const centerY = badgeCanvas.height / 2;
-    const outerRadius = badgeSize / 2 - 20;
-    const innerRadius = badgeSize / 2 - 120;
-
-    const phases = ['reflection', 'research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management'];
-    const phaseAbbreviations = ['F', 'R', 'I', 'D', 'C', 'P', 'O', 'M'];
-    const colors = ['#cbabd1', '#6f1926', '#de324c', '#f4895f', '#f8e16f', '#95cf92', '#369acc', '#9656a2'];
-
-    const angleStep = (Math.PI * 2) / phases.length;
-
-    phases.forEach((phase, index) => {
-        const level = parseInt(document.getElementById(phases[index]).value);
-        const startAngle = index * angleStep - Math.PI / 2;
-        const endAngle = (index + 1) * angleStep - Math.PI / 2;
-
-        const adjustedColor = adjustColor(colors[index], level);
-
-        badgeCtx.beginPath();
-        badgeCtx.moveTo(centerX, centerY);
-        badgeCtx.arc(centerX, centerY, outerRadius, startAngle, endAngle);
-        badgeCtx.lineTo(centerX, centerY);
-        badgeCtx.closePath();
-        badgeCtx.fillStyle = adjustedColor;
-        badgeCtx.fill();
-        badgeCtx.strokeStyle = '#fff';
-        badgeCtx.stroke();
-
-        const labelAngle = startAngle + angleStep / 2;
-        const labelRadius = (outerRadius + innerRadius) / 2;
-        const labelX = centerX + Math.cos(labelAngle) * labelRadius;
-        const labelY = centerY + Math.sin(labelAngle) * labelRadius;
-
-        badgeCtx.fillStyle = '#2d3748';
-        badgeCtx.font = 'bold 16px sans-serif';
-        badgeCtx.textAlign = 'center';
-        badgeCtx.textBaseline = 'middle';
-        badgeCtx.fillText(phaseAbbreviations[index], labelX, labelY);
-    });
-
-    badgeCtx.beginPath();
-    badgeCtx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
-    badgeCtx.fillStyle = 'white';
-    badgeCtx.fill();
-    badgeCtx.strokeStyle = '#e2e8f0';
-    badgeCtx.stroke();
-
-    badgeCtx.fillStyle = '#2d3748';
-    badgeCtx.font = 'bold 12px sans-serif';
-    badgeCtx.textAlign = 'center';
-    badgeCtx.fillText('COGNITIVE CONTRIBUTION', centerX, centerY - 15);
-    badgeCtx.fillText('LICENSE', centerX, centerY + 5);
-    badgeCtx.font = '10px sans-serif';
-    badgeCtx.fillText('v1.0 (CCL)', centerX, centerY + 20);
-
-    const link = document.createElement('a');
-    link.download = 'ccl-badge.png';
-    link.href = badgeCanvas.toDataURL('image/png');
-    link.click();
-
-    updateLicenseCounter();
-    saveLabel();
-}
-
-// Inicializar Supabase
 const SUPABASE_URL = "https://TU-PROJECT.supabase.co";
 const SUPABASE_ANON_KEY = "tu-public-anon-key";
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Función para obtener/crear un userId local
 function getUserId() {
   let id = localStorage.getItem('ccl_client_id');
   if (!id) {
@@ -353,40 +252,74 @@ function getUserId() {
   return id;
 }
 
-// Función para guardar el label en Supabase
-async function onLabelGenerated(labelData) {
+async function saveLabel(labelData) {
   const userId = getUserId();
   const { error } = await supabase
     .from('labels')
     .insert([{ user_id: userId, payload: labelData }]);
-  
-  if (error) {
-    console.error('Error insertando label:', error.message);
-  } else {
-    console.log('Label registrado en Supabase ✅');
-  }
+  if (error) console.error('Error insertando label:', error.message);
+  else console.log('Label registrado en Supabase ✅');
 }
 
-async function saveLabel() {
+// ============================
+// DESCARGAS + SUPABASE
+// ============================
+
+async function downloadSummary() {
+    const summaryText = updateSummary();
     const projectTitle = document.getElementById('projectTitle').value;
     const yourName = document.getElementById('yourName').value;
-    const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
+    const phases = Object.keys(phaseAbbreviations);
     const levels = phases.map(phase => parseInt(document.getElementById(phase).value));
-    const labelData = { projectTitle, yourName, levels };
-    await onLabelGenerated(labelData);
+
+    // Guardar en Supabase
+    await saveLabel({ projectTitle, yourName, levels, summaryText });
+
+    const blob = new Blob([summaryText], { type: "text/plain;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "CCL_Summary.txt";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    updateLicenseCounter();
 }
 
-// Añadir event listeners
-document.addEventListener('DOMContentLoaded', function() {
+async function downloadBadge() {
+    const canvas = document.getElementById('ccl-chart');
+    const projectTitle = document.getElementById('projectTitle').value;
+    const yourName = document.getElementById('yourName').value;
+    const phases = Object.keys(phaseAbbreviations);
+    const levels = phases.map(phase => parseInt(document.getElementById(phase).value));
+
+    // Guardar en Supabase
+    await saveLabel({ projectTitle, yourName, levels, badge: true });
+
+    const link = document.createElement('a');
+    link.download = "CCL_Badge.png";
+    link.href = canvas.toDataURL("image/png");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    updateLicenseCounter();
+}
+
+// ============================
+// EVENTOS
+// ============================
+
+document.addEventListener('DOMContentLoaded', () => {
     const counter = localStorage.getItem('licenseCounter') || 0;
     document.getElementById('license-counter').textContent = counter;
 
-    const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
+    const phases = Object.keys(phaseAbbreviations);
 
     phases.forEach(phase => {
         updatePhaseDescription(phase);
         const slider = document.getElementById(phase);
-        slider.addEventListener('input', function() {
+        slider.addEventListener('input', () => {
             updatePhaseDescription(phase);
             drawChart();
             updateSummary();
