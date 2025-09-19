@@ -1,5 +1,5 @@
 // --------------------
-// CCL Script.js
+// CCL Script.js - con registro en Edge Function
 // --------------------
 
 // ---------- Descripciones de fases ----------
@@ -212,6 +212,48 @@ function updateSummary() {
     document.getElementById('summary-text').textContent = finalSummary;
 }
 
+// ---------- User ID ----------
+function getUserId(){
+    let id = localStorage.getItem('ccl_client_id');
+    if(!id){
+        id='u_'+crypto.randomUUID();
+        localStorage.setItem('ccl_client_id',id);
+    }
+    return id;
+}
+
+// ---------- Guardar label en Edge Function ----------
+const EDGE_FUNCTION_URL = 'https://TU-SUPABASE-PROJECT.functions.supabase.co/save-label'; // Cambia aquí
+
+async function saveLabel(){
+    const userId = getUserId();
+    const projectTitle = document.getElementById('projectTitle').value;
+    const yourName = document.getElementById('yourName').value;
+    const phases = ['research','ideation','design','coding','prototyping','documentation','management','reflection'];
+    const levels = phases.map(p=>parseInt(document.getElementById(p).value));
+
+    // Obtener país
+    let country = 'Unknown';
+    try {
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        country = data.country_code || 'Unknown';
+    } catch {}
+
+    const payload={userId, projectTitle, yourName, levels, country, timestamp:new Date().toISOString()};
+    try{
+        const res = await fetch(EDGE_FUNCTION_URL,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(payload)
+        });
+        if(res.ok) console.log('Label saved ✅');
+        else console.error('Error saving label', await res.text());
+    }catch(e){
+        console.error('Network error saving label:',e);
+    }
+}
+
 // ---------- Copiar summary ----------
 async function downloadSummary() {
     const summaryText = document.getElementById('summary-text').textContent;
@@ -293,38 +335,6 @@ async function downloadBadge() {
     await saveLabel();
 }
 
-// ---------- User ID ----------
-function getUserId(){
-    let id = localStorage.getItem('ccl_client_id');
-    if(!id){
-        id='u_'+crypto.randomUUID();
-        localStorage.setItem('ccl_client_id',id);
-    }
-    return id;
-}
-
-// ---------- Guardar label en Edge Function ----------
-const EDGE_FUNCTION_URL = 'https://TU-SUPABASE-PROJECT.functions.supabase.co/save-label';
-
-async function saveLabel(){
-    const userId = getUserId();
-    const projectTitle = document.getElementById('projectTitle').value;
-    const yourName = document.getElementById('yourName').value;
-    const phases = ['research','ideation','design','coding','prototyping','documentation','management','reflection'];
-    const levels = phases.map(p=>parseInt(document.getElementById(p).value));
-    const payload={userId, projectTitle, yourName, levels, timestamp:new Date().toISOString()};
-    try{
-        await fetch(EDGE_FUNCTION_URL,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(payload)
-        });
-        console.log('Label saved ✅');
-    }catch(e){
-        console.error('Error saving label:',e);
-    }
-}
-
 // ---------- Event listeners ----------
 document.addEventListener('DOMContentLoaded',()=>{
     const phases = ['research','ideation','design','coding','prototyping','documentation','management','reflection'];
@@ -338,4 +348,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
     drawChart();
     updateSummary();
+
+    // Botones
+    document.getElementById('download-summary-btn').addEventListener('click', downloadSummary);
+    document.getElementById('download-badge-btn').addEventListener('click', downloadBadge);
 });
