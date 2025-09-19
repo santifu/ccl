@@ -1,38 +1,27 @@
-import { serve } from "https://deno.land/x/supabase_edge_functions@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!; // Service Role
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 serve(async (req) => {
   try {
     const body = await req.json();
+    const { userId, projectTitle, yourName, levels, country, timestamp } = body;
 
-    const { projectTitle, userName, country, phaseData } = body;
+    const { data, error } = await supabase.from("badges").insert([{
+      user_id: userId,
+      project_title: projectTitle,
+      your_name: yourName,
+      levels,
+      country,
+      timestamp
+    }]);
 
-    // Conexión con Supabase
-    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-    const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
-
-    const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm");
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // Insertar en la tabla 'badges'
-    const { data, error } = await supabase
-      .from("badges")
-      .insert([
-        {
-          project_title: projectTitle,
-          user_name: userName,
-          country,
-          phase_data: phaseData,
-          created_at: new Date().toISOString(),
-        },
-      ]);
-
-    if (error) {
-      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
-    }
-
+    if (error) return new Response(JSON.stringify({ error: error.message }), { status: 400 });
     return new Response(JSON.stringify({ success: true, data }), { status: 200 });
-
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 400 });
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
 });
