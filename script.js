@@ -223,16 +223,16 @@ function getUserId(){
 }
 
 // ---------- Guardar label en Edge Function ----------
-const EDGE_FUNCTION_URL = 'https://TU-SUPABASE-PROJECT.functions.supabase.co/save-label'; // Cambia aquí
 
-async function saveLabel(){
+const EDGE_FUNCTION_URL = 'https://TU-PROYECTO.supabase.co/functions/v1/save-label';
+
+async function saveLabel() {
     const userId = getUserId();
     const projectTitle = document.getElementById('projectTitle').value;
     const yourName = document.getElementById('yourName').value;
     const phases = ['research','ideation','design','coding','prototyping','documentation','management','reflection'];
-    const levels = phases.map(p=>parseInt(document.getElementById(p).value));
+    const levels = phases.map(p => parseInt(document.getElementById(p).value));
 
-    // Obtener país
     let country = 'Unknown';
     try {
         const res = await fetch('https://ipapi.co/json/');
@@ -240,17 +240,20 @@ async function saveLabel(){
         country = data.country_code || 'Unknown';
     } catch {}
 
-    const payload={userId, projectTitle, yourName, levels, country, timestamp:new Date().toISOString()};
-    try{
-        const res = await fetch(EDGE_FUNCTION_URL,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(payload)
+    const payload = { userId, projectTitle, yourName, levels, country, timestamp: new Date().toISOString() };
+
+    try {
+        const res = await fetch(EDGE_FUNCTION_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
-        if(res.ok) console.log('Label saved ✅');
-        else console.error('Error saving label', await res.text());
-    }catch(e){
-        console.error('Network error saving label:',e);
+
+        const result = await res.json();
+        if (res.ok) console.log('Label saved ✅', result);
+        else console.error('Error saving label', result);
+    } catch (e) {
+        console.error('Network error saving label:', e);
     }
 }
 
