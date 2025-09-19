@@ -1,7 +1,8 @@
+// supabase/functions/saveBadge/index.ts
 import { serve } from "https://deno.land/std@0.203.0/http/server.ts";
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-// Usa los secretos guardados en Supabase
+// Usa los secretos guardados en Supabase (Service Role Key)
 const supabaseUrl = Deno.env.get("CCL_URL")!;
 const supabaseKey = Deno.env.get("CCL_SERVICE_ROLE_KEY")!;
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -26,12 +27,12 @@ serve(async (req) => {
     const { userId, projectTitle, yourName, levels, country, timestamp } = await req.json();
 
     const { data, error } = await supabase
-      .from("badges")   // <-- tu tabla
+      .from("badges")
       .insert([{
         user_id: userId,
         project_title: projectTitle,
         your_name: yourName,
-        levels,           // JSON con los niveles
+        levels,
         country,
         timestamp
       }]);
