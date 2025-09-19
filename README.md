@@ -4,7 +4,7 @@
 
 ## Description
 
-The Cognitive Contribution Label (CCL) helps students, researchers, and creators transparently document the role of artificial intelligence across all stages of their work. Inspired by the spirit of Creative Commons, the CCL promotes honest reflection, responsible use of AI, and clarity in collaborative, tech-assisted creation.
+The Cognitive Contribution Label (CCL) helps students, researchers, and creators transparently document the role of artificial intelligence across all stages of their creative process. Inspired by the spirit of Creative Commons, the CCL promotes honest reflection, responsible use of AI, and clarity in collaborative, tech-assisted creation.
 
 ## Features
 

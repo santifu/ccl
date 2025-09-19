@@ -88,22 +88,30 @@ const levelDescriptions = {
 };
 
 // Función para ajustar la intensidad del color
+// Ahora, cuanto mayor sea el nivel de IA (más alto el 'level'), más intenso será el color,
+// yendo de blanco (nivel 0) al color base (nivel 4).
 function adjustColor(color, level) {
     let baseR = parseInt(color.substring(1, 3), 16);
     let baseG = parseInt(color.substring(3, 5), 16);
     let baseB = parseInt(color.substring(5, 7), 16);
 
-    const mixFactor = level / 4;
+    // El factor escala de 0 (para nivel 0, que será blanco) a 1 (para nivel 4, que será el color base).
+    const mixFactor = level / 4; // 0 para nivel 0, 0.25 para nivel 1, ..., 1 para nivel 4
 
+    // Mezclar el color base con blanco
+    // color_final = color_blanco * (1 - factor) + color_base * factor
     let r = Math.round(255 * (1 - mixFactor) + baseR * mixFactor);
     let g = Math.round(255 * (1 - mixFactor) + baseG * mixFactor);
     let b = Math.round(255 * (1 - mixFactor) + baseB * mixFactor);
 
+    // Asegurarse de que los valores estén dentro del rango válido de 0-255
     r = Math.min(255, Math.max(0, r));
     g = Math.min(255, Math.max(0, g));
     b = Math.min(255, Math.max(0, b));
 
-    return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+    const adjustedColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+
+    return adjustedColor;
 }
 
 // Inicializar el gráfico
@@ -139,6 +147,7 @@ function drawChart() {
     const centerY = canvas.height / 2;
     const outerRadius = 100;
     const innerRadius = 30;
+
     const angleStep = (Math.PI * 2) / phases.length;
 
     phases.forEach((phase, index) => {
@@ -159,6 +168,7 @@ function drawChart() {
         ctx.lineWidth = 1;
         ctx.stroke();
 
+        // Posición de la letra en el centro del segmento
         const labelAngle = startAngle + angleStep / 2;
         const labelRadius = (outerRadius + innerRadius) / 2;
         const labelX = centerX + Math.cos(labelAngle) * labelRadius;
@@ -171,6 +181,7 @@ function drawChart() {
         ctx.fillText(phaseAbbreviations[index], labelX, labelY);
     });
 
+    // Dibujar círculo central
     ctx.beginPath();
     ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
     ctx.fillStyle = '#f8fafc';
@@ -179,6 +190,7 @@ function drawChart() {
     ctx.lineWidth = 1;
     ctx.stroke();
 
+    // Texto central
     ctx.fillStyle = '#2d3748';
     ctx.font = 'bold 10px sans-serif';
     ctx.textAlign = 'center';
@@ -202,7 +214,17 @@ const sliderColors = {
 // Función para actualizar el resumen
 function updateSummary() {
     const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
-    const phaseNames = {R:'Research', I:'Ideation', D:'Design', C:'Coding', P:'Prototyping', O:'Documentation', M:'Management', F:'Reflection'};
+    const phaseNames = {
+        R: 'Research',
+        I: 'Ideation',
+        D: 'Design',
+        C: 'Coding',
+        P: 'Prototyping',
+        O: 'Documentation',
+        M: 'Management',
+        F: 'Reflection'
+    };
+
     const levels = phases.map(phase => parseInt(document.getElementById(phase).value));
     const projectTitle = document.getElementById('projectTitle').value;
     const yourName = document.getElementById('yourName').value;
@@ -210,6 +232,7 @@ function updateSummary() {
     let licenseParts = [];
     let licenseCode = "CCL ";
 
+    // Generar el código de licencia
     phases.forEach((phase, index) => {
         const level = levels[index];
         if (level > 0) {
@@ -218,6 +241,7 @@ function updateSummary() {
         }
     });
 
+    // Generar las descripciones de la licencia
     phases.forEach((phase, index) => {
         const level = levels[index];
         if (level > 0) {
@@ -229,8 +253,10 @@ function updateSummary() {
         }
     });
 
+    // Combinar todo en una sola cadena
     let licenseText = licenseCode.trim() + "v1.0 — " + licenseParts.join(", ") + ". All other phases were fully human-led.";
 
+    // Combinar información del proyecto con el resumen
     let finalSummary = "";
     if (projectTitle) {
         finalSummary += `"${projectTitle}"`;
@@ -239,29 +265,10 @@ function updateSummary() {
         }
         finalSummary += "\n\n";
     }
+
     finalSummary += licenseText;
+
     document.getElementById('summary-text').textContent = finalSummary;
-}
-
-// Función para copiar el resumen al portapapeles
-function downloadSummary() {
-    const summaryText = document.getElementById('summary-text').textContent;
-
-    navigator.clipboard.writeText(summaryText).then(() => {
-        alert('CCL Summary copied to clipboard!');
-        updateLicenseCounter();
-        saveLabel();
-    }).catch(() => {
-        const textArea = document.createElement('textarea');
-        textArea.value = summaryText;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        alert('CCL Summary copied to clipboard!');
-        updateLicenseCounter();
-        saveLabel();
-    });
 }
 
 // Función para descargar la insignia
@@ -272,6 +279,7 @@ function downloadBadge() {
     badgeCanvas.height = badgeSize;
     const badgeCtx = badgeCanvas.getContext('2d');
 
+    // Hacer el fondo transparente
     badgeCtx.clearRect(0, 0, badgeCanvas.width, badgeCanvas.height);
 
     const centerX = badgeCanvas.width / 2;
@@ -302,6 +310,7 @@ function downloadBadge() {
         badgeCtx.strokeStyle = '#fff';
         badgeCtx.stroke();
 
+        // Posición de la letra en el centro del segmento
         const labelAngle = startAngle + angleStep / 2;
         const labelRadius = (outerRadius + innerRadius) / 2;
         const labelX = centerX + Math.cos(labelAngle) * labelRadius;
@@ -314,6 +323,7 @@ function downloadBadge() {
         badgeCtx.fillText(phaseAbbreviations[index], labelX, labelY);
     });
 
+    // Dibujar el círculo interior
     badgeCtx.beginPath();
     badgeCtx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
     badgeCtx.fillStyle = 'white';
@@ -321,6 +331,7 @@ function downloadBadge() {
     badgeCtx.strokeStyle = '#e2e8f0';
     badgeCtx.stroke();
 
+    // Dibujar el texto en el centro
     badgeCtx.fillStyle = '#2d3748';
     badgeCtx.font = 'bold 12px sans-serif';
     badgeCtx.textAlign = 'center';
@@ -329,18 +340,39 @@ function downloadBadge() {
     badgeCtx.font = '10px sans-serif';
     badgeCtx.fillText('v1.0 (CCL)', centerX, centerY + 20);
 
+    // Crear un enlace para descargar el badge como PNG
     const link = document.createElement('a');
     link.download = 'ccl-badge.png';
     link.href = badgeCanvas.toDataURL('image/png');
     link.click();
 
+    // Actualizar el contador de licencias
     updateLicenseCounter();
-    saveLabel();
+}
+
+// Función para copiar el resumen al portapapeles
+function downloadSummary() {
+    const summaryText = document.getElementById('summary-text').textContent;
+
+    navigator.clipboard.writeText(summaryText).then(() => {
+        alert('CCL Summary copied to clipboard!');
+        updateLicenseCounter();
+    }).catch(() => {
+        const textArea = document.createElement('textarea');
+        textArea.value = summaryText;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('CCL Summary copied to clipboard!');
+        updateLicenseCounter();
+    });
 }
 
 // Inicializar Supabase
 const SUPABASE_URL = "https://TU-PROJECT.supabase.co";
-const SUPABASE_ANON_KEY = "tu-public-anon-key";
+const SUPABASE_ANON_KEY = "tu-public-anon-key"; // lo ves en Project Settings -> API
+
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Función para obtener/crear un userId local
@@ -353,7 +385,7 @@ function getUserId() {
   return id;
 }
 
-// Función para guardar el label en Supabase
+// Llamar esta función cuando generas un label
 async function onLabelGenerated(labelData) {
   const userId = getUserId();
   const { error } = await supabase
@@ -365,15 +397,6 @@ async function onLabelGenerated(labelData) {
   } else {
     console.log('Label registrado en Supabase ✅');
   }
-}
-
-async function saveLabel() {
-    const projectTitle = document.getElementById('projectTitle').value;
-    const yourName = document.getElementById('yourName').value;
-    const phases = ['research', 'ideation', 'design', 'coding', 'prototyping', 'documentation', 'management', 'reflection'];
-    const levels = phases.map(phase => parseInt(document.getElementById(phase).value));
-    const labelData = { projectTitle, yourName, levels };
-    await onLabelGenerated(labelData);
 }
 
 // Añadir event listeners
