@@ -1,7 +1,6 @@
 
 // --------------------
-// CCL Script.js - versión con Supabase Client (opción 2)
-// --------------------
+// CCL Script.js - versión con Supabase Client
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
