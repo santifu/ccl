@@ -1,240 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cognitive Contribution Lable (CCL) Generator</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CCL Generator — Cognitive Contribution Label</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Cognitive Contribution Lable (CCL)</h1>
-            <p>Create a transparent breakdown of AI usage in your educational project</p>
-        </div>
 
-        <div class="content">
-            <!-- Levels Section -->
-            <div class="levels-section">
-                <div class="levels-title">
-                    <span>Levels of AI Involvement (Label for Project Declaration)</span>
-                </div>
+  <div class="lang-bar">
+    <a href="index.html" class="back-link">← <span data-i18n="back_home">Home</span></a>
+    <div class="lang-controls">
+      <span class="lang-label" data-i18n="lang_label">Language</span>
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" onclick="setLang('ca')">CA</button>
+      <button class="lang-btn" onclick="setLang('pt')">PT</button>
+      <button class="lang-btn" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" onclick="setLang('de')">DE</button>
+    </div>
+  </div>
 
-            <div class="level-item level-4">
-                <div class="level-content">
-                        <h3>0 - Full Human Work</h3>
-                        <p>No AI was used at any point in this phase or project.</p>
+  <header>
+    <div class="header-tag" data-i18n="header_tag">Cognitive Contribution Label</div>
+    <h1><span data-i18n="gen_h1_line1">Generate your</span><br><span data-i18n="gen_h1_line2">CCL badge.</span></h1>
+    <p class="subtitle" data-i18n="gen_subtitle">Rate AI involvement (0–4) across each phase of your project.</p>
+  </header>
 
-                        <h3>1 - AI for Insight</h3>
-                        <p>AI was used for inspiration, brainstorming, research queries, or outlining. All final outputs were created by the student.</p>
+  <main>
 
-                        <h3>2 - AI for Drafting</h3>
-                        <p>AI generated early drafts, sketches, visuals, or code, which the student revised, rebuilt, or expanded.</p>
-
-                        <h3>3 - AI as Co-Creator</h3>
-                        <p>A collaborative process where the student and AI iterated together, refining outputs through mutual feedback.</p>
-
-                        <h3>4 - AI as Driver</h3>
-                        <p>AI produced most of the work in this phase, while the student acted primarily as a curator, editor, or selector.</p>
-                </div>
-            </div>
-
-        </div>
-
-            <!-- Form Section -->
-            <div class="form-section">
-                <div>
-                    <div class="form-group">
-                        <label for="projectTitle">Project Title</label>
-                        <input type="text" id="projectTitle" placeholder="My Awesome Project" value="My Awesome Project">
-                    </div>
-                </div>
-                <div>
-                    <div class="form-group">
-                        <label for="yourName">Your Name</label>
-                        <input type="text" id="yourName" placeholder="Your name" value="Your name">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Phases Section -->
-            <div class="phases-section">
-                <h2 class="phases-title">Select AI Usage Level for Each Phase</h2>
-                <div class="phases-grid">
-                    <div class="phase-card">
-                        <div class="phase-header">
-                            <span class="phase-icon">📚</span>
-                            <span class="phase-title">Research & References (R)</span>
-                        </div>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="4" value="0" class="slider" id="research">
-                            <div class="slider-labels">
-                                <span>Full Human</span>
-                                <span>AI Driver</span>
-                            </div>
-                        </div>
-                        <div class="phase-description" id="research-desc">
-                            All research was conducted manually (e.g., Google Scholar, physical books).
-                        </div>
-                    </div>
-                    <!-- Additional phase cards -->
-                    <div class="phase-card">
-                        <div class="phase-header">
-                            <span class="phase-icon">💡</span>
-                            <span class="phase-title">Ideation (I)</span>
-                        </div>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="4" value="0" class="slider" id="ideation">
-                            <div class="slider-labels">
-                                <span>Full Human</span>
-                                <span>AI Driver</span>
-                            </div>
-                        </div>
-                        <div class="phase-description" id="ideation-desc">
-                            Ideas emerged from personal reflection, discussion, or sketching.
-                        </div>
-                    </div>
-                    <div class="phase-card">
-                        <div class="phase-header">
-                            <span class="phase-icon">🎨</span>
-                            <span class="phase-title">Design (D)</span>
-                        </div>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="4" value="2" class="slider" id="design">
-                            <div class="slider-labels">
-                                <span>Full Human</span>
-                                <span>AI Driver</span>
-                            </div>
-                        </div>
-                        <div class="phase-description" id="design-desc">
-                            AI generated rough layouts, wireframes, or 3D sketches.
-                        </div>
-                    </div>
-                    <div class="phase-card">
-                        <div class="phase-header">
-                            <span class="phase-icon">💻</span>
-                            <span class="phase-title">Coding / Programming (C)</span>
-                        </div>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="4" value="2" class="slider" id="coding">
-                            <div class="slider-labels">
-                                <span>Full Human</span>
-                                <span>AI Driver</span>
-                            </div>
-                        </div>
-                        <div class="phase-description" id="coding-desc">
-                            AI produced code snippets or logic flows, later edited.
-                        </div>
-                    </div>
-                    <div class="phase-card">
-                        <div class="phase-header">
-                            <span class="phase-icon">🔧</span>
-                            <span class="phase-title">Prototyping / Making (P)</span>
-                        </div>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="4" value="0" class="slider" id="prototyping">
-                            <div class="slider-labels">
-                                <span>Full Human</span>
-                                <span>AI Driver</span>
-                            </div>
-                        </div>
-                        <div class="phase-description" id="prototyping-desc">
-                            Materials and components chosen and assembled manually.
-                        </div>
-                    </div>
-                    <div class="phase-card">
-                        <div class="phase-header">
-                            <span class="phase-icon">📄</span>
-                            <span class="phase-title">Documentation (O)</span>
-                        </div>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="4" value="2" class="slider" id="documentation">
-                            <div class="slider-labels">
-                                <span>Full Human</span>
-                                <span>AI Driver</span>
-                            </div>
-                        </div>
-                        <div class="phase-description" id="documentation-desc">
-                            AI created draft texts, web pages, diagrams.
-                        </div>
-                    </div>
-                    <div class="phase-card">
-                        <div class="phase-header">
-                            <span class="phase-icon">📊</span>
-                            <span class="phase-title">Project Management & Collaboration (M)</span>
-                        </div>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="4" value="2" class="slider" id="management">
-                            <div class="slider-labels">
-                                <span>Full Human</span>
-                                <span>AI Driver</span>
-                            </div>
-                        </div>
-                        <div class="phase-description" id="management-desc">
-                            AI created schedules, content drafts, or social media posts.
-                        </div>
-                    </div>
-                    <div class="phase-card">
-                        <div class="phase-header">
-                            <span class="phase-icon">🔄</span>
-                            <span class="phase-title">Reflection & Feedback (F)</span>
-                        </div>
-                        <div class="slider-container">
-                            <input type="range" min="0" max="4" value="3" class="slider" id="reflection">
-                            <div class="slider-labels">
-                                <span>Full Human</span>
-                                <span>AI Driver</span>
-                            </div>
-                        </div>
-                        <div class="phase-description" id="reflection-desc">
-                            Insights emerged through reflective loops with AI.
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Visualization Section -->
-            <div class="visualization-section">
-                <h2>CCL Summary</h2>
-                <div class="chart-container">
-                    <canvas id="ccl-chart" width="250" height="250"></canvas>
-                </div>
-                <div class="download-section">
-                    <button class="download-btn" id="download-badge-btn">
-                        📥 Download CCL Badge
-                    </button>
-                    <button class="download-btn" id="download-summary-btn">
-                        📋 Copy CCL Summary
-                    </button>
-                </div>
-                <div class="summary-box">
-                    <div class="summary-title">CCL Summary:</div>
-                    <div class="summary-content" id="summary-text" style="white-space: pre-line;">
-                        "My Awesome Project" by Your name
-
-CCL v1.0 — AI acted as Co-Creator in Design, Coding, Documentation and Management, AI acted as Hybrid AI/Human-led in Reflection. All other phases were fully human-led.
-
-AI D2 C2 O2 P2 F3 – v1.0
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>This project and concept were created by Santi Fuentemilla, at <a href="https://fablabbcn.org/">Fab Lab Barcelona</a> and are licensed under:</p>
-            <p><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0 – the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.</a></p>
-            <p>CCL R1 D1 C4 O3 v1.0 – AI Contributed as Drafting Assistant in Design and Documentation, AI acted as AI-led in Coding. All other phases were fully human-led.</p>
-            <p>Find the code on <a href="https://github.com/santifu/ccl">GitHub</a>.</p> 
-            <div class="counter-section">
-                <p>Licenses generated: <span id="license-counter">0</span></p>
-            </div>
-        </div>
+    <!-- LEGEND -->
+    <div class="legend">
+      <div class="legend-item">
+        <div class="level-pill l0">0 — <span data-i18n="lvl0_short">Human</span></div>
+        <div class="legend-desc" data-i18n="lvl0_desc">No AI used at any point.</div>
+      </div>
+      <div class="legend-item">
+        <div class="level-pill l1">1 — <span data-i18n="lvl1_short">Insight</span></div>
+        <div class="legend-desc" data-i18n="lvl1_desc">AI for research or brainstorming only.</div>
+      </div>
+      <div class="legend-item">
+        <div class="level-pill l2">2 — <span data-i18n="lvl2_short">Drafting</span></div>
+        <div class="legend-desc" data-i18n="lvl2_desc">AI drafts were edited by human.</div>
+      </div>
+      <div class="legend-item">
+        <div class="level-pill l3">3 — <span data-i18n="lvl3_short">Co-Creator</span></div>
+        <div class="legend-desc" data-i18n="lvl3_desc">Iterative human-AI collaboration.</div>
+      </div>
+      <div class="legend-item">
+        <div class="level-pill l4">4 — <span data-i18n="lvl4_short">AI Driver</span></div>
+        <div class="legend-desc" data-i18n="lvl4_desc">AI led most of the work.</div>
+      </div>
     </div>
 
-    <!-- Supabase JS client -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script type="module" src="script.js"></script>
-  
+    <!-- FIELDS -->
+    <div class="fields">
+      <div class="field-group">
+        <label class="field-label" data-i18n="field_project">Project Title</label>
+        <input type="text" id="projectTitle" data-i18n-placeholder="field_project_ph" placeholder="My Awesome Project" oninput="updateSummary()">
+      </div>
+      <div class="field-group">
+        <label class="field-label" data-i18n="field_author">Author Name</label>
+        <input type="text" id="authorName" data-i18n-placeholder="field_author_ph" placeholder="Your Name" oninput="updateSummary()">
+      </div>
+    </div>
+
+    <!-- PHASES (rendered by JS) -->
+    <div class="phases-title-bar">
+      <span data-i18n="phases_title">Project Phases</span>
+    </div>
+    <div id="phases-container"></div>
+
+    <!-- SUMMARY -->
+    <div class="summary-section">
+      <div class="summary-header">
+        <span class="summary-title" data-i18n="summary_title">Your CCL Badge</span>
+        <span class="copied-msg" id="copiedMsg" data-i18n="copied_msg">Copied!</span>
+      </div>
+      <div class="badge-preview">
+        <div class="badge">
+          <div class="badge-top">
+            <span class="badge-name">CCL v1.0</span>
+            <div class="badge-phases" id="badgePhases"></div>
+          </div>
+          <div class="badge-code" id="badgeCode">CCL v1.0</div>
+          <div class="badge-summary-text" id="badgeSummaryText"></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="downloadBadge()">
+          <span>↓</span>
+          <span data-i18n="btn_download">Download Badge</span>
+        </button>
+        <button class="btn btn-secondary" onclick="copySummary()">
+          <span>⎘</span>
+          <span data-i18n="btn_copy">Copy Summary</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>
+      <span data-i18n="footer_by">Created by</span>
+      <a href="https://fablabbcn.org/" target="_blank">Santi Fuentemilla @ Fab Lab Barcelona</a> ·
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> ·
+      <a href="https://github.com/santifu/ccl" target="_blank">GitHub</a>
+    </p>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="script.js"></script>
+  <script>
+    const savedLang = localStorage.getItem('ccl-lang') || 'en';
+    setLang(savedLang);
+    renderPhases();
+    updateSummary();
+  </script>
 </body>
 </html>

@@ -1,95 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cognitive Contribution Label (CCL)</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CCL — Cognitive Contribution Label</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Cognitive Contribution Label (CCL)</h1>
-            <p>A simple tool for declaring how much AI contributed to your project.</p>
+
+  <div class="lang-bar">
+    <span class="lang-label" data-i18n="lang_label">Language</span>
+    <button class="lang-btn active" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" onclick="setLang('ca')">CA</button>
+    <button class="lang-btn" onclick="setLang('pt')">PT</button>
+    <button class="lang-btn" onclick="setLang('fr')">FR</button>
+    <button class="lang-btn" onclick="setLang('de')">DE</button>
+  </div>
+
+  <header>
+    <div class="header-tag" data-i18n="header_tag">Cognitive Contribution Label</div>
+    <h1><span data-i18n="h1_line1">Declare your</span><br><span data-i18n="h1_line2">AI involvement.</span></h1>
+    <p class="subtitle" data-i18n="subtitle">A transparent tool to document how much AI contributed to your project — inspired by Creative Commons.</p>
+  </header>
+
+  <main class="home-main">
+
+    <section class="about-section">
+      <h2 data-i18n="about_title">About the Project</h2>
+      <p data-i18n="about_text">The CCL helps students, researchers, and creators transparently document the role of artificial intelligence across all stages of their creative process. Inspired by the spirit of Creative Commons, the CCL promotes honest reflection, responsible use of AI, and clarity in collaborative, tech-assisted creation.</p>
+    </section>
+
+    <section class="levels-section">
+      <h2 data-i18n="levels_title">Levels of AI Contribution</h2>
+      <div class="levels-grid">
+        <div class="level-card">
+          <div class="level-pill l0">0</div>
+          <div class="level-info">
+            <strong data-i18n="lvl0_name">Full Human Work</strong>
+            <p data-i18n="lvl0_full">This phase was completed entirely by the human without AI assistance.</p>
+          </div>
         </div>
-
-        <div class="content">
-            <div class="section">
-                <h2>About the Project</h2>
-                <p>
-                    The Cognitive Contribution Label (CCL) helps students, researchers, and creators transparently document the role of artificial intelligence across all stages of their <br>creative process</br>. Inspired by the spirit of Creative Commons, the CCL promotes honest reflection, responsible use of AI, and clarity in collaborative, tech-assisted creation.
-                </p>
-            </div>
-
-            <div class="section">
-                <h2>What does it do?</h2>
-                <p>
-                    Using a step-by-step interface, the CCL tool lets you:
-                </p>
-                <ul>
-                    <li>Select how much AI was involved (0 to 4) in each of 8 project phases.</li>
-                    <li>Generate a clear, shareable summary of AI involvement.</li>
-                    <li>Create a personalized CCL badge that visualizes the contribution across the full process.</li>
-                    <li>Download the badge and summary to use in your portfolio, thesis, GitHub repo, or final report.</li>
-                </ul>
-            </div>
-
-            <div class="section">
-                <h2>Levels of AI Contribution</h2>
-                <p>
-                    The tool defines five levels of AI contribution:
-                </p>
-                <ol>
-                    <li><strong>Full Human Work:</strong> This phase was completed entirely by the student without AI assistance.</li>
-                    <li><strong>AI for Insight:</strong> AI was used for research, inspiration, or brainstorming. The student crafted the final work.</li>
-                    <li><strong>AI for Drafting:</strong> AI generated early outputs that were then edited or rebuilt by the student.</li>
-                    <li><strong>AI as Co-Creator:</strong> An iterative collaboration between student and AI shaped the outcome together.</li>
-                    <li><strong>AI as Driver:</strong> AI generated the majority of the content; the student curated and edited.</li>
-                </ol>
-            </div>
-
-            <div class="section">
-                <h2>Project Phases</h2>
-                <p>
-                    The project phases considered in the CCL tool are:
-                </p>
-                <ul>
-                    <li>Research & References</li>
-                    <li>Ideation</li>
-                    <li>Design</li>
-                    <li>Coding / Programming</li>
-                    <li>Prototyping / Making</li>
-                    <li>Documentation</li>
-                    <li>Project Management & Collaboration</li>
-                    <li>Reflection & Feedback</li>
-                </ul>
-            </div>
-
-            <div class="section">
-                <h2>Why use CCL?</h2>
-                <p>
-                    Using the CCL tool can help you:
-                </p>
-                <ul>
-                    <li>Foster accountability in AI-supported education and research.</li>
-                    <li>Communicate clearly and ethically in a world of hybrid authorship.</li>
-                    <li>Encourage critical thinking and self-assessment of your creative process.</li>
-                </ul>
-            </div>
-
-            <div class="buttons">
-                <a href="https://santifu.github.io/ccl/generator.html" class="button generator-button">Go to CCL Generator</a>
-            </div>
+        <div class="level-card">
+          <div class="level-pill l1">1</div>
+          <div class="level-info">
+            <strong data-i18n="lvl1_name">AI for Insight</strong>
+            <p data-i18n="lvl1_full">AI was used for research, inspiration, or brainstorming. The human crafted the final work.</p>
+          </div>
         </div>
-
-        <div class="footer">
-            <p>This project and concept were created by Santi Fuentemilla, at <a href="https://fablabbcn.org/">Fab Lab Barcelona</a> and are licensed under:</p>
-            <p><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0 – the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.</a></p>
-            <p>CCL R1 D1 C4 O3 v1.0 – AI Contributed as Drafting Assistant in Design and Documentation, AI acted as AI-led in Coding. All other phases were fully human-led.</p>
-            <p>Find the code on <a href="https://github.com/santifu/ccl">GitHub</a>.</p> 
+        <div class="level-card">
+          <div class="level-pill l2">2</div>
+          <div class="level-info">
+            <strong data-i18n="lvl2_name">AI for Drafting</strong>
+            <p data-i18n="lvl2_full">AI generated early outputs that were then edited or rebuilt by the human.</p>
+          </div>
         </div>
+        <div class="level-card">
+          <div class="level-pill l3">3</div>
+          <div class="level-info">
+            <strong data-i18n="lvl3_name">AI as Co-Creator</strong>
+            <p data-i18n="lvl3_full">An iterative collaboration between human and AI shaped the outcome together.</p>
+          </div>
+        </div>
+        <div class="level-card">
+          <div class="level-pill l4">4</div>
+          <div class="level-info">
+            <strong data-i18n="lvl4_name">AI as Driver</strong>
+            <p data-i18n="lvl4_full">AI generated the majority of the content; the human curated and edited.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="phases-section">
+      <h2 data-i18n="phases_home_title">Project Phases</h2>
+      <div class="phases-list">
+        <div class="phase-item"><span class="phase-emoji">📚</span><span data-i18n="phase_R">Research &amp; References</span></div>
+        <div class="phase-item"><span class="phase-emoji">💡</span><span data-i18n="phase_I">Ideation</span></div>
+        <div class="phase-item"><span class="phase-emoji">🎨</span><span data-i18n="phase_D">Design</span></div>
+        <div class="phase-item"><span class="phase-emoji">💻</span><span data-i18n="phase_C">Coding / Programming</span></div>
+        <div class="phase-item"><span class="phase-emoji">🔧</span><span data-i18n="phase_P">Prototyping / Making</span></div>
+        <div class="phase-item"><span class="phase-emoji">📄</span><span data-i18n="phase_O">Documentation</span></div>
+        <div class="phase-item"><span class="phase-emoji">📊</span><span data-i18n="phase_M">Project Management</span></div>
+        <div class="phase-item"><span class="phase-emoji">🔄</span><span data-i18n="phase_F">Reflection &amp; Feedback</span></div>
+      </div>
+    </section>
+
+    <div class="cta-wrap">
+      <a href="generator.html" class="btn btn-primary cta-btn">
+        <span data-i18n="cta_btn">Go to CCL Generator →</span>
+      </a>
     </div>
-    </div>
+
+  </main>
+
+  <footer>
+    <p>
+      <span data-i18n="footer_by">Created by</span>
+      <a href="https://fablabbcn.org/" target="_blank">Santi Fuentemilla @ Fab Lab Barcelona</a> ·
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> ·
+      <a href="https://github.com/santifu/ccl" target="_blank">GitHub</a>
+    </p>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script>
+    // Init language from localStorage or default
+    const savedLang = localStorage.getItem('ccl-lang') || 'en';
+    setLang(savedLang);
+  </script>
 </body>
 </html>
