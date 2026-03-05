@@ -8,11 +8,6 @@
 
 The Cognitive Contribution Label (CCL) helps students, researchers, and creators transparently document the role of artificial intelligence across all stages of their creative process. Inspired by the spirit of Creative Commons, the CCL promotes honest reflection, responsible use of AI, and clarity in collaborative, tech-assisted creation.
 
-## 🏷️ Why use CCL?
-- Foster accountability in AI-supported education and research.
-- Communicate clearly and ethically in a world of hybrid authorship.
-- Encourage critical thinking and self-assessment of your creative process.
-
 ## 🌍 Supported Languages
 
 This fork adds full multilingual support. The interface changes completely when switching languages:
@@ -107,9 +102,4 @@ To add a new language, open `i18n.js` and add a new entry to the `TRANSLATIONS` 
 
 This project is licensed under the [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) — the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
 
-CCL AI D1 C4 U1 – v1.0 — AI contributed as Drafting Assistant in Design and Documentation, AI acted as AI-led in Coding. All other phases were fully human-led.
-
 Original concept and design by [Santi Fuentemilla](https://github.com/santifu) at [Fab Lab Barcelona](https://fablabbcn.org/).
-
-
-
