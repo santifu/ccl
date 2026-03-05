@@ -3,7 +3,7 @@
 const TRANSLATIONS = {
   en: {
     lang_label: "Language",
-    header_tag: "Cognitive Contribution Label",
+    header_tag: "Cognitive Contribution Label V1.1",
     h1_line1: "Declare your",
     h1_line2: "AI involvement.",
     subtitle: "A transparent tool to document how much AI contributed to your project — inspired by Creative Commons.",

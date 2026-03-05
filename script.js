@@ -1,4 +1,4 @@
-// ─── script.js — CCL Generator logic ────────────────────────────────────────
+// ─── script.js — CCL Generator logic ───────────────────────────────────────
 
 const levelColors    = ['#f0ede8','#e8f0e0','#f0f0d8','#f8e8d0','#f8ddd8'];
 const levelTextColors= ['#7a7870','#3a6020','#5a5010','#7a4010','#8a2010'];
