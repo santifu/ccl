@@ -1,4 +1,4 @@
-// ─── script.js — CCL Generator logic ───────────────────────────────────────
+// ─── script.js — CCL Generator logic ────────────────────────────────────────
 
 const levelColors    = ['#f0ede8','#e8f0e0','#f0f0d8','#f8e8d0','#f8ddd8'];
 const levelTextColors= ['#7a7870','#3a6020','#5a5010','#7a4010','#8a2010'];
@@ -22,7 +22,6 @@ function renderPhases() {
         <div class="phase-name">${phase.name}</div>
         <div class="phase-code">${phase.code}</div>
       </div>
-      <div class="phase-desc">${phase.desc}</div>
       <div class="slider-wrap">
         <div class="slider-labels">
           <span>${t.slider_left}</span>
@@ -31,10 +30,11 @@ function renderPhases() {
         <input type="range" min="0" max="4" value="${val}"
           oninput="onSlider(${i}, this.value)"
           style="background:${getSliderBg(val)}">
-        <div class="current-level-tag">
+        <div class="phase-level-row">
           <div class="level-pill" style="background:${levelColors[val]};color:${levelTextColors[val]}">
             ${val} — ${t.level_names[val]}
           </div>
+          <div class="level-desc-text" id="level-desc-${i}">${phase.levels[val]}</div>
         </div>
       </div>
     `;
@@ -53,11 +53,20 @@ function onSlider(idx, val) {
   const card = cards[idx];
   const t = TRANSLATIONS[currentLang];
   const v = sliderValues[idx];
+
   card.querySelector('input[type=range]').style.background = getSliderBg(v);
+
   const pill = card.querySelector('.level-pill');
-  pill.style.background   = levelColors[v];
-  pill.style.color        = levelTextColors[v];
-  pill.textContent        = `${v} — ${t.level_names[v]}`;
+  pill.style.background = levelColors[v];
+  pill.style.color      = levelTextColors[v];
+  pill.textContent      = `${v} — ${t.level_names[v]}`;
+
+  const descEl = document.getElementById(`level-desc-${idx}`);
+  descEl.classList.remove('fade-in');
+  void descEl.offsetWidth; // reflow to restart animation
+  descEl.textContent = t.phases[idx].levels[v];
+  descEl.classList.add('fade-in');
+
   updateSummary();
 }
 
