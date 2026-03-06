@@ -3,9 +3,9 @@
 const TRANSLATIONS = {
   en: {
     lang_label: "Language",
-    header_tag: "Cognitive Contribution Label",
-    h1_line1: "Declare your",
-    h1_line2: "AI involvement.",
+    header_tag: "Declare your AI involvement.",
+    h1_line1: "Cognitive Contribution Label",
+    h1_line2: "V 1.1",
     subtitle: "A transparent tool to document how much AI contributed to your project — inspired by Creative Commons.",
     gen_h1_line1: "Generate your",
     gen_h1_line2: "CCL badge.",
@@ -67,9 +67,9 @@ const TRANSLATIONS = {
 
   es: {
     lang_label: "Idioma",
-    header_tag: "Etiqueta de Contribución Cognitiva",
-    h1_line1: "Declara tu",
-    h1_line2: "uso de IA.",
+    header_tag: "Declara tu uso de IA",
+    h1_line1: "Cognitive Contribution Label",
+    h1_line2: "V 1.1",
     subtitle: "Una herramienta transparente para documentar cuánto contribuyó la IA a tu proyecto — inspirada en Creative Commons.",
     gen_h1_line1: "Genera tu",
     gen_h1_line2: "etiqueta CCL.",
@@ -131,7 +131,7 @@ const TRANSLATIONS = {
 
   ca: {
     lang_label: "Idioma",
-    header_tag: "Etiqueta de Contribució Cognitiva",
+    header_tag: "Declara el teu ús de la IA.",
     h1_line1: "Declara el teu",
     h1_line2: "ús de la IA.",
     subtitle: "Una eina transparent per documentar quant ha contribuït la IA al teu projecte — inspirada en Creative Commons.",
