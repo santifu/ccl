@@ -76,8 +76,7 @@
       <div class="summary-header">
         <span class="summary-title" data-i18n="summary_title">Your CCL Badge</span>
         <span class="copied-msg" id="copiedMsg" data-i18n="copied_msg">Copied!</span>
-      </div>
-      <div class="badge-preview">
+      </div>      <div class="badge-preview">
         <div class="badge">
           <div class="badge-top">
             <span class="badge-name">CCL v1.0</span>
@@ -101,6 +100,11 @@
 
   </main>
 
+  <div class="global-counter">
+    <span class="counter-label" data-i18n="counter_label">Labels generated worldwide</span>
+    <span class="counter-number ccl-counter">—</span>
+  </div>
+
   <footer>
     <p>
       <span data-i18n="footer_by">Created by</span>
@@ -117,6 +121,7 @@
     setLang(savedLang);
     renderPhases();
     updateSummary();
+    loadCounter();
   </script>
 </body>
 </html>

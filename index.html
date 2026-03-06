@@ -94,6 +94,11 @@
 
   </main>
 
+  <div class="global-counter">
+    <span class="counter-label" data-i18n="counter_label">Labels generated worldwide</span>
+    <span class="counter-number ccl-counter">—</span>
+  </div>
+
   <footer>
     <p>
       <span data-i18n="footer_by">Created by</span>
@@ -104,10 +109,11 @@
   </footer>
 
   <script src="i18n.js"></script>
+  <script src="script.js"></script>
   <script>
-    // Init language from localStorage or default
     const savedLang = localStorage.getItem('ccl-lang') || 'en';
     setLang(savedLang);
+    loadCounter();
   </script>
 </body>
 </html>

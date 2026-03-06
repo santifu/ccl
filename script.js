@@ -5,7 +5,68 @@ const levelTextColors= ['#7a7870','#3a6020','#5a5010','#7a4010','#8a2010'];
 
 const sliderValues = [0, 0, 0, 0, 0, 0, 0, 0];
 
-// ─── Render phase cards ──────────────────────────────────────────────────────
+// ─── Supabase config ──────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://tmeytsuqpxsutfcgqeha.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRtZXl0c3VxcHhzdXRmY2dxZWhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3NzQ2MzUsImV4cCI6MjA4ODM1MDYzNX0.6zWn55_0qTl7JqEl8NAnIIkfWkD5msmuSaiVCDt1hhs';
+
+// ─── Save label to Supabase ───────────────────────────────────────────────────
+async function saveLabel() {
+  const t      = TRANSLATIONS[currentLang];
+  const title  = document.getElementById('projectTitle').value  || t.field_project_ph;
+  const author = document.getElementById('authorName').value    || t.field_author_ph;
+  const code   = document.getElementById('badgeCode').textContent;
+  const summary= document.getElementById('badgeSummaryText').innerText;
+
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/labels`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        project: title,
+        author:  author,
+        lang:    currentLang,
+        code:    code,
+        summary: summary,
+        r: sliderValues[0], i: sliderValues[1], d: sliderValues[2],
+        c: sliderValues[3], p: sliderValues[4], o: sliderValues[5],
+        m: sliderValues[6], f: sliderValues[7]
+      })
+    });
+    loadCounter();
+  } catch (err) {
+    console.warn('Could not save to Supabase:', err);
+  }
+}
+
+// ─── Load & display global counter ───────────────────────────────────────────
+async function loadCounter() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/labels?select=id`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'count=exact',
+        'Range': '0-0'
+      }
+    });
+    const range = res.headers.get('content-range');
+    const count = range ? range.split('/')[1] : null;
+    if (count !== null) {
+      document.querySelectorAll('.ccl-counter').forEach(el => {
+        el.textContent = parseInt(count).toLocaleString();
+      });
+    }
+  } catch (err) {
+    console.warn('Could not load counter:', err);
+  }
+}
+
+// ─── Render phase cards ───────────────────────────────────────────────────────
 function renderPhases() {
   const t = TRANSLATIONS[currentLang];
   const container = document.getElementById('phases-container');
@@ -44,7 +105,7 @@ function renderPhases() {
 
 function getSliderBg(val) {
   const pct = (val / 4) * 100;
-  return `linear-gradient(to right,${levelColors[val]} 0%,${levelColors[val]} ${pct}%,#2a2a2a ${pct}%,#2a2a2a 100%)`;
+  return `linear-gradient(to right,${levelColors[val]} 0%,${levelColors[val]} ${pct}%,#c8c3b8 ${pct}%,#c8c3b8 100%)`;
 }
 
 function onSlider(idx, val) {
@@ -63,14 +124,14 @@ function onSlider(idx, val) {
 
   const descEl = document.getElementById(`level-desc-${idx}`);
   descEl.classList.remove('fade-in');
-  void descEl.offsetWidth; // reflow to restart animation
+  void descEl.offsetWidth;
   descEl.textContent = t.phases[idx].levels[v];
   descEl.classList.add('fade-in');
 
   updateSummary();
 }
 
-// ─── Update badge & summary ──────────────────────────────────────────────────
+// ─── Update badge & summary ───────────────────────────────────────────────────
 function updateSummary() {
   const t      = TRANSLATIONS[currentLang];
   const titleEl  = document.getElementById('projectTitle');
@@ -125,7 +186,7 @@ function updateSummary() {
     `<strong>"${title}"</strong> ${t.by_word} ${author}<br>${summaryText}`;
 }
 
-// ─── Copy to clipboard ───────────────────────────────────────────────────────
+// ─── Copy to clipboard ────────────────────────────────────────────────────────
 function copySummary() {
   const code    = document.getElementById('badgeCode').textContent;
   const summary = document.getElementById('badgeSummaryText').innerText;
@@ -133,10 +194,11 @@ function copySummary() {
     const msg = document.getElementById('copiedMsg');
     msg.classList.add('show');
     setTimeout(() => msg.classList.remove('show'), 2000);
+    saveLabel();
   });
 }
 
-// ─── Download badge as PNG ───────────────────────────────────────────────────
+// ─── Download badge as PNG ────────────────────────────────────────────────────
 function downloadBadge() {
   const t      = TRANSLATIONS[currentLang];
   const title  = document.getElementById('projectTitle').value  || t.field_project_ph;
@@ -149,19 +211,16 @@ function downloadBadge() {
   canvas.height = 340;
   const ctx = canvas.getContext('2d');
 
-  // Background
-  ctx.fillStyle = '#f5f4f0';
+  ctx.fillStyle = '#ede9e1';
   ctx.fillRect(0, 0, 800, 340);
-  ctx.strokeStyle = '#d8d6cf';
+  ctx.strokeStyle = '#c8c3b8';
   ctx.lineWidth = 1;
   ctx.strokeRect(1, 1, 798, 338);
 
-  // Accent bar
   ctx.fillStyle = '#e8441a';
   ctx.fillRect(0, 0, 4, 340);
 
-  // Header
-  ctx.fillStyle = '#7a7870';
+  ctx.fillStyle = '#6b6760';
   ctx.font = 'bold 10px sans-serif';
   ctx.fillText('COGNITIVE CONTRIBUTION LABEL · CCL v1.0', 24, 34);
 
@@ -169,11 +228,10 @@ function downloadBadge() {
   ctx.font = 'bold 22px serif';
   ctx.fillText(title, 24, 70);
 
-  ctx.fillStyle = '#a8a69e';
+  ctx.fillStyle = '#9c9890';
   ctx.font = '300 14px sans-serif';
   ctx.fillText(author, 24, 92);
 
-  // Phase dots
   const phases = t.phases;
   const dotW = 70, dotH = 56, startX = 24, startY = 120;
   phases.forEach((phase, i) => {
@@ -181,7 +239,7 @@ function downloadBadge() {
     const x = startX + i * (dotW + 8);
     ctx.fillStyle = levelColors[v];
     ctx.beginPath();
-    ctx.roundRect(x, startY, dotW, dotH, 6);
+    ctx.roundRect(x, startY, dotW, dotH, 4);
     ctx.fill();
     ctx.fillStyle = levelTextColors[v];
     ctx.font = 'bold 18px sans-serif';
@@ -192,13 +250,11 @@ function downloadBadge() {
     ctx.textAlign = 'left';
   });
 
-  // Code string
   ctx.fillStyle = '#1a1a1a';
-  ctx.font = '500 13px sans-serif';
+  ctx.font = '600 13px sans-serif';
   ctx.fillText(code, 24, 210);
 
-  // Summary (wrapped)
-  ctx.fillStyle = '#7a7870';
+  ctx.fillStyle = '#6b6760';
   ctx.font = '300 12px sans-serif';
   let line = '', y = 236;
   for (const word of summary.split(' ')) {
@@ -213,8 +269,7 @@ function downloadBadge() {
   }
   ctx.fillText(line, 24, y);
 
-  // Footer
-  ctx.fillStyle = '#b0aea6';
+  ctx.fillStyle = '#9c9890';
   ctx.font = '300 10px sans-serif';
   ctx.fillText('creativecommons.org/licenses/by-nc-sa/4.0 · santifu.github.io/ccl', 24, 320);
 
@@ -222,4 +277,7 @@ function downloadBadge() {
   link.download = `ccl-${title.toLowerCase().replace(/\s+/g,'-')}.png`;
   link.href = canvas.toDataURL('image/png');
   link.click();
+
+  // Save to Supabase after download
+  saveLabel();
 }

@@ -607,6 +607,39 @@ input[type="range"]::-moz-range-thumb {
 .btn-secondary { background: transparent; color: var(--text); border: 2px solid var(--text); }
 .btn-secondary:hover { background: var(--surface); }
 
+/* ─── Global counter ───────────────────────────────────────────────────────── */
+.global-counter {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 40px 40px;
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  border-top: 2px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.counter-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.counter-number {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  transition: opacity 0.4s;
+}
+
+.counter-number.loading { opacity: 0.3; }
+
 /* ─── Footer ───────────────────────────────────────────────────────────────── */
 footer {
   border-top: 2px solid var(--border);
