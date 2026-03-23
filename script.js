@@ -7,7 +7,7 @@ const sliderValues = [0, 0, 0, 0, 0, 0, 0, 0];
 
 // ─── Google Apps Script config ────────────────────────────────────────────────
 // ⚠️ PEGA AQUÍ la URL de tu Web App desplegada desde Google Apps Script
-const GOOGLE_SCRIPT_URL = 'PEGA_AQUI_TU_URL';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzitHS0I3WK1gOH-lm838LsZzhAe-3OXb096az-VlRIVGCQFENV0KF6boZP86QmERKgFQ/exec';
 
 // ─── Save label to Google Sheets ──────────────────────────────────────────────
 async function saveLabel() {
