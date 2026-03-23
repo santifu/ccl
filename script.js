@@ -1,64 +1,53 @@
 // ─── script.js — CCL Generator logic ────────────────────────────────────────
 
-const levelColors    = ['#f0ede8','#e8f0e0','#f0f0d8','#f8e8d0','#f8ddd8'];
-const levelTextColors= ['#7a7870','#3a6020','#5a5010','#7a4010','#8a2010'];
+const levelColors = ['#f0ede8', '#e8f0e0', '#f0f0d8', '#f8e8d0', '#f8ddd8'];
+const levelTextColors = ['#7a7870', '#3a6020', '#5a5010', '#7a4010', '#8a2010'];
 
 const sliderValues = [0, 0, 0, 0, 0, 0, 0, 0];
 
-// ─── Supabase config ──────────────────────────────────────────────────────────
-const SUPABASE_URL = 'https://tmeytsuqpxsutfcgqeha.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRtZXl0c3VxcHhzdXRmY2dxZWhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3NzQ2MzUsImV4cCI6MjA4ODM1MDYzNX0.6zWn55_0qTl7JqEl8NAnIIkfWkD5msmuSaiVCDt1hhs';
+// ─── Google Apps Script config ────────────────────────────────────────────────
+// ⚠️ PEGA AQUÍ la URL de tu Web App desplegada desde Google Apps Script
+const GOOGLE_SCRIPT_URL = 'PEGA_AQUI_TU_URL';
 
-// ─── Save label to Supabase ───────────────────────────────────────────────────
+// ─── Save label to Google Sheets ──────────────────────────────────────────────
 async function saveLabel() {
-  const t      = TRANSLATIONS[currentLang];
-  const title  = document.getElementById('projectTitle').value  || t.field_project_ph;
-  const author = document.getElementById('authorName').value    || t.field_author_ph;
-  const code   = document.getElementById('badgeCode').textContent;
-  const summary= document.getElementById('badgeSummaryText').innerText;
+  const t = TRANSLATIONS[currentLang];
+  const title = document.getElementById('projectTitle').value || t.field_project_ph;
+  const author = document.getElementById('authorName').value || t.field_author_ph;
+  const code = document.getElementById('badgeCode').textContent;
+  const summary = document.getElementById('badgeSummaryText').innerText;
 
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/labels`, {
+    const res = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
-      },
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         project: title,
-        author:  author,
-        lang:    currentLang,
-        code:    code,
+        author: author,
+        lang: currentLang,
+        code: code,
         summary: summary,
         r: sliderValues[0], i: sliderValues[1], d: sliderValues[2],
         c: sliderValues[3], p: sliderValues[4], o: sliderValues[5],
         m: sliderValues[6], f: sliderValues[7]
       })
     });
-    loadCounter();
+    // After saving, reload the counter
+    setTimeout(loadCounter, 1500);
   } catch (err) {
-    console.warn('Could not save to Supabase:', err);
+    console.warn('Could not save to Google Sheets:', err);
   }
 }
 
 // ─── Load & display global counter ───────────────────────────────────────────
 async function loadCounter() {
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/labels?select=id`, {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Prefer': 'count=exact',
-        'Range': '0-0'
-      }
-    });
-    const range = res.headers.get('content-range');
-    const count = range ? range.split('/')[1] : null;
-    if (count !== null) {
+    const res = await fetch(GOOGLE_SCRIPT_URL);
+    const data = await res.json();
+    if (data.count !== undefined) {
       document.querySelectorAll('.ccl-counter').forEach(el => {
-        el.textContent = parseInt(count).toLocaleString();
+        el.textContent = parseInt(data.count).toLocaleString();
       });
     }
   } catch (err) {
@@ -139,8 +128,8 @@ function onSlider(idx, val) {
 
   const pill = card.querySelector('.level-pill');
   pill.style.background = levelColors[v];
-  pill.style.color      = levelTextColors[v];
-  pill.textContent      = `${v} — ${t.level_names[v]}`;
+  pill.style.color = levelTextColors[v];
+  pill.textContent = `${v} — ${t.level_names[v]}`;
 
   const descEl = document.getElementById(`level-desc-${idx}`);
   descEl.classList.remove('fade-in');
@@ -153,24 +142,24 @@ function onSlider(idx, val) {
 
 // ─── Update badge & summary ───────────────────────────────────────────────────
 function updateSummary() {
-  const t      = TRANSLATIONS[currentLang];
-  const titleEl  = document.getElementById('projectTitle');
+  const t = TRANSLATIONS[currentLang];
+  const titleEl = document.getElementById('projectTitle');
   const authorEl = document.getElementById('authorName');
   if (!titleEl) return;
 
-  const title  = titleEl.value  || t.field_project_ph;
+  const title = titleEl.value || t.field_project_ph;
   const author = authorEl.value || t.field_author_ph;
 
   // Phase dots
   const badgePhases = document.getElementById('badgePhases');
   badgePhases.innerHTML = '';
   t.phases.forEach((phase, i) => {
-    const v   = sliderValues[i];
+    const v = sliderValues[i];
     const dot = document.createElement('div');
-    dot.className   = 'badge-phase-dot';
-    dot.title       = `${phase.name}: ${t.level_names[v]}`;
+    dot.className = 'badge-phase-dot';
+    dot.title = `${phase.name}: ${t.level_names[v]}`;
     dot.style.background = levelColors[v];
-    dot.style.color      = levelTextColors[v];
+    dot.style.color = levelTextColors[v];
     dot.innerHTML = `<span class="dot-code">${phase.code}</span><span class="dot-val">${v}</span>`;
     badgePhases.appendChild(dot);
   });
@@ -189,7 +178,7 @@ function updateSummary() {
     if (!names.length) continue;
     const joined = names.length === 1
       ? names[0]
-      : names.slice(0,-1).join(', ') + ' ' + t.and_word + ' ' + names[names.length-1];
+      : names.slice(0, -1).join(', ') + ' ' + t.and_word + ' ' + names[names.length - 1];
     lines.push(`${t.summary_level_labels[lvl]} ${joined}`);
   }
 
@@ -208,7 +197,7 @@ function updateSummary() {
 
 // ─── Copy to clipboard ────────────────────────────────────────────────────────
 function copySummary() {
-  const code    = document.getElementById('badgeCode').textContent;
+  const code = document.getElementById('badgeCode').textContent;
   const summary = document.getElementById('badgeSummaryText').innerText;
   navigator.clipboard.writeText(`${code}\n\n${summary}`).then(() => {
     const msg = document.getElementById('copiedMsg');
@@ -220,14 +209,14 @@ function copySummary() {
 
 // ─── Download badge as PNG ────────────────────────────────────────────────────
 function downloadBadge() {
-  const t      = TRANSLATIONS[currentLang];
-  const title  = document.getElementById('projectTitle').value  || t.field_project_ph;
-  const author = document.getElementById('authorName').value    || t.field_author_ph;
-  const code   = document.getElementById('badgeCode').textContent;
-  const summary= document.getElementById('badgeSummaryText').innerText;
+  const t = TRANSLATIONS[currentLang];
+  const title = document.getElementById('projectTitle').value || t.field_project_ph;
+  const author = document.getElementById('authorName').value || t.field_author_ph;
+  const code = document.getElementById('badgeCode').textContent;
+  const summary = document.getElementById('badgeSummaryText').innerText;
 
   const canvas = document.createElement('canvas');
-  canvas.width  = 800;
+  canvas.width = 800;
   canvas.height = 340;
   const ctx = canvas.getContext('2d');
 
@@ -264,9 +253,9 @@ function downloadBadge() {
     ctx.fillStyle = levelTextColors[v];
     ctx.font = 'bold 18px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(v, x + dotW/2, startY + 30);
+    ctx.fillText(v, x + dotW / 2, startY + 30);
     ctx.font = '600 10px sans-serif';
-    ctx.fillText(phase.code, x + dotW/2, startY + 46);
+    ctx.fillText(phase.code, x + dotW / 2, startY + 46);
     ctx.textAlign = 'left';
   });
 
@@ -294,7 +283,7 @@ function downloadBadge() {
   ctx.fillText('creativecommons.org/licenses/by-nc-sa/4.0 · santifu.github.io/ccl', 24, 320);
 
   const link = document.createElement('a');
-  link.download = `ccl-${title.toLowerCase().replace(/\s+/g,'-')}.png`;
+  link.download = `ccl-${title.toLowerCase().replace(/\s+/g, '-')}.png`;
   link.href = canvas.toDataURL('image/png');
   link.click();
 
