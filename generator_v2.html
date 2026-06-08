@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CCL Generator v2 — Cognitive Contribution Label</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #E8441A;
+      --teal:   #1D9E75;
+      --ink:    #0a0a0a;
+      --border: #e0e0e0;
+      --muted:  #888;
+      --faint:  #f5f5f5;
+    }
+
+    html, body {
+      font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif;
+      font-size: 16px;
+      background: #fff;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .screen { display: none; }
+    .screen.active { display: flex; flex-direction: column; min-height: 100vh; }
+    .screen.slide-in { animation: slideIn .42s cubic-bezier(.25,.46,.45,.94) both; }
+    @keyframes slideIn {
+      from { transform: translateY(48px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .6rem 1.5rem;
+      position: sticky; top: 0; z-index: 10;
+      flex-shrink: 0;
+    }
+    .topbar.on-white  { background: #fff;         border-bottom: 1px solid var(--border); }
+    .topbar.on-orange { background: var(--orange); border-bottom: 1px solid rgba(255,255,255,.15); }
+    .topbar.on-teal   { background: var(--teal);   border-bottom: 1px solid rgba(255,255,255,.15); }
+    .topbar.on-ink    { background: var(--ink);    border-bottom: 1px solid rgba(255,255,255,.1); }
+
+    .tb-logo { font-size: 12px; letter-spacing: .1em; color: #fff; font-weight: 400; }
+    .topbar.on-white .tb-logo { color: var(--ink); }
+
+    .tb-right { display: flex; align-items: center; gap: 12px; }
+    .tb-dots  { display: flex; gap: 5px; }
+    .tb-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,.3); cursor: pointer;
+    }
+    .tb-dot.on   { background: #fff; }
+    .tb-dot.done { background: rgba(255,255,255,.55); }
+    .topbar.on-white .tb-dot      { background: rgba(0,0,0,.15); }
+    .topbar.on-white .tb-dot.on   { background: var(--ink); }
+    .topbar.on-white .tb-dot.done { background: rgba(0,0,0,.35); }
+
+    .lang-bar { display: flex; gap: 3px; }
+    .lang-btn {
+      font-family: Helvetica, Arial, sans-serif; font-size: 10px;
+      letter-spacing: .06em; padding: 3px 7px;
+      border: 1px solid rgba(255,255,255,.3);
+      background: transparent; color: rgba(255,255,255,.6); cursor: pointer;
+    }
+    .lang-btn.active, .lang-btn:hover { background: rgba(255,255,255,.15); color: #fff; }
+    .topbar.on-white .lang-btn { border-color: var(--border); color: var(--muted); }
+    .topbar.on-white .lang-btn.active,
+    .topbar.on-white .lang-btn:hover { background: var(--faint); color: var(--ink); }
+
+    /* ══ S0: LANDING ══ */
+    #s0 {
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Header */
+    .s0-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem; height: 44px; flex-shrink: 0;
+      background: var(--ink); border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .s0-logo {
+      font-size: 12px; letter-spacing: .14em; color: #fff; font-weight: 400;
+    }
+    .s0-header-right { display: flex; align-items: center; gap: 10px; }
+    .s0-info-btn {
+      width: 24px; height: 24px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.3);
+      background: transparent; color: rgba(255,255,255,.5);
+      font-size: 11px; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; padding: 0;
+      line-height: 1;
+    }
+    .s0-info-btn:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,.1); }
+    .s0-header .lang-btn { border-color: rgba(255,255,255,.25); color: rgba(255,255,255,.5); }
+    .s0-header .lang-btn.active,
+    .s0-header .lang-btn:hover { background: rgba(255,255,255,.12); color: #fff; }
+
+    /* Info panel (collapsible) */
+    .info-panel {
+      display: none;
+      padding: 1.25rem 1.5rem;
+      background: var(--faint);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .info-panel.on { display: block; }
+    .info-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem; max-width: 640px;
+    }
+    .info-intro {
+      font-size: 14px; color: var(--ink); line-height: 1.6;
+      margin-bottom: .75rem; max-width: 560px;
+    }
+    .info-about {
+      font-size: 12px; color: var(--muted); line-height: 1.7;
+      max-width: 560px; margin-bottom: 1.25rem;
+      padding-bottom: 1.25rem; border-bottom: 1px solid var(--border);
+    }
+    .info-item h4 { font-size: 10px; letter-spacing: .08em; margin-bottom: .3rem; }
+    .info-item p  { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    /* Split arena */
+    .s0-arena {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .s0-half {
+      flex: 1;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 2rem 1.75rem;
+      cursor: pointer;
+      transition: filter .15s;
+      user-select: none;
+    }
+    .s0-half:hover { filter: brightness(.92); }
+    .s0-ai { background: var(--orange); }
+    .s0-hu { background: var(--teal); }
+
+    .s0-half-label {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 400; line-height: 1;
+      color: #fff; margin-bottom: .5rem;
+    }
+    .s0-half-sub {
+      font-size: 13px; color: rgba(255,255,255,.7);
+      line-height: 1.5; max-width: 200px;
+      margin-bottom: .5rem;
+    }
+    .s0-half-tag {
+      font-size: 10px; letter-spacing: .08em;
+      color: rgba(255,255,255,.45);
+    }
+
+    /* Both circle */
+    .s0-both {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      background: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 20px rgba(0,0,0,.35);
+      transition: transform .2s, box-shadow .2s;
+      z-index: 5;
+    }
+    .s0-both:hover {
+      transform: translate(-50%, -50%) scale(1.07);
+      box-shadow: 0 4px 28px rgba(0,0,0,.45);
+    }
+    .s0-both span {
+      font-size: 14px; font-weight: 400;
+      color: #fff; letter-spacing: .04em;
+    }
+
+    /* ── GLOBAL INFO OVERLAY ── */
+    .info-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 100;
+    }
+    .info-overlay.on { display: flex; flex-direction: column; }
+
+    .info-overlay-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.45);
+      cursor: pointer;
+    }
+    .info-overlay-panel {
+      position: relative; z-index: 1;
+      background: #fff;
+      width: 100%; max-width: 560px;
+      max-height: 80vh;
+      overflow-y: auto;
+      margin: auto;
+      padding: 2rem 1.75rem 1.75rem;
+      box-shadow: 0 8px 40px rgba(0,0,0,.25);
+    }
+    .info-overlay-close {
+      position: absolute; top: 1rem; right: 1.25rem;
+      background: none; border: none; font-size: 20px;
+      color: var(--muted); cursor: pointer; padding: 0; line-height: 1;
+    }
+    .info-overlay-close:hover { color: var(--ink); }
+
+    /* ── UNIFIED FOOTER (all screens) ── */
+    .uni-footer {
+      height: 38px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem; gap: 1rem;
+      background: var(--ink);
+      border-top: 1px solid rgba(255,255,255,.08);
+      font-size: 10px; color: rgba(255,255,255,.35);
+      letter-spacing: .02em;
+    }
+    .uni-footer a { color: rgba(255,255,255,.4); text-decoration: none; }
+    .uni-footer a:hover { color: rgba(255,255,255,.75); }
+    .uni-footer .uf-counter { white-space: nowrap; color: rgba(255,255,255,.45); }
+    .uni-footer .uf-counter .ccl-counter { color: #fff; margin-right: 3px; }
+
+    /* Mobile: stack vertically */
+    @media(max-width: 540px){
+      .s0-arena { flex-direction: column; }
+      .s0-half  { justify-content: center; padding: 1.5rem; }
+      .s0-both  {
+        top: 50%; left: 50%;
+        width: 72px; height: 72px;
+      }
+      .info-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ══ COLORED SCREENS ══ */
+    #s1 { background: var(--orange); }
+    #s3 { background: var(--teal); }
+
+    .screen-body { flex: 1; }
+
+    .sec-hdr {
+      display: flex; align-items: baseline; justify-content: space-between;
+      padding: 1rem 1.5rem .5rem;
+    }
+    .sec-title { font-size: 11px; letter-spacing: .08em; color: rgba(255,255,255,.7); }
+    .sec-hint  { font-size: 11px; color: rgba(255,255,255,.4); }
+
+    /* ── ROWS ── */
+    .phase-row {
+      display: flex; align-items: stretch;
+      border-top: 1px solid rgba(255,255,255,.12);
+    }
+    .pr-code {
+      width: 52px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 400; color: rgba(255,255,255,.9);
+      border-right: 1px solid rgba(255,255,255,.12);
+      padding: .75rem 0;
+    }
+    .pr-body { flex: 1; padding: .75rem 1rem; }
+    .pr-top  { display: flex; align-items: center; gap: 10px; margin-bottom: .4rem; }
+    .pr-name { font-size: 12px; color: rgba(255,255,255,.85); width: 100px; flex-shrink: 0; line-height: 1.3; }
+
+    .pr-slider-wrap { flex: 1; }
+    .pr-slider-wrap input[type=range] {
+      width: 100%; -webkit-appearance: none; appearance: none;
+      height: 2px; background: rgba(255,255,255,.25);
+      outline: none; border-radius: 0; cursor: pointer;
+    }
+    .pr-slider-wrap input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 20px; height: 20px;
+      border-radius: 50%; background: #fff; cursor: pointer;
+      box-shadow: 0 1px 5px rgba(0,0,0,.2);
+    }
+    .pr-slider-wrap input[type=range]::-moz-range-thumb {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #fff; cursor: pointer; border: none;
+    }
+    .pr-lvl {
+      font-size: 10px; color: rgba(255,255,255,.55);
+      width: 80px; flex-shrink: 0; text-align: right; white-space: nowrap;
+    }
+    .pr-desc {
+      font-size: 12px; color: rgba(255,255,255,.55);
+      line-height: 1.55; min-height: 1.55em;
+    }
+
+    /* ── TRANSITION ── */
+    #s2 { background: #fff; }
+    .trans-body {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 3rem 2rem; text-align: center;
+    }
+    .trans-split {
+      display: flex; width: 100%; max-width: 260px; height: 72px;
+      margin-bottom: 2rem; overflow: hidden;
+    }
+    .ts-ai { flex: 1; background: var(--orange); display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; }
+    .ts-hu { flex: 1; background: var(--teal);   display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; }
+    .trans-copy { font-size: 15px; color: var(--muted); line-height: 1.8; }
+    .trans-copy strong { color: var(--ink); font-weight: 400; }
+
+    /* ── RESULT ── */
+    #s4 { background: #fff; }
+
+    /* result-body grows, result-bottom stays at very bottom */
+    .result-body   { flex: 1; }
+    .result-bottom { flex-shrink: 0; }
+    /* override sticky on result act-bar — not needed, bottom handles it */
+    #s4 .act-bar { position: static; }
+
+    .result-arch {
+      padding: 2rem 1.5rem 1.5rem; border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem;
+    }
+    .arch-word {
+      font-size: clamp(40px, 8vw, 64px); font-weight: 400; line-height: 1; color: var(--ink);
+    }
+    .arch-sub  { font-size: 12px; color: var(--muted); margin-top: .4rem; line-height: 1.5; }
+
+    .q2 {
+      display: grid; grid-template-columns: 1fr 1fr;
+      width: 110px; height: 110px; flex-shrink: 0;
+      border: 1px solid var(--border); position: relative;
+    }
+    .qc2 {
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; border: .5px solid #f0f0f0;
+      line-height: 1.3; text-align: center; padding: 2px;
+    }
+    .qc2.hi { background: #f4f4f4; color: var(--ink); font-weight: 500; }
+    .qc2.lo { color: #ccc; }
+    .qdot {
+      position: absolute; width: 10px; height: 10px;
+      border-radius: 50%; background: var(--ink);
+      transition: left .35s, top .35s;
+    }
+
+    .badge-block { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
+    .project-fields {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1rem;
+    }
+    .project-fields input {
+      font-family: Helvetica, Arial, sans-serif; font-size: 13px;
+      padding: 8px 10px; border: 1px solid var(--border);
+      background: #fff; color: var(--ink); outline: none; width: 100%;
+    }
+    .project-fields input:focus { border-color: var(--ink); }
+
+    .badge-codes { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+    .bcode {
+      font-family: Helvetica, Arial, sans-serif; font-size: 11px;
+      padding: 4px 10px; border: 1px solid; letter-spacing: .04em;
+    }
+    .bcode.ai { border-color: var(--orange); color: var(--orange); }
+    .bcode.hu { border-color: var(--teal);   color: var(--teal); }
+
+    .all-dots { display: flex; gap: 3px; flex-wrap: wrap; align-items: center; margin-bottom: .875rem; }
+    .bdot {
+      width: 36px; height: 32px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; border: 1px solid #eee;
+    }
+    .bdot .bv { font-size: 14px; font-weight: 400; }
+    .bdot .bc { font-size: 8px; color: #bbb; letter-spacing: .04em; }
+    .bdot.ai .bv { color: var(--orange); }
+    .bdot.hu .bv { color: var(--teal); }
+    .sep-v { width: 1px; height: 32px; background: var(--border); margin: 0 3px; }
+
+    .expand-btn {
+      font-family: Helvetica, Arial, sans-serif; font-size: 11px;
+      color: var(--muted); cursor: pointer; border: none; background: none;
+      padding: 0; letter-spacing: .02em;
+    }
+    .expand-btn:hover { color: var(--ink); }
+    .expand-text {
+      display: none; font-size: 12px; color: var(--muted);
+      line-height: 1.6; margin-top: .625rem; padding: .625rem;
+      background: var(--faint); border-left: 2px solid var(--border);
+    }
+    .expand-text.on { display: block; }
+
+    /* ── LIVE BAR ── */
+    .live-bar {
+      position: sticky; bottom: 49px; z-index: 8;
+      display: flex; align-items: center; gap: 6px;
+      padding: .625rem 1rem;
+      border-top: 1px solid rgba(255,255,255,.15);
+      background: rgba(0,0,0,.18);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .live-bar::-webkit-scrollbar { display: none; }
+
+    .lb-prefix {
+      font-size: 9px; letter-spacing: .1em;
+      color: rgba(255,255,255,.4); flex-shrink: 0;
+      margin-right: 2px;
+    }
+    .lb-chip {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      width: 34px; height: 30px; flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,.2);
+      transition: border-color .1s, background .1s;
+    }
+    .lb-chip.lit {
+      border-color: rgba(255,255,255,.75);
+      background: rgba(255,255,255,.12);
+    }
+    .lb-chip .lc { font-size: 8px;  color: rgba(255,255,255,.4); letter-spacing: .04em; line-height: 1; }
+    .lb-chip .lv { font-size: 15px; color: rgba(255,255,255,.5); line-height: 1; }
+    .lb-chip.lit .lc { color: rgba(255,255,255,.6); }
+    .lb-chip.lit .lv { color: #fff; }
+
+    .lb-sep { width: 1px; height: 24px; background: rgba(255,255,255,.2); flex-shrink: 0; margin: 0 2px; }
+
+    /* ── ACTION BAR ── */
+    .act-bar {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      padding: .875rem 1.5rem; flex-shrink: 0;
+      position: sticky; bottom: 0; z-index: 9;
+    }
+    .act-bar.colored {
+      border-top: 1px solid rgba(255,255,255,.15);
+      background: rgba(0,0,0,.18);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .act-bar.white {
+      border-top: 1px solid var(--border);
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    button {
+      cursor: pointer; font-family: Helvetica, Arial, sans-serif; font-size: 12px;
+      padding: 9px 18px; border: 1px solid rgba(255,255,255,.4);
+      background: rgba(255,255,255,.1); color: #fff;
+      letter-spacing: .03em; transition: background .15s;
+    }
+    button:hover { background: rgba(255,255,255,.2); }
+    .btn-wh { background: #fff; color: var(--ink); border-color: #fff; }
+    .btn-wh:hover { background: #eee; color: var(--ink); }
+    .btn-dk { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .btn-dk:hover { background: #333; color: #fff; }
+    .btn-or { background: var(--orange); color: #fff; border-color: var(--orange); }
+    .btn-or:hover { background: #c73a15; color: #fff; }
+    .btn-tr { background: #fff; color: var(--ink); border: 1px solid var(--border); }
+    .btn-tr:hover { background: var(--faint); color: var(--ink); }
+    .btn-ml { margin-left: auto; }
+
+
+    @media(max-width: 600px){
+      .mode-cards { grid-template-columns: 1fr; }
+      .mode-card  { border-right: none; border-bottom: 1px solid var(--border); }
+      .mode-card:last-child { border-bottom: none; }
+      .info-grid  { grid-template-columns: 1fr; }
+      .project-fields { grid-template-columns: 1fr; }
+      .arch-word { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ SCREEN 0: LANDING ══ -->
+<div class="screen active" id="s0">
+
+  <div class="s0-header">
+    <div class="s0-logo">CCL v2</div>
+    <div class="s0-header-right">
+      <div class="lang-bar" id="langBar0"></div>
+      <button class="s0-info-btn" onclick="togInfo()">?</button>
+    </div>
+  </div>
+
+
+  <div class="s0-arena">
+    <!-- Left: AI-first -->
+    <div class="s0-half s0-ai" onclick="pickAndStart(0)">
+      <div class="s0-half-label" data-i18n="mode_ai_label">AI-first</div>
+      <div class="s0-half-sub" data-i18n="mode_ai_sub">How much did AI contribute?</div>
+      <div class="s0-half-tag">8 phases · 0–4</div>
+    </div>
+
+    <!-- Right: Human-first -->
+    <div class="s0-half s0-hu" onclick="pickAndStart(1)">
+      <div class="s0-half-label" data-i18n="mode_hu_label">Human-first</div>
+      <div class="s0-half-sub" data-i18n="mode_hu_sub">What only you could bring?</div>
+      <div class="s0-half-tag">6 dimensions · 0–4</div>
+    </div>
+
+    <!-- Center: Both — stopPropagation prevents the half below from also firing -->
+    <div class="s0-both" onclick="event.stopPropagation(); pickAndStart(2)">
+      <span data-i18n="mode_both_label">Both</span>
+    </div>
+  </div>
+
+  <div class="uni-footer">
+    <span>Created by <a href="https://fablabbcn.org/" target="_blank">Santi Fuentemilla @ Fab Lab Barcelona</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> · <a href="https://github.com/santifu/ccl" target="_blank">GitHub</a></span>
+    <span class="uf-counter"><span class="ccl-counter">—</span><span data-i18n="counter_label"> labels generated</span></span>
+  </div>
+
+</div>
+
+<!-- ══ SCREEN 1: AI-FIRST ══ -->
+<div class="screen" id="s1">
+  <div class="topbar on-orange">
+    <span class="tb-logo" data-i18n="mode_ai_label">AI-first</span>
+    <div class="tb-right">
+      <div class="lang-bar" id="langBar1"></div>
+      <button class="s0-info-btn" onclick="togInfo()">?</button>
+      <div class="tb-dots" id="dots1"></div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="sec-hdr">
+      <span class="sec-title" data-i18n="ai_sec_title">8 project phases</span>
+      <span class="sec-hint"  data-i18n="ai_sec_hint">0 = human · 4 = AI driver</span>
+    </div>
+    <div id="aiRows"></div>
+  </div>
+  <div class="live-bar" id="liveBarAI"></div>
+  <div class="act-bar colored">
+    <button onclick="go(0)" data-i18n="btn_back">← Back</button>
+    <button class="btn-wh btn-ml" onclick="aiDone()" data-i18n="btn_done">Done →</button>
+  </div>
+  <div class="uni-footer">
+    <span>Created by <a href="https://fablabbcn.org/" target="_blank">Santi Fuentemilla @ Fab Lab Barcelona</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> · <a href="https://github.com/santifu/ccl" target="_blank">GitHub</a></span>
+    <span class="uf-counter"><span class="ccl-counter">—</span><span data-i18n="counter_label"> labels generated</span></span>
+  </div>
+</div>
+
+<!-- ══ SCREEN 2: TRANSITION ══ -->
+<div class="screen" id="s2">
+  <div class="topbar on-white">
+    <span class="tb-logo" style="color:var(--ink)">CCL v2</span>
+    <div class="tb-right">
+      <button class="s0-info-btn" style="border-color:var(--border);color:var(--muted);" onclick="togInfo()">?</button>
+      <div class="tb-dots" id="dots2"></div>
+    </div>
+  </div>
+  <div class="trans-body">
+    <div class="trans-split">
+      <div class="ts-ai">AI</div>
+      <div class="ts-hu">HU</div>
+    </div>
+    <p class="trans-copy" data-i18n="trans_copy">
+      You've assessed AI's contribution.<br>
+      Now: <strong>what only you could bring?</strong>
+    </p>
+  </div>
+  <div class="act-bar white">
+    <button class="btn-tr" onclick="go(1)" data-i18n="btn_back">← Back</button>
+    <button class="btn-dk btn-ml" onclick="go(3)" data-i18n="btn_human_start">Human-first →</button>
+  </div>
+  <div class="uni-footer">
+    <span>Created by <a href="https://fablabbcn.org/" target="_blank">Santi Fuentemilla @ Fab Lab Barcelona</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> · <a href="https://github.com/santifu/ccl" target="_blank">GitHub</a></span>
+    <span class="uf-counter"><span class="ccl-counter">—</span><span data-i18n="counter_label"> labels generated</span></span>
+  </div>
+</div>
+
+<!-- ══ SCREEN 3: HUMAN-FIRST ══ -->
+<div class="screen" id="s3">
+  <div class="topbar on-teal">
+    <span class="tb-logo" data-i18n="mode_hu_label">Human-first</span>
+    <div class="tb-right">
+      <div class="lang-bar" id="langBar3"></div>
+      <button class="s0-info-btn" onclick="togInfo()">?</button>
+      <div class="tb-dots" id="dots3"></div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="sec-hdr">
+      <span class="sec-title" data-i18n="hu_sec_title">6 creator dimensions</span>
+      <span class="sec-hint"  data-i18n="hu_sec_hint">0 = absent · 4 = dominant</span>
+    </div>
+    <div id="huRows"></div>
+  </div>
+  <div class="live-bar" id="liveBarHU"></div>
+  <div class="act-bar colored">
+    <button onclick="go(prevHuScreen())" data-i18n="btn_back">← Back</button>
+    <button class="btn-wh btn-ml" onclick="showResult()" data-i18n="btn_result">See result →</button>
+  </div>
+  <div class="uni-footer">
+    <span>Created by <a href="https://fablabbcn.org/" target="_blank">Santi Fuentemilla @ Fab Lab Barcelona</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> · <a href="https://github.com/santifu/ccl" target="_blank">GitHub</a></span>
+    <span class="uf-counter"><span class="ccl-counter">—</span><span data-i18n="counter_label"> labels generated</span></span>
+  </div>
+</div>
+
+<!-- ══ SCREEN 4: RESULT ══ -->
+<div class="screen" id="s4">
+  <div class="topbar on-white">
+    <span class="tb-logo" style="color:var(--ink)" data-i18n="result_label">CCL v2 · result</span>
+    <div class="tb-right">
+      <div class="lang-bar" id="langBar4"></div>
+      <button class="s0-info-btn" style="border-color:var(--border);color:var(--muted);" onclick="togInfo()">?</button>
+      <div class="tb-dots" id="dots4"></div>
+    </div>
+  </div>
+
+  <!-- scrollable content grows to fill space -->
+  <div class="result-body">
+    <div class="result-arch">
+      <div>
+        <div class="arch-word" id="archetypeName">—</div>
+        <div class="arch-sub"  id="archetypeDesc"></div>
+        <br>
+        <button class="expand-btn" onclick="togX('archX')" data-i18n="btn_what_means">+ what this means</button>
+        <div class="expand-text" id="archX"></div>
+      </div>
+      <div class="q2" id="quadrant">
+        <div class="qc2 lo" id="qTL">Craft</div>
+        <div class="qc2 lo" id="qTR">Aug&shy;mented</div>
+        <div class="qc2 lo" id="qBL">Routine</div>
+        <div class="qc2 lo" id="qBR">Dele&shy;gated</div>
+        <div class="qdot" id="qdot"></div>
+      </div>
+    </div>
+
+    <div class="badge-block">
+      <div class="project-fields">
+        <input type="text" id="projectTitle" data-i18n-ph="field_project_ph" placeholder="Project title">
+        <input type="text" id="authorName"   data-i18n-ph="field_author_ph"  placeholder="Your name">
+      </div>
+      <div class="badge-codes" id="badgeCodes"></div>
+      <div class="all-dots"    id="allDots"></div>
+      <button class="expand-btn" onclick="togX('sumX')" data-i18n="btn_read_summary">+ read full summary</button>
+      <div class="expand-text" id="sumX"></div>
+    </div>
+  </div>
+
+  <!-- always at the bottom -->
+  <div class="result-bottom">
+    <div class="act-bar white">
+      <button class="btn-tr" onclick="go(lastHuScreen())" data-i18n="btn_back">← Back</button>
+      <button class="btn-or" onclick="downloadBadge()" data-i18n="btn_download">↓ Download</button>
+      <button class="btn-tr" onclick="copySummary()" data-i18n="btn_copy">⎘ Copy</button>
+      <span id="copiedMsg" style="display:none;font-size:11px;color:var(--teal);align-self:center" data-i18n="copied_msg">Copied!</span>
+    </div>
+    <div class="uni-footer">
+      <span>Created by <a href="https://fablabbcn.org/" target="_blank">Santi Fuentemilla @ Fab Lab Barcelona</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> · <a href="https://github.com/santifu/ccl" target="_blank">GitHub</a></span>
+      <span class="uf-counter"><span class="ccl-counter">—</span><span data-i18n="counter_label"> labels generated</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GLOBAL INFO OVERLAY ══ -->
+<div class="info-overlay" id="infoOverlay">
+  <div class="info-overlay-backdrop" onclick="togInfo()"></div>
+  <div class="info-overlay-panel">
+    <button class="info-overlay-close" onclick="togInfo()">×</button>
+    <p class="info-intro">A transparent tool to document how much AI contributed to your project — inspired by Creative Commons.</p>
+    <p class="info-about">The CCL helps students, researchers, and creators transparently document the role of artificial intelligence across all stages of their creative process. Inspired by the spirit of Creative Commons, the CCL promotes honest reflection, responsible use of AI, and clarity in collaborative, tech-assisted creation.</p>
+    <div class="info-grid">
+      <div class="info-item"><h4>AI-FIRST</h4><p>8 phases (Research, Ideation, Design, Coding, Prototyping, Documentation, Management, Reflection). Rate 0–4: how much did AI contribute?</p></div>
+      <div class="info-item"><h4>HUMAN-FIRST</h4><p>6 maker dimensions (Lived Experience, Local Knowledge, Relationship, Body, Risk, Judgment). Rate 0–4: what only you could bring?</p></div>
+      <div class="info-item"><h4>BOTH → ARCHETYPE</h4><p>Combine both to get your authorship archetype: Augmented, Delegated, Craft, or Routine.</p></div>
+      <div class="info-item"><h4>WHY IT MATTERS</h4><p>Not an audit — a reflective practice. The process of honest self-assessment is as valuable as the label itself.</p></div>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="script_v2.js"></script>
+<script>
+  const savedLang = localStorage.getItem('ccl-lang') || 'en';
+  setLang(savedLang);
+  buildAllRows();
+  renderDots();
+  loadCounter();
+</script>
+</body>
+</html>
