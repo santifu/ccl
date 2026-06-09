@@ -890,19 +890,25 @@ function saveLabel() {
   const aiCode = sliderValues.map((v,i)=>v>0?AI_DATA[i].code+v:null).filter(Boolean).join(' ');
   const huCode = huValues.map((v,i)=>v>0?HU_DATA[i].code+v:null).filter(Boolean).join(' ');
 
+  // Full label string — always includes both sides
+  const fullSummary = [
+    aiCode ? `AI: ${aiCode}` : null,
+    huCode ? `HU: ${huCode}` : null
+  ].filter(Boolean).join(' | ') || 'all-human';
+
   const payload = {
     project, author, lang: currentLang, mode: currentMode,
     archetype: arch.key,
-    // AI phases (original field names preserved)
-    code: aiCode,
+    // AI phases
+    code: aiCode || '',
     r: sliderValues[0], i: sliderValues[1], d: sliderValues[2], c: sliderValues[3],
     p: sliderValues[4], o: sliderValues[5], m: sliderValues[6], f: sliderValues[7],
-    summary: aiCode || 'all-human',
-    // HU dimensions (new v2 fields)
-    hu_code: huCode,
+    summary: fullSummary,
+    // HU dimensions
+    hu_code: huCode || '',
     e: huValues[0], l: huValues[1], rh: huValues[2], b: huValues[3],
     k: huValues[4], j: huValues[5],
-    hu_summary: huCode || 'no-hu'
+    hu_summary: huCode || ''
   };
 
   // Use 'text/plain' to match what the Google Apps Script doPost() expects

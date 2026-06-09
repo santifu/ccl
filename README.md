@@ -128,4 +128,6 @@ Both v1 and v2 save labels to a shared Google Sheet and display a live counter.
 
 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) — Creative Commons Attribution-NonCommercial-ShareAlike 4.0
 
+CCL v2 — "Cognitive Contribution Label" by Santi Fuentemilla Archetype: Routine AI: R1 D3 C4 P1 O2 F1 HU: E2 L2 R1 J1
+
 Original concept and design by [Santi Fuentemilla](https://github.com/santifu) at [Fab Lab Barcelona](https://fablabbcn.org/) / IAAC.
