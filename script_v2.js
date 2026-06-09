@@ -10,8 +10,9 @@
 // config.js overrides this if present (local dev); otherwise URL is used directly
 const GS_URL = (typeof GOOGLE_SCRIPT_URL !== 'undefined')
   ? GOOGLE_SCRIPT_URL
-  : 'https://script.google.com/macros/s/AKfycbzitHS0I3WK1gOH-lm838LsZzhAe-3OXb096az-VlRIVGCQFENV0KF6boZP86QmERKgFQ/exec';
+  : 'https://script.google.com/macros/s/AKfycbziUeI2JKskuJDuRorVzBgl7dG3b7iqFWzCGWkWkCIVIlafnTw7Ji0mpvclj4-NvqwCBQ/exec';
 const LANGS  = ['en','es','ca','pt','fr','de'];
+
 
 // ── STATE ──────────────────────────────────────────────────────
 let currentMode = 0;          // 0=AI-first 1=Human-first 2=Both

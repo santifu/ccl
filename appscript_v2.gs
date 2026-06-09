@@ -10,17 +10,12 @@ const SHEET_NAME = 'CCL Labels';
 // v1 columns (keep exact order for backward compatibility)
 // v2 adds: mode, archetype, hu_code, e, l, rh, b, k, j, hu_summary
 const HEADERS = [
-  'timestamp',
-  'project', 'author', 'lang',
-  // AI-first
-  'code',
-  'r', 'i', 'd', 'c', 'p', 'o', 'm', 'f',
-  'summary',
-  // v2 new
-  'mode', 'archetype',
-  'hu_code',
-  'e', 'l', 'rh', 'b', 'k', 'j',
-  'hu_summary'
+  'Timestamp',
+  'Project', 'Author', 'Language',
+  'Code', 'Summary',
+  'R', 'I', 'D', 'C', 'P', 'O', 'M', 'F',
+  'E', 'L', 'RH', 'B', 'K', 'J',
+  'Archetype'
 ];
 
 // ── Rate-limit: max N submissions per IP per hour ─────────────────────────────
@@ -61,34 +56,41 @@ function doPost(e) {
     const ss    = SpreadsheetApp.getActiveSpreadsheet();
     let   sheet = ss.getSheetByName(SHEET_NAME);
 
-    // Create sheet + header row on first run
+    // Create sheet on first run, or migrate existing v1 sheet to v2
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
       sheet.appendRow(HEADERS);
       sheet.setFrozenRows(1);
-      // Style header
       const hdr = sheet.getRange(1, 1, 1, HEADERS.length);
       hdr.setBackground('#0a0a0a').setFontColor('#ffffff').setFontWeight('bold');
+    } else {
+      // Check if v2 columns are missing and add them
+      migrateHeaders(sheet);
     }
 
-    // Build row in HEADERS order
+    // Build row matching HEADERS order exactly
     const row = [
-      new Date().toISOString(),
-      data.project   || '',
-      data.author    || '',
-      data.lang      || 'en',
-      // AI phases
-      data.code      || '',
-      safeInt(data.r), safeInt(data.i), safeInt(data.d), safeInt(data.c),
-      safeInt(data.p), safeInt(data.o), safeInt(data.m), safeInt(data.f),
-      data.summary   || '',
-      // v2 fields (safe defaults for v1 submissions)
-      data.mode      !== undefined ? data.mode      : 0,
-      data.archetype || '',
-      data.hu_code   || '',
-      safeInt(data.e),  safeInt(data.l), safeInt(data.rh),
-      safeInt(data.b),  safeInt(data.k), safeInt(data.j),
-      data.hu_summary || ''
+      new Date().toISOString(),       // Timestamp
+      data.project   || '',           // Project
+      data.author    || '',           // Author
+      data.lang      || 'en',         // Language
+      data.code      || '',           // Code (AI + HU combined)
+      data.summary   || '',           // Summary
+      safeInt(data.r),                // R
+      safeInt(data.i),                // I
+      safeInt(data.d),                // D
+      safeInt(data.c),                // C
+      safeInt(data.p),                // P
+      safeInt(data.o),                // O
+      safeInt(data.m),                // M
+      safeInt(data.f),                // F
+      safeInt(data.e),                // E
+      safeInt(data.l),                // L
+      safeInt(data.rh),               // RH
+      safeInt(data.b),                // B
+      safeInt(data.k),                // K
+      safeInt(data.j),                // J
+      data.archetype || ''            // Archetype
     ];
 
     sheet.appendRow(row);
@@ -120,6 +122,21 @@ function doGet(e) {
       .createTextOutput(JSON.stringify({ count: 0 }))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+// ── Migrate: add missing v2 headers to an existing v1 sheet ──────────────────
+function migrateHeaders(sheet) {
+  const existingHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn())
+    .getValues()[0].map(h => String(h).toLowerCase().trim());
+
+  let col = sheet.getLastColumn();
+  HEADERS.forEach(h => {
+    if (!existingHeaders.includes(h.toLowerCase())) {
+      col++;
+      sheet.getRange(1, col).setValue(h)
+        .setBackground('#1D9E75').setFontColor('#ffffff').setFontWeight('bold');
+    }
+  });
 }
 
 // ── Helper ────────────────────────────────────────────────────────────────────
