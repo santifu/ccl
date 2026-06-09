@@ -897,8 +897,11 @@ function saveLabel() {
   const payload = {
     project, author, lang: currentLang, mode: currentMode,
     archetype: arch.key,
-    // AI phases — code = AI code only, no duplication
-    code:    aiCode ? `${aiCode} – v2.0` : '',
+    // code = both AI and HU together
+    code: [
+      aiCode ? `AI: ${aiCode}` : null,
+      huCode ? `HU: ${huCode}` : null
+    ].filter(Boolean).join(' | ') + ' – v2.0',
     r: sliderValues[0], i: sliderValues[1], d: sliderValues[2], c: sliderValues[3],
     p: sliderValues[4], o: sliderValues[5], m: sliderValues[6], f: sliderValues[7],
     summary: textSummary,
