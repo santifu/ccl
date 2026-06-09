@@ -800,7 +800,7 @@ function renderBadgeCodes() {
   if (aiCode || currentMode !== 1) {
     const aiSpan = document.createElement('div');
     aiSpan.className = 'bcode ai';
-    aiSpan.textContent = 'AI: ' + (aiCode || '—');
+    aiSpan.textContent = 'AI: ' + (aiCode || '—') + ' – v2.0';
     container.appendChild(aiSpan);
   }
 
@@ -809,7 +809,7 @@ function renderBadgeCodes() {
   if (huCode || currentMode !== 0) {
     const huSpan = document.createElement('div');
     huSpan.className = 'bcode hu';
-    huSpan.textContent = 'HU: ' + (huCode || '—');
+    huSpan.textContent = 'HU: ' + (huCode || '—') + ' – v2.0';
     container.appendChild(huSpan);
   }
 }
@@ -890,25 +890,23 @@ function saveLabel() {
   const aiCode = sliderValues.map((v,i)=>v>0?AI_DATA[i].code+v:null).filter(Boolean).join(' ');
   const huCode = huValues.map((v,i)=>v>0?HU_DATA[i].code+v:null).filter(Boolean).join(' ');
 
-  // Full label string — always includes both sides
-  const fullSummary = [
-    aiCode ? `AI: ${aiCode}` : null,
-    huCode ? `HU: ${huCode}` : null
-  ].filter(Boolean).join(' | ') || 'all-human';
+  // Human-readable summary from the rendered text (not the code string)
+  renderSummary();
+  const textSummary = document.getElementById('sumX')?.textContent || '';
 
   const payload = {
     project, author, lang: currentLang, mode: currentMode,
     archetype: arch.key,
-    // AI phases
-    code: aiCode || '',
+    // AI phases — code = AI code only, no duplication
+    code:    aiCode ? `${aiCode} – v2.0` : '',
     r: sliderValues[0], i: sliderValues[1], d: sliderValues[2], c: sliderValues[3],
     p: sliderValues[4], o: sliderValues[5], m: sliderValues[6], f: sliderValues[7],
-    summary: fullSummary,
+    summary: textSummary,
     // HU dimensions
-    hu_code: huCode || '',
+    hu_code: huCode ? `${huCode} – v2.0` : '',
     e: huValues[0], l: huValues[1], rh: huValues[2], b: huValues[3],
     k: huValues[4], j: huValues[5],
-    hu_summary: huCode || ''
+    hu_summary: textSummary
   };
 
   // Use 'text/plain' to match what the Google Apps Script doPost() expects
