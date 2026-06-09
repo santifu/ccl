@@ -13,7 +13,6 @@ const GS_URL = (typeof GOOGLE_SCRIPT_URL !== 'undefined')
   : 'https://script.google.com/macros/s/AKfycbziUeI2JKskuJDuRorVzBgl7dG3b7iqFWzCGWkWkCIVIlafnTw7Ji0mpvclj4-NvqwCBQ/exec';
 const LANGS  = ['en','es','ca','pt','fr','de'];
 
-
 // ── STATE ──────────────────────────────────────────────────────
 let currentMode = 0;          // 0=AI-first 1=Human-first 2=Both
 let currentLang = 'en';
