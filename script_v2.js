@@ -18,6 +18,7 @@ let currentMode = 0;          // 0=AI-first 1=Human-first 2=Both
 let currentLang = 'en';
 let sliderValues = [0,0,0,0,0,0,0,0];   // AI phases R I D C P O M F
 let huValues     = [0,0,0,0,0,0];        // HU dims   E L R B K J
+let labelId      = '';                    // unique id per label (CCL-YYYY-XXXXXX)
 
 // ── AI PHASE DATA ──────────────────────────────────────────────
 // 8 phases: R I D C P O M F
@@ -446,6 +447,18 @@ const T = {
 // ── HELPERS ─────────────────────────────────────────────────────
 function t(key) { return (T[currentLang] || T.en)[key] || key; }
 
+// ── Unique label id ─────────────────────────────────────────────
+function makeId() {
+  const y = new Date().getFullYear();
+  const rnd = (Date.now().toString(36) + Math.random().toString(36).slice(2))
+                .toUpperCase().replace(/[^A-Z0-9]/g, '').slice(-6);
+  return `CCL-${y}-${rnd}`;
+}
+function ensureId() {
+  if (!labelId) labelId = makeId();
+  return labelId;
+}
+
 function calcArchetype() {
   const aiMean = sliderValues.reduce((a,b)=>a+b,0) / sliderValues.length;
   const huMean = huValues.reduce((a,b)=>a+b,0) / huValues.length;
@@ -741,6 +754,7 @@ function showResult() {
 // ── RESULT ──────────────────────────────────────────────────────
 function updateResult() {
   const arch = calcArchetype();
+  ensureId();   // assign a stable id for this label
 
   // Archetype name + description
   document.getElementById('archetypeName').textContent = arch.name[currentLang] || arch.name.en;
@@ -811,6 +825,16 @@ function renderBadgeCodes() {
     huSpan.className = 'bcode hu';
     huSpan.textContent = 'HU: ' + (huCode || '—') + ' – v2.0';
     container.appendChild(huSpan);
+  }
+
+  // Label ID
+  if (labelId) {
+    const idSpan = document.createElement('div');
+    idSpan.className = 'bcode';
+    idSpan.style.borderColor = '#ccc';
+    idSpan.style.color = '#888';
+    idSpan.textContent = labelId;
+    container.appendChild(idSpan);
   }
 }
 
@@ -895,7 +919,10 @@ function saveLabel() {
   const textSummary = document.getElementById('sumX')?.textContent || '';
 
   const payload = {
-    project, author, lang: currentLang, mode: currentMode,
+    id: ensureId(),
+    project, author,
+    url: document.getElementById('projectUrl')?.value || '',
+    lang: currentLang, mode: currentMode,
     archetype: arch.key,
     // code = both AI and HU together
     code: [
@@ -945,7 +972,9 @@ function downloadBadge() {
 
   const project = document.getElementById('projectTitle')?.value || 'Project';
   const author  = document.getElementById('authorName')?.value  || 'Author';
+  const projUrl = document.getElementById('projectUrl')?.value   || '';
   const arch    = calcArchetype();
+  ensureId();
 
   const W = 600, H = 280;
   const canvas = document.createElement('canvas');
@@ -985,6 +1014,13 @@ function downloadBadge() {
   ctx.font = 'normal 11px Helvetica, Arial, sans-serif';
   ctx.fillStyle = '#888';
   ctx.fillText(arch.sub[currentLang] || arch.sub.en, 24, 70);
+
+  // Label ID (top-right)
+  ctx.font = 'normal 9px Helvetica, Arial, sans-serif';
+  ctx.fillStyle = '#bbb';
+  ctx.textAlign = 'right';
+  ctx.fillText(labelId, W - 24, 30);
+  ctx.textAlign = 'left';
 
   // Project + author
   ctx.font = 'normal 12px Helvetica, Arial, sans-serif';
@@ -1040,7 +1076,14 @@ function downloadBadge() {
   // CCL footer
   ctx.font = 'normal 9px Helvetica, Arial, sans-serif';
   ctx.fillStyle = '#bbb';
-  ctx.fillText('CCL v2 · cognitivelabel.org · CC BY-NC-SA 4.0', 24, H - 14);
+  ctx.fillText('CCL v2 · santifu.github.io/ccl · CC BY-NC-SA 4.0', 24, H - 14);
+
+  // Project URL (optional, bottom-right)
+  if (projUrl) {
+    ctx.textAlign = 'right';
+    ctx.fillText(projUrl, W - 24, H - 14);
+    ctx.textAlign = 'left';
+  }
 
   // Download
   const link = document.createElement('a');
