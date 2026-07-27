@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCL Skill — Generate your label in conversation</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--orange:#E8441A;--teal:#1D9E75;--ink:#0a0a0a;--border:#e0e0e0;--muted:#888;--faint:#f7f7f7}
+  html,body{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased;line-height:1.6}
+  a{color:var(--ink)}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:44px;padding:0 1.5rem;background:var(--ink);border-bottom:1px solid rgba(255,255,255,.08)}
+  .top .logo{font-size:12px;letter-spacing:.14em;color:#fff;flex-shrink:0}
+  .top .right{display:flex;align-items:center;gap:12px}
+  .lang-bar{display:flex;gap:3px}
+  .lang-btn{font-family:inherit;font-size:10px;letter-spacing:.06em;padding:3px 6px;border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.55);cursor:pointer}
+  .lang-btn.active,.lang-btn:hover{background:rgba(255,255,255,.14);color:#fff}
+  .top .back{color:rgba(255,255,255,.6);font-size:11px;letter-spacing:.06em;text-decoration:none;flex-shrink:0}
+  .top .back:hover{color:#fff}
+  main{max-width:760px;margin:0 auto;padding:3.5rem 1.5rem 4rem}
+  .kicker{font-size:11px;letter-spacing:.14em;color:var(--orange);text-transform:uppercase;margin-bottom:1rem}
+  h1{font-size:clamp(30px,5vw,46px);font-weight:400;line-height:1.1;letter-spacing:-.01em;margin-bottom:1rem}
+  .lede{font-size:18px;color:#333;max-width:60ch;margin-bottom:2.5rem}
+  h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin:2.75rem 0 .9rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+  p{margin-bottom:1rem;color:#222}
+  .muted{color:var(--muted)}
+  .dl{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:1.5rem 0;padding:1.5rem;background:var(--faint);border:1px solid var(--border)}
+  .btn{display:inline-block;padding:11px 20px;font-size:13px;letter-spacing:.03em;text-decoration:none;border:1px solid var(--ink)}
+  .btn-primary{background:var(--ink);color:#fff}
+  .btn-primary:hover{background:#333}
+  .btn-ghost{background:#fff;color:var(--ink)}
+  .btn-ghost:hover{background:#eee}
+  .dl-note{font-size:12px;color:var(--muted);flex-basis:100%}
+  ol.steps{list-style:none;counter-reset:s;margin:.5rem 0 1rem}
+  ol.steps li{counter-increment:s;position:relative;padding:.35rem 0 .35rem 2.2rem;color:#222}
+  ol.steps li::before{content:counter(s);position:absolute;left:0;top:.3rem;width:1.5rem;height:1.5rem;background:var(--teal);color:#fff;border-radius:50%;font-size:12px;display:flex;align-items:center;justify-content:center}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:1rem 0}
+  .card{border:1px solid var(--border);padding:1.1rem 1.2rem}
+  .card h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.4rem}
+  .card.ai h3{color:var(--orange)} .card.hu h3{color:var(--teal)}
+  .card p{font-size:13px;color:#444;margin:0}
+  code{background:var(--faint);border:1px solid var(--border);padding:1px 5px;font-size:13px}
+  pre{background:#0a0a0a;color:#eee;padding:1rem 1.1rem;overflow-x:auto;font-size:12.5px;line-height:1.5;margin:1rem 0}
+  .quote{border-left:2px solid var(--orange);padding:.4rem 0 .4rem 1rem;color:#333;font-size:15px;margin:1.25rem 0}
+  footer{max-width:760px;margin:0 auto;padding:1.5rem;border-top:1px solid var(--border);font-size:11px;color:var(--muted)}
+  footer a{color:var(--muted)}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <span class="logo">CCL</span>
+  <div class="right">
+    <div class="lang-bar" id="langBar"></div>
+    <a class="back" href="index.html" data-i18n="nav_gen">← Generator</a>
+  </div>
+</div>
+
+<main>
+  <div class="kicker" data-i18n="s_kicker">Cognitive Contribution Label · Skill</div>
+  <h1 data-i18n="s_h1">Generate your CCL in conversation.</h1>
+  <p class="lede" data-i18n="s_lede">The CCL Skill turns the label into a dialogue.</p>
+
+  <div class="dl">
+    <a class="btn btn-primary" href="ccl.skill" download data-i18n="s_install">↓ Install skill (.skill)</a>
+    <a class="btn btn-ghost" href="ccl-skill.zip" download data-i18n="s_zip">↓ Download as .zip</a>
+    <span class="dl-note" data-i18n-html="s_note_html">The <code>.skill</code> file installs into Claude / Cowork with one click.</span>
+  </div>
+
+  <h2 data-i18n="s_what_h">What it does</h2>
+  <p data-i18n-html="s_what_p_html">It runs a warm, unhurried interview.</p>
+
+  <div class="grid">
+    <div class="card ai"><h3 data-i18n="s_cai_h">AI-first · 8 phases</h3><p data-i18n="s_cai_p">Research, Ideation, Design, Coding, Prototyping, Documentation, Management, Reflection — rated 0–4.</p></div>
+    <div class="card hu"><h3 data-i18n="s_chu_h">Human-first · 6 dimensions</h3><p data-i18n="s_chu_p">Lived Experience, Local Knowledge, Relationship, Body, Risk, Judgment — what no model has.</p></div>
+  </div>
+
+  <h2 data-i18n="s_new_h">What's new in this version</h2>
+  <p data-i18n-html="s_multi_html"><strong>Multilingual.</strong> It detects your language.</p>
+  <p data-i18n-html="s_json_html"><strong>Machine-readable output.</strong> It emits a JSON record:</p>
+  <pre>{
+  "ccl_version": "2.0",
+  "id": "CCL-2026-XXXXXX",
+  "project": "…",  "author": "…",  "url": "",
+  "language": "es",
+  "ai_first":  { "R":2,"I":1,"D":0,"C":3,"P":0,"O":2,"M":1,"F":1 },
+  "human_first":{ "E":4,"L":3,"R":2,"B":4,"K":1,"J":3 },
+  "archetype": "Craft"
+}</pre>
+  <p data-i18n-html="s_fac_html"><strong>Facilitator mode.</strong> Tell it you're running a workshop.</p>
+
+  <h2 data-i18n="s_how_h">How to use it</h2>
+  <ol class="steps">
+    <li data-i18n-html="s_step1_html">Download the <code>.skill</code> file and add it to Claude / Cowork.</li>
+    <li data-i18n-html="s_step2_html">Describe a real, recent project — or just say <em>"generate my CCL"</em>.</li>
+    <li data-i18n="s_step3">Answer the questions honestly. There are no wrong answers.</li>
+    <li data-i18n="s_step4">Get your two labels, the JSON block, and a link to the visual badge.</li>
+  </ol>
+
+  <div class="quote" data-i18n="s_quote">Level 0 always means “I believe I didn't use AI” — never a confession, never a judgment.</div>
+
+  <h2 data-i18n="s_edu_h">For educators</h2>
+  <p data-i18n="s_edu_p">The skill pairs with a 90-minute workshop format.</p>
+</main>
+
+<footer>
+  Created by <a href="https://fablabbcn.org/" target="_blank" rel="noopener">Santi Fuentemilla @ Fab Lab Barcelona</a> ·
+  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> ·
+  <a href="https://github.com/santifu/ccl" target="_blank" rel="noopener">GitHub</a>
+</footer>
+
+<script src="pages-i18n.js"></script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCL — What it contributes, and how it compares</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--orange:#E8441A;--teal:#1D9E75;--ink:#0a0a0a;--border:#e0e0e0;--muted:#888;--faint:#f7f7f7}
+  html,body{font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased;line-height:1.6}
+  a{color:var(--ink)}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:44px;padding:0 1.5rem;background:var(--ink);border-bottom:1px solid rgba(255,255,255,.08)}
+  .top .logo{font-size:12px;letter-spacing:.14em;color:#fff;flex-shrink:0}
+  .top .right{display:flex;align-items:center;gap:12px}
+  .lang-bar{display:flex;gap:3px}
+  .lang-btn{font-family:inherit;font-size:10px;letter-spacing:.06em;padding:3px 6px;border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.55);cursor:pointer}
+  .lang-btn.active,.lang-btn:hover{background:rgba(255,255,255,.14);color:#fff}
+  .top .back{color:rgba(255,255,255,.6);font-size:11px;letter-spacing:.06em;text-decoration:none;flex-shrink:0}
+  .top .back:hover{color:#fff}
+  main{max-width:820px;margin:0 auto;padding:3.5rem 1.5rem 4rem}
+  .kicker{font-size:11px;letter-spacing:.14em;color:var(--orange);text-transform:uppercase;margin-bottom:1rem}
+  h1{font-size:clamp(30px,5vw,46px);font-weight:400;line-height:1.1;letter-spacing:-.01em;margin-bottom:1rem}
+  .lede{font-size:18px;color:#333;max-width:62ch;margin-bottom:2.5rem}
+  h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin:2.75rem 0 .9rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+  p{margin-bottom:1rem;color:#222}
+  .muted{color:var(--muted)}
+  .quote{border-left:2px solid var(--orange);padding:.5rem 0 .5rem 1.1rem;color:#333;font-size:16px;margin:1.5rem 0}
+  .tablewrap{overflow-x:auto;margin:1.25rem 0}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:640px}
+  th,td{text-align:left;padding:.6rem .7rem;border-bottom:1px solid var(--border);vertical-align:top}
+  thead th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--ink)}
+  tr.ccl{background:var(--faint)}
+  tr.ccl td{font-weight:500}
+  .tag{display:inline-block;font-size:11px;padding:1px 7px;border:1px solid;border-radius:2px}
+  .yes{color:var(--teal);border-color:var(--teal)}
+  .no{color:var(--muted);border-color:var(--border)}
+  .part{color:var(--orange);border-color:var(--orange)}
+  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:1rem 0}
+  .card{border:1px solid var(--border);padding:1.1rem 1.2rem}
+  .card h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.4rem}
+  .card p{font-size:13px;color:#444;margin:0}
+  footer{max-width:820px;margin:0 auto;padding:1.5rem;border-top:1px solid var(--border);font-size:11px;color:var(--muted)}
+  footer a{color:var(--muted)}
+  .src{font-size:12.5px;color:#555}
+  .src a{color:#555}
+  @media(max-width:560px){.cols2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <span class="logo">CCL</span>
+  <div class="right">
+    <div class="lang-bar" id="langBar"></div>
+    <a class="back" href="index.html" data-i18n="nav_gen">← Generator</a>
+  </div>
+</div>
+
+<main>
+  <div class="kicker" data-i18n="st_kicker">Cognitive Contribution Label · Study</div>
+  <h1 data-i18n="st_h1">What the CCL contributes — and how it compares.</h1>
+  <p class="lede" data-i18n="st_lede">Authorship in the age of AI is no longer binary.</p>
+
+  <h2 data-i18n="st_gap_h">The gap the CCL fills</h2>
+  <p data-i18n-html="st_gap1_html">A rich ecosystem of AI-transparency tools already exists.</p>
+  <p data-i18n-html="st_gap2_html">Its most original piece is the Human-first label.</p>
+
+  <div class="quote" data-i18n="st_quote">Where the law traces “what machine touched the file,” the CCL traces “what mind did the work.”</div>
+
+  <h2 data-i18n="st_cmp_h">Comparison with other AI labels</h2>
+  <div class="tablewrap">
+  <table>
+    <thead>
+      <tr>
+        <th data-i18n="th_tool">Tool</th>
+        <th data-i18n="th_doc">What it documents</th>
+        <th data-i18n="th_reader">Reader</th>
+        <th data-i18n="th_verif">Verifiable</th>
+        <th data-i18n="th_human">Human focus</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="ccl">
+        <td><strong>CCL</strong></td>
+        <td data-i18n="r_ccl_doc">The creative process — AI vs human contribution, phase by phase</td>
+        <td data-i18n="reader_h">Human</td>
+        <td><span class="tag no" data-i18n="tag_nobd">No — by design</span></td>
+        <td><span class="tag yes" data-i18n="tag_high">High</span></td>
+      </tr>
+      <tr>
+        <td>C2PA</td>
+        <td data-i18n="r_c2pa_doc">Provenance &amp; edit history of a file</td>
+        <td data-i18n="reader_machine">Machine</td>
+        <td><span class="tag yes" data-i18n="tag_crypto">Yes (crypto)</span></td>
+        <td><span class="tag no" data-i18n="tag_none">None</span></td>
+      </tr>
+      <tr>
+        <td>Model Cards / Datasheets</td>
+        <td data-i18n="r_mc_doc">How a model or dataset was built</td>
+        <td data-i18n="reader_hm">Human + machine</td>
+        <td><span class="tag part" data-i18n="tag_partial">Partial</span></td>
+        <td><span class="tag no" data-i18n="tag_none">None</span></td>
+      </tr>
+      <tr>
+        <td>AID / DAISY</td>
+        <td data-i18n="r_aid_doc">Which AI tools were used in a manuscript</td>
+        <td data-i18n="reader_h">Human</td>
+        <td><span class="tag no" data-i18n="tag_no">No</span></td>
+        <td><span class="tag part" data-i18n="tag_low">Low</span></td>
+      </tr>
+      <tr>
+        <td>CRediT</td>
+        <td data-i18n="r_credit_doc">Contribution roles between co-authors</td>
+        <td data-i18n="reader_h">Human</td>
+        <td><span class="tag no" data-i18n="tag_no">No</span></td>
+        <td><span class="tag yes" data-i18n="tag_high_people">High (people)</span></td>
+      </tr>
+      <tr>
+        <td>CC Signals</td>
+        <td data-i18n="r_ccs_doc">Permissions for AI training use</td>
+        <td data-i18n="reader_hm">Human + machine</td>
+        <td><span class="tag part" data-i18n="tag_flexible">Flexible</span></td>
+        <td><span class="tag part" data-i18n="tag_partial">Partial</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted" style="font-size:12.5px" data-i18n="st_cmp_note">The CCL is the only one that combines a focus on the creative process, an explicit account of the irreplaceably human, and a reflective, pedagogical purpose.</p>
+
+  <h2 data-i18n="st_comp_h">Complement, not competitor</h2>
+  <div class="cols2">
+    <div class="card"><h3 data-i18n="st_cact_h">vs the EU AI Act</h3><p data-i18n="st_cact_p">The Act obliges marking the machine's output; the CCL declares the author's process.</p></div>
+    <div class="card"><h3 data-i18n="st_cedu_h">vs education guidance</h3><p data-i18n="st_cedu_p">UNESCO and the EU ask for reflection but give no artifact. The CCL is that artifact.</p></div>
+  </div>
+
+  <h2 data-i18n="st_nv_h">Why non-verifiable is a stance, not a flaw</h2>
+  <p data-i18n="st_nv_p">The CCL is self-declared and cannot be cryptographically proven — and that is deliberate.</p>
+
+  <h2 data-i18n="st_fl_h">Aligned with the fab lab commons</h2>
+  <p data-i18n="st_fl_p">Open, distributed, peer-based, documentation-as-practice.</p>
+
+  <h2 data-i18n="st_src_h">Sources</h2>
+  <p class="src">
+    <a href="https://artificialintelligenceact.eu/article/50/" target="_blank" rel="noopener">EU AI Act — Article 50</a> ·
+    <a href="https://c2pa.org/" target="_blank" rel="noopener">C2PA</a> ·
+    <a href="https://cacm.acm.org/research/datasheets-for-datasets/" target="_blank" rel="noopener">Datasheets for Datasets</a> ·
+    <a href="https://crln.acrl.org/index.php/crlnews/article/view/26548/34482" target="_blank" rel="noopener">AID Framework</a> ·
+    <a href="https://credit.niso.org/" target="_blank" rel="noopener">CRediT (NISO)</a> ·
+    <a href="https://creativecommons.org/2025/06/25/introducing-cc-signals-a-new-social-contract-for-the-age-of-ai/" target="_blank" rel="noopener">CC Signals</a> ·
+    <a href="https://www.unesco.org/en/articles/ai-competency-framework-students" target="_blank" rel="noopener">UNESCO AI Competency Framework</a>
+  </p>
+</main>
+
+<footer>
+  Created by <a href="https://fablabbcn.org/" target="_blank" rel="noopener">Santi Fuentemilla @ Fab Lab Barcelona</a> ·
+  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> ·
+  <a href="https://github.com/santifu/ccl" target="_blank" rel="noopener">GitHub</a>
+</footer>
+
+<script src="pages-i18n.js"></script>
+</body>
+</html>
