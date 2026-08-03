@@ -533,7 +533,7 @@ function applyTranslations() {
   });
   document.querySelectorAll('.pr-lvl[data-dim-idx]').forEach(el => {
     const idx = parseInt(el.getAttribute('data-dim-idx'));
-    el.textContent = LEVEL_NAMES[currentLang][huValues[idx]];
+    el.textContent = LEVEL_NAMES[currentLang][4 - huValues[idx]];
   });
 }
 
@@ -624,7 +624,7 @@ function buildHURows() {
             <input type="range" min="0" max="4" step="1" value="${huValues[i]}"
               oninput="updHU(${i}, +this.value)">
           </div>
-          <div class="pr-lvl" data-dim-idx="${i}">${LEVEL_NAMES[currentLang][huValues[i]]}</div>
+          <div class="pr-lvl" data-dim-idx="${i}">${LEVEL_NAMES[currentLang][4 - huValues[i]]}</div>
         </div>
         <div class="pr-desc" id="hu-desc-${i}">${dim.levels[huValues[i]]}</div>
       </div>`;
@@ -650,7 +650,7 @@ function updAI(i, v) {
 function updHU(i, v) {
   huValues[i] = v;
   const lvlEl = document.querySelector(`.pr-lvl[data-dim-idx="${i}"]`);
-  if (lvlEl) lvlEl.textContent = LEVEL_NAMES[currentLang][v];
+  if (lvlEl) lvlEl.textContent = LEVEL_NAMES[currentLang][4 - v];
   const descEl = document.getElementById(`hu-desc-${i}`);
   if (descEl) descEl.textContent = HU_DATA[i].levels[v];
   // Live bar update
