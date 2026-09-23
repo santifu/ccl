@@ -25,76 +25,84 @@ let labelId      = '';                    // unique id per label (CCL-YYYY-XXXXX
 // Each level (0-4) has a short dynamic description shown under the slider
 const AI_DATA = [
   { code:'R', key:'research',
-    levels:[
-      'All sources found and filtered manually.',
-      'AI helped surface references; you evaluated them.',
-      'AI generated summaries and literature maps you revised.',
-      'Iterative AI search shaped the conceptual frame.',
-      'AI drove the literature review; you curated results.'
-    ]
+    levels:{
+      en:['All sources found and filtered manually.','AI helped surface references; you evaluated them.','AI generated summaries and literature maps you revised.','Iterative AI search shaped the conceptual frame.','AI drove the literature review; you curated results.'],
+      es:['Todas las fuentes encontradas y filtradas manualmente.','La IA ayudó a encontrar referencias; tú las evaluaste.','La IA generó resúmenes y mapas bibliográficos que revisaste.','Una búsqueda iterativa con IA dio forma al marco conceptual.','La IA dirigió la revisión bibliográfica; tú curaste los resultados.'],
+      ca:['Totes les fonts trobades i filtrades manualment.','La IA va ajudar a trobar referències; tu les vas avaluar.','La IA va generar resums i mapes bibliogràfics que vas revisar.','Una cerca iterativa amb IA va donar forma al marc conceptual.','La IA va dirigir la revisió bibliogràfica; tu vas curar els resultats.'],
+      pt:['Todas as fontes encontradas e filtradas manualmente.','A IA ajudou a encontrar referências; você as avaliou.','A IA gerou resumos e mapas bibliográficos que você revisou.','Uma pesquisa iterativa com IA moldou o quadro conceptual.','A IA conduziu a revisão bibliográfica; você curou os resultados.'],
+      fr:['Toutes les sources trouvées et filtrées manuellement.','L\'IA a aidé à trouver des références ; vous les avez évaluées.','L\'IA a généré des résumés et des cartes bibliographiques que vous avez révisés.','Une recherche itérative avec l\'IA a façonné le cadre conceptuel.','L\'IA a mené la revue de littérature ; vous avez sélectionné les résultats.'],
+      de:['Alle Quellen wurden manuell gefunden und gefiltert.','KI half, Referenzen zu finden; Sie haben sie bewertet.','KI erstellte Zusammenfassungen und Literaturkarten, die Sie überarbeitet haben.','Eine iterative KI-Suche prägte den konzeptionellen Rahmen.','KI leitete die Literaturrecherche; Sie haben die Ergebnisse kuratiert.']
+    }
   },
   { code:'I', key:'ideation',
-    levels:[
-      'Ideas emerged from your own thinking.',
-      'AI sparked options; you chose the direction.',
-      'AI drafts seeded concepts you reworked.',
-      'Back-and-forth with AI shaped the core idea.',
-      'AI generated the concept; you refined and selected.'
-    ]
+    levels:{
+      en:['Ideas emerged from your own thinking.','AI sparked options; you chose the direction.','AI drafts seeded concepts you reworked.','Back-and-forth with AI shaped the core idea.','AI generated the concept; you refined and selected.'],
+      es:['Las ideas surgieron de tu propio pensamiento.','La IA propuso opciones; tú elegiste la dirección.','Los borradores de la IA sembraron conceptos que reelaboraste.','El ir y venir con la IA dio forma a la idea central.','La IA generó el concepto; tú lo refinaste y seleccionaste.'],
+      ca:['Les idees van sorgir del teu propi pensament.','La IA va proposar opcions; tu vas triar la direcció.','Els esborranys de la IA van sembrar conceptes que vas reelaborar.','L\'anada i tornada amb la IA va donar forma a la idea central.','La IA va generar el concepte; tu el vas refinar i seleccionar.'],
+      pt:['As ideias surgiram do seu próprio pensamento.','A IA propôs opções; você escolheu a direção.','Os rascunhos da IA semearam conceitos que você reformulou.','O vaivém com a IA moldou a ideia central.','A IA gerou o conceito; você refinou e selecionou.'],
+      fr:['Les idées sont nées de votre propre réflexion.','L\'IA a suggéré des options ; vous avez choisi la direction.','Les ébauches de l\'IA ont semé des concepts que vous avez retravaillés.','Les allers-retours avec l\'IA ont façonné l\'idée centrale.','L\'IA a généré le concept ; vous l\'avez affiné et sélectionné.'],
+      de:['Ideen entstanden aus Ihrem eigenen Denken.','KI lieferte Anstöße; Sie wählten die Richtung.','KI-Entwürfe säten Konzepte, die Sie überarbeitet haben.','Der Austausch mit der KI prägte die Kernidee.','KI erzeugte das Konzept; Sie haben verfeinert und ausgewählt.']
+    }
   },
   { code:'D', key:'design',
-    levels:[
-      'All aesthetic and structural decisions were yours.',
-      'AI offered alternatives; you decided.',
-      'AI produced early mockups or layouts you reworked.',
-      'Visual language emerged through human-AI iteration.',
-      'AI generated the design system; you curated.'
-    ]
+    levels:{
+      en:['All aesthetic and structural decisions were yours.','AI offered alternatives; you decided.','AI produced early mockups or layouts you reworked.','Visual language emerged through human-AI iteration.','AI generated the design system; you curated.'],
+      es:['Todas las decisiones estéticas y estructurales fueron tuyas.','La IA ofreció alternativas; tú decidiste.','La IA produjo maquetas o diseños iniciales que reelaboraste.','El lenguaje visual surgió mediante iteración humano-IA.','La IA generó el sistema de diseño; tú lo curaste.'],
+      ca:['Totes les decisions estètiques i estructurals van ser teves.','La IA va oferir alternatives; tu vas decidir.','La IA va produir maquetes o dissenys inicials que vas reelaborar.','El llenguatge visual va sorgir mitjançant iteració humà-IA.','La IA va generar el sistema de disseny; tu el vas curar.'],
+      pt:['Todas as decisões estéticas e estruturais foram suas.','A IA ofereceu alternativas; você decidiu.','A IA produziu maquetes ou layouts iniciais que você reformulou.','A linguagem visual surgiu através da iteração humano-IA.','A IA gerou o sistema de design; você curou.'],
+      fr:['Toutes les décisions esthétiques et structurelles étaient les vôtres.','L\'IA a proposé des alternatives ; vous avez décidé.','L\'IA a produit des maquettes ou mises en page initiales que vous avez retravaillées.','Le langage visuel est né d\'une itération humain-IA.','L\'IA a généré le système de design ; vous l\'avez sélectionné.'],
+      de:['Alle ästhetischen und strukturellen Entscheidungen waren Ihre eigenen.','KI bot Alternativen an; Sie haben entschieden.','KI erstellte erste Mockups oder Layouts, die Sie überarbeitet haben.','Die visuelle Sprache entstand durch Mensch-KI-Iteration.','KI erzeugte das Designsystem; Sie haben kuratiert.']
+    }
   },
   { code:'C', key:'coding',
-    levels:[
-      'Code written entirely by hand.',
-      'AI suggested snippets; you wrote and integrated.',
-      'AI drafted functions you debugged and rewrote.',
-      'Most logic co-developed with AI in conversation.',
-      'AI produced the codebase; you reviewed and edited.'
-    ]
+    levels:{
+      en:['Code written entirely by hand.','AI suggested snippets; you wrote and integrated.','AI drafted functions you debugged and rewrote.','Most logic co-developed with AI in conversation.','AI produced the codebase; you reviewed and edited.'],
+      es:['Código escrito enteramente a mano.','La IA sugirió fragmentos; tú escribiste e integraste.','La IA redactó funciones que depuraste y reescribiste.','La mayor parte de la lógica se co-desarrolló con la IA en conversación.','La IA produjo la base de código; tú revisaste y editaste.'],
+      ca:['Codi escrit íntegrament a mà.','La IA va suggerir fragments; tu vas escriure i integrar.','La IA va redactar funcions que vas depurar i reescriure.','La major part de la lògica es va co-desenvolupar amb la IA en conversa.','La IA va produir la base de codi; tu vas revisar i editar.'],
+      pt:['Código escrito inteiramente à mão.','A IA sugeriu trechos; você escreveu e integrou.','A IA redigiu funções que você depurou e reescreveu.','A maior parte da lógica foi co-desenvolvida com a IA em conversa.','A IA produziu a base de código; você revisou e editou.'],
+      fr:['Code entièrement écrit à la main.','L\'IA a suggéré des extraits ; vous avez écrit et intégré.','L\'IA a rédigé des fonctions que vous avez déboguées et réécrites.','La majeure partie de la logique a été co-développée avec l\'IA en conversation.','L\'IA a produit la base de code ; vous avez révisé et édité.'],
+      de:['Code vollständig von Hand geschrieben.','KI schlug Code-Schnipsel vor; Sie haben geschrieben und integriert.','KI entwarf Funktionen, die Sie debuggt und neu geschrieben haben.','Der Großteil der Logik wurde im Gespräch mit der KI gemeinsam entwickelt.','KI erzeugte die Codebasis; Sie haben überprüft und bearbeitet.']
+    }
   },
   { code:'P', key:'prototyping',
-    levels:[
-      'Built entirely by hand — materials, assembly, iteration.',
-      'AI informed decisions; physical making was yours.',
-      'AI generated plans or templates you adapted.',
-      'Fabrication pipeline co-designed with AI.',
-      'AI-driven fabrication (CAM, generative toolpaths); you supervised.'
-    ]
+    levels:{
+      en:['Built entirely by hand — materials, assembly, iteration.','AI informed decisions; physical making was yours.','AI generated plans or templates you adapted.','Fabrication pipeline co-designed with AI.','AI-driven fabrication (CAM, generative toolpaths); you supervised.'],
+      es:['Construido enteramente a mano — materiales, montaje, iteración.','La IA informó decisiones; la fabricación física fue tuya.','La IA generó planos o plantillas que adaptaste.','El flujo de fabricación se co-diseñó con la IA.','Fabricación dirigida por IA (CAM, trayectorias generativas); tú supervisaste.'],
+      ca:['Construït íntegrament a mà — materials, muntatge, iteració.','La IA va informar decisions; la fabricació física va ser teva.','La IA va generar plànols o plantilles que vas adaptar.','El flux de fabricació es va co-dissenyar amb la IA.','Fabricació dirigida per IA (CAM, trajectòries generatives); tu vas supervisar.'],
+      pt:['Construído inteiramente à mão — materiais, montagem, iteração.','A IA informou decisões; a fabricação física foi sua.','A IA gerou plantas ou modelos que você adaptou.','O fluxo de fabricação foi co-desenhado com a IA.','Fabricação conduzida por IA (CAM, trajetórias generativas); você supervisionou.'],
+      fr:['Construit entièrement à la main — matériaux, assemblage, itération.','L\'IA a éclairé les décisions ; la fabrication physique était la vôtre.','L\'IA a généré des plans ou des modèles que vous avez adaptés.','Le pipeline de fabrication a été co-conçu avec l\'IA.','Fabrication pilotée par l\'IA (CAM, trajectoires génératives) ; vous avez supervisé.'],
+      de:['Vollständig von Hand gebaut — Materialien, Montage, Iteration.','KI informierte Entscheidungen; die physische Herstellung war Ihre.','KI erzeugte Pläne oder Vorlagen, die Sie angepasst haben.','Die Fertigungspipeline wurde gemeinsam mit der KI entworfen.','KI-gesteuerte Fertigung (CAM, generative Werkzeugwege); Sie haben beaufsichtigt.']
+    }
   },
   { code:'O', key:'documentation',
-    levels:[
-      'Written and structured entirely by you.',
-      'AI helped structure or proofread; writing was yours.',
-      'AI drafted sections you revised substantially.',
-      'Documentation co-written with AI in iterations.',
-      'AI produced most documentation; you edited and approved.'
-    ]
+    levels:{
+      en:['Written and structured entirely by you.','AI helped structure or proofread; writing was yours.','AI drafted sections you revised substantially.','Documentation co-written with AI in iterations.','AI produced most documentation; you edited and approved.'],
+      es:['Escrito y estructurado enteramente por ti.','La IA ayudó a estructurar o corregir; la escritura fue tuya.','La IA redactó secciones que revisaste sustancialmente.','La documentación se co-escribió con la IA en iteraciones.','La IA produjo la mayor parte de la documentación; tú editaste y aprobaste.'],
+      ca:['Escrit i estructurat íntegrament per tu.','La IA va ajudar a estructurar o corregir; l\'escriptura va ser teva.','La IA va redactar seccions que vas revisar substancialment.','La documentació es va co-escriure amb la IA en iteracions.','La IA va produir la major part de la documentació; tu vas editar i aprovar.'],
+      pt:['Escrito e estruturado inteiramente por você.','A IA ajudou a estruturar ou rever; a escrita foi sua.','A IA redigiu secções que você reviu substancialmente.','A documentação foi co-escrita com a IA em iterações.','A IA produziu a maior parte da documentação; você editou e aprovou.'],
+      fr:['Rédigé et structuré entièrement par vous.','L\'IA a aidé à structurer ou relire ; la rédaction était la vôtre.','L\'IA a rédigé des sections que vous avez largement révisées.','La documentation a été co-rédigée avec l\'IA par itérations.','L\'IA a produit l\'essentiel de la documentation ; vous avez édité et approuvé.'],
+      de:['Vollständig von Ihnen geschrieben und strukturiert.','KI half beim Strukturieren oder Korrekturlesen; das Schreiben war Ihres.','KI entwarf Abschnitte, die Sie wesentlich überarbeitet haben.','Die Dokumentation wurde in Iterationen gemeinsam mit der KI verfasst.','KI erstellte den Großteil der Dokumentation; Sie haben bearbeitet und freigegeben.']
+    }
   },
   { code:'M', key:'management',
-    levels:[
-      'Planning, scheduling, coordination fully manual.',
-      'AI suggested timelines or tasks; you organised.',
-      'AI drafted plans or briefs you restructured.',
-      'Project flow shaped through ongoing AI consultation.',
-      'AI managed task breakdown and coordination; you reviewed.'
-    ]
+    levels:{
+      en:['Planning, scheduling, coordination fully manual.','AI suggested timelines or tasks; you organised.','AI drafted plans or briefs you restructured.','Project flow shaped through ongoing AI consultation.','AI managed task breakdown and coordination; you reviewed.'],
+      es:['Planificación, calendario y coordinación totalmente manuales.','La IA sugirió plazos o tareas; tú organizaste.','La IA redactó planes o briefs que reestructuraste.','El flujo del proyecto se dio forma mediante consulta continua con la IA.','La IA gestionó el desglose de tareas y la coordinación; tú revisaste.'],
+      ca:['Planificació, calendari i coordinació totalment manuals.','La IA va suggerir terminis o tasques; tu vas organitzar.','La IA va redactar plans o briefs que vas reestructurar.','El flux del projecte es va donar forma mitjançant consulta contínua amb la IA.','La IA va gestionar el desglossament de tasques i la coordinació; tu vas revisar.'],
+      pt:['Planeamento, calendarização e coordenação totalmente manuais.','A IA sugeriu prazos ou tarefas; você organizou.','A IA redigiu planos ou briefs que você reestruturou.','O fluxo do projecto foi moldado através de consulta contínua com a IA.','A IA geriu a divisão de tarefas e a coordenação; você revisou.'],
+      fr:['Planification, calendrier et coordination entièrement manuels.','L\'IA a suggéré des échéanciers ou des tâches ; vous avez organisé.','L\'IA a rédigé des plans ou des briefs que vous avez restructurés.','Le déroulement du projet s\'est dessiné via une consultation continue de l\'IA.','L\'IA a géré la répartition des tâches et la coordination ; vous avez révisé.'],
+      de:['Planung, Terminierung und Koordination vollständig manuell.','KI schlug Zeitpläne oder Aufgaben vor; Sie haben organisiert.','KI entwarf Pläne oder Briefings, die Sie umstrukturiert haben.','Der Projektverlauf wurde durch fortlaufende KI-Beratung geprägt.','KI verwaltete die Aufgabenaufteilung und Koordination; Sie haben überprüft.']
+    }
   },
   { code:'F', key:'reflection',
-    levels:[
-      'Evaluation came from your own judgment and feedback.',
-      'AI offered criteria; you assessed.',
-      'AI generated feedback summaries you interrogated.',
-      'Iterative AI critique shaped revisions.',
-      'AI evaluated outputs and proposed next steps; you approved.'
-    ]
+    levels:{
+      en:['Evaluation came from your own judgment and feedback.','AI offered criteria; you assessed.','AI generated feedback summaries you interrogated.','Iterative AI critique shaped revisions.','AI evaluated outputs and proposed next steps; you approved.'],
+      es:['La evaluación provino de tu propio juicio y retroalimentación.','La IA ofreció criterios; tú evaluaste.','La IA generó resúmenes de retroalimentación que cuestionaste.','La crítica iterativa de la IA dio forma a las revisiones.','La IA evaluó los resultados y propuso próximos pasos; tú aprobaste.'],
+      ca:['L\'avaluació va provenir del teu propi judici i retroalimentació.','La IA va oferir criteris; tu vas avaluar.','La IA va generar resums de retroalimentació que vas qüestionar.','La crítica iterativa de la IA va donar forma a les revisions.','La IA va avaluar els resultats i va proposar els següents passos; tu vas aprovar.'],
+      pt:['A avaliação veio do seu próprio julgamento e feedback.','A IA ofereceu critérios; você avaliou.','A IA gerou resumos de feedback que você questionou.','A crítica iterativa da IA moldou as revisões.','A IA avaliou os resultados e propôs próximos passos; você aprovou.'],
+      fr:['L\'évaluation venait de votre propre jugement et retour d\'expérience.','L\'IA a proposé des critères ; vous avez évalué.','L\'IA a généré des synthèses de retours que vous avez interrogées.','La critique itérative de l\'IA a façonné les révisions.','L\'IA a évalué les résultats et proposé les prochaines étapes ; vous avez approuvé.'],
+      de:['Die Bewertung entstammte Ihrem eigenen Urteil und Feedback.','KI bot Kriterien an; Sie haben bewertet.','KI erzeugte Feedback-Zusammenfassungen, die Sie hinterfragt haben.','Iterative KI-Kritik prägte die Überarbeitungen.','KI bewertete die Ergebnisse und schlug nächste Schritte vor; Sie haben zugestimmt.']
+    }
   }
 ];
 
@@ -102,58 +110,64 @@ const AI_DATA = [
 // 6 maker dimensions: E L R B K J
 const HU_DATA = [
   { code:'E', key:'experience',
-    levels:[
-      'This project doesn\'t draw on lived experience.',
-      'Personal background lightly informs framing.',
-      'Lived experience shaped key choices.',
-      'The work is substantially grounded in what you have lived.',
-      'Only someone who lived this could have made this.'
-    ]
+    levels:{
+      en:['This project doesn\'t draw on lived experience.','Personal background lightly informs framing.','Lived experience shaped key choices.','The work is substantially grounded in what you have lived.','Only someone who lived this could have made this.'],
+      es:['Este proyecto no se basa en experiencia vivida.','Tu trasfondo personal influye ligeramente en el enfoque.','La experiencia vivida dio forma a decisiones clave.','El trabajo está sustancialmente fundamentado en lo que has vivido.','Solo alguien que hubiera vivido esto podría haberlo hecho.'],
+      ca:['Aquest projecte no es basa en experiència viscuda.','El teu bagatge personal influeix lleugerament en l\'enfocament.','L\'experiència viscuda va donar forma a decisions clau.','El treball està substancialment fonamentat en el que has viscut.','Només algú que ho hagués viscut podria haver-ho fet.'],
+      pt:['Este projecto não se baseia em experiência vivida.','O seu histórico pessoal influencia ligeiramente a abordagem.','A experiência vivida moldou decisões-chave.','O trabalho está substancialmente fundamentado no que viveu.','Só alguém que tivesse vivido isto poderia tê-lo feito.'],
+      fr:['Ce projet ne repose pas sur une expérience vécue.','Votre parcours personnel influence légèrement l\'approche.','L\'expérience vécue a façonné des choix clés.','Le travail est substantiellement ancré dans ce que vous avez vécu.','Seule une personne ayant vécu cela aurait pu le réaliser.'],
+      de:['Dieses Projekt stützt sich nicht auf gelebte Erfahrung.','Ihr persönlicher Hintergrund beeinflusst die Herangehensweise leicht.','Gelebte Erfahrung prägte wichtige Entscheidungen.','Die Arbeit ist wesentlich in dem verankert, was Sie erlebt haben.','Nur jemand, der dies erlebt hat, hätte es machen können.']
+    }
   },
   { code:'L', key:'local',
-    levels:[
-      'No place-specific or community knowledge required.',
-      'Some local context informs the work.',
-      'Place, language, or community knowledge shaped the outcome.',
-      'Deep local knowledge was central — unavailable in training data.',
-      'The work is inseparable from a specific place or community.'
-    ]
+    levels:{
+      en:['No place-specific or community knowledge required.','Some local context informs the work.','Place, language, or community knowledge shaped the outcome.','Deep local knowledge was central — unavailable in training data.','The work is inseparable from a specific place or community.'],
+      es:['No se requiere conocimiento específico de lugar o comunidad.','Algo de contexto local influye en el trabajo.','El lugar, el idioma o el conocimiento comunitario dieron forma al resultado.','Un conocimiento local profundo fue central — no disponible en datos de entrenamiento.','El trabajo es inseparable de un lugar o comunidad específicos.'],
+      ca:['No cal coneixement específic de lloc o comunitat.','Una mica de context local influeix en el treball.','El lloc, la llengua o el coneixement comunitari van donar forma al resultat.','Un coneixement local profund va ser central — no disponible en dades d\'entrenament.','El treball és inseparable d\'un lloc o comunitat específics.'],
+      pt:['Não é necessário conhecimento específico de lugar ou comunidade.','Algum contexto local influencia o trabalho.','O lugar, a língua ou o conhecimento comunitário moldaram o resultado.','Um conhecimento local profundo foi central — indisponível em dados de treino.','O trabalho é inseparável de um lugar ou comunidade específicos.'],
+      fr:['Aucune connaissance spécifique d\'un lieu ou d\'une communauté n\'est requise.','Un certain contexte local influence le travail.','Le lieu, la langue ou la connaissance communautaire ont façonné le résultat.','Une connaissance locale approfondie était centrale — indisponible dans les données d\'entraînement.','Le travail est indissociable d\'un lieu ou d\'une communauté spécifiques.'],
+      de:['Kein ortsspezifisches oder gemeinschaftliches Wissen erforderlich.','Etwas lokaler Kontext fließt in die Arbeit ein.','Ort, Sprache oder Gemeinschaftswissen prägten das Ergebnis.','Tiefes lokales Wissen war zentral — in Trainingsdaten nicht verfügbar.','Die Arbeit ist untrennbar mit einem bestimmten Ort oder einer Gemeinschaft verbunden.']
+    }
   },
   { code:'R', key:'relationship',
-    levels:[
-      'No access through personal trust or community.',
-      'Some contacts helped; not essential.',
-      'Relationships opened doors that changed the project.',
-      'The work depends on trust built over time.',
-      'Without specific relationships, this project could not exist.'
-    ]
+    levels:{
+      en:['No access through personal trust or community.','Some contacts helped; not essential.','Relationships opened doors that changed the project.','The work depends on trust built over time.','Without specific relationships, this project could not exist.'],
+      es:['Sin acceso mediante confianza personal o comunidad.','Algunos contactos ayudaron; no fueron esenciales.','Las relaciones abrieron puertas que cambiaron el proyecto.','El trabajo depende de una confianza construida con el tiempo.','Sin relaciones específicas, este proyecto no podría existir.'],
+      ca:['Sense accés mitjançant confiança personal o comunitat.','Alguns contactes van ajudar; no van ser essencials.','Les relacions van obrir portes que van canviar el projecte.','El treball depèn d\'una confiança construïda amb el temps.','Sense relacions específiques, aquest projecte no podria existir.'],
+      pt:['Sem acesso através de confiança pessoal ou comunidade.','Alguns contactos ajudaram; não foram essenciais.','As relações abriram portas que mudaram o projecto.','O trabalho depende de confiança construída ao longo do tempo.','Sem relações específicas, este projecto não poderia existir.'],
+      fr:['Aucun accès par la confiance personnelle ou la communauté.','Certains contacts ont aidé ; sans être essentiels.','Les relations ont ouvert des portes qui ont changé le projet.','Le travail dépend d\'une confiance construite dans le temps.','Sans relations spécifiques, ce projet ne pourrait pas exister.'],
+      de:['Kein Zugang durch persönliches Vertrauen oder Gemeinschaft.','Einige Kontakte halfen; sie waren nicht wesentlich.','Beziehungen öffneten Türen, die das Projekt veränderten.','Die Arbeit beruht auf über Zeit aufgebautem Vertrauen.','Ohne bestimmte Beziehungen könnte dieses Projekt nicht existieren.']
+    }
   },
   { code:'B', key:'body',
-    levels:[
-      'Physical presence or touch was not involved.',
-      'Making with hands was part of the process.',
-      'Embodied skill and tactile judgment shaped the outcome.',
-      'The work depends on physical intuition developed over years.',
-      'This is fundamentally craft — irreducible to instructions.'
-    ]
+    levels:{
+      en:['Physical presence or touch was not involved.','Making with hands was part of the process.','Embodied skill and tactile judgment shaped the outcome.','The work depends on physical intuition developed over years.','This is fundamentally craft — irreducible to instructions.'],
+      es:['No hubo presencia física ni contacto directo.','Hacer con las manos formó parte del proceso.','La habilidad corporal y el juicio táctil dieron forma al resultado.','El trabajo depende de una intuición física desarrollada durante años.','Esto es fundamentalmente artesanía — irreducible a instrucciones.'],
+      ca:['No hi va haver presència física ni contacte directe.','Fer amb les mans va formar part del procés.','L\'habilitat corporal i el judici tàctil van donar forma al resultat.','El treball depèn d\'una intuïció física desenvolupada durant anys.','Això és fonamentalment artesania — irreductible a instruccions.'],
+      pt:['Não houve presença física nem contacto directo.','Fazer com as mãos fez parte do processo.','A habilidade corporal e o julgamento táctil moldaram o resultado.','O trabalho depende de uma intuição física desenvolvida ao longo de anos.','Isto é fundamentalmente artesanato — irredutível a instruções.'],
+      fr:['Aucune présence physique ni contact direct n\'était impliqué.','Faire de ses mains faisait partie du processus.','Le savoir-faire incarné et le jugement tactile ont façonné le résultat.','Le travail dépend d\'une intuition physique développée au fil des années.','C\'est fondamentalement de l\'artisanat — irréductible à des instructions.'],
+      de:['Physische Präsenz oder Berührung war nicht beteiligt.','Arbeiten mit den Händen war Teil des Prozesses.','Verkörpertes Können und taktiles Urteilsvermögen prägten das Ergebnis.','Die Arbeit beruht auf über Jahre entwickelter körperlicher Intuition.','Dies ist grundlegend Handwerk — nicht auf Anweisungen reduzierbar.']
+    }
   },
   { code:'K', key:'risk',
-    levels:[
-      'No technical risk or irreversibility was involved.',
-      'Some decisions had real consequences if wrong.',
-      'Critical choices had no undo — skill determined the outcome.',
-      'Workmanship of risk was central: failure was visible and personal.',
-      'The whole work is a wager — only your skill and judgment stood between success and failure.'
-    ]
+    levels:{
+      en:['No technical risk or irreversibility was involved.','Some decisions had real consequences if wrong.','Critical choices had no undo — skill determined the outcome.','Workmanship of risk was central: failure was visible and personal.','The whole work is a wager — only your skill and judgment stood between success and failure.'],
+      es:['No hubo riesgo técnico ni irreversibilidad.','Algunas decisiones tuvieron consecuencias reales si fallaban.','Las elecciones críticas no tenían deshacer — la habilidad determinó el resultado.','El dominio del riesgo fue central: el fallo era visible y personal.','Todo el trabajo es una apuesta — solo tu habilidad y juicio se interponían entre el éxito y el fracaso.'],
+      ca:['No hi va haver risc tècnic ni irreversibilitat.','Algunes decisions van tenir conseqüències reals si fallaven.','Les eleccions crítiques no tenien desfer — l\'habilitat va determinar el resultat.','El domini del risc va ser central: la fallada era visible i personal.','Tot el treball és una aposta — només la teva habilitat i judici es van interposar entre l\'èxit i el fracàs.'],
+      pt:['Não houve risco técnico nem irreversibilidade.','Algumas decisões tiveram consequências reais se erradas.','As escolhas críticas não tinham desfazer — a habilidade determinou o resultado.','O domínio do risco foi central: a falha era visível e pessoal.','Todo o trabalho é uma aposta — só a sua habilidade e julgamento se interpuseram entre o sucesso e o fracasso.'],
+      fr:['Aucun risque technique ni irréversibilité n\'était impliqué.','Certaines décisions avaient de vraies conséquences en cas d\'erreur.','Les choix critiques n\'avaient pas de retour en arrière — le savoir-faire déterminait le résultat.','Le métier du risque était central : l\'échec était visible et personnel.','Tout le travail est un pari — seuls votre savoir-faire et votre jugement se dressaient entre la réussite et l\'échec.'],
+      de:['Kein technisches Risiko oder Unumkehrbarkeit war beteiligt.','Einige Entscheidungen hatten bei Fehlern echte Konsequenzen.','Kritische Entscheidungen hatten kein Rückgängig — Können bestimmte das Ergebnis.','Das Handwerk des Risikos war zentral: Scheitern war sichtbar und persönlich.','Die ganze Arbeit ist eine Wette — nur Ihr Können und Urteilsvermögen standen zwischen Erfolg und Scheitern.']
+    }
   },
   { code:'J', key:'judgment',
-    levels:[
-      'Decisions followed clear criteria or instructions.',
-      'Some intuitive calls, but mostly explicable.',
-      'Key decisions came from taste or instinct you can partly explain.',
-      'Central choices came from judgment you can\'t fully articulate.',
-      'The work is held together by phronesis — wisdom you can\'t reduce to rules.'
-    ]
+    levels:{
+      en:['Decisions followed clear criteria or instructions.','Some intuitive calls, but mostly explicable.','Key decisions came from taste or instinct you can partly explain.','Central choices came from judgment you can\'t fully articulate.','The work is held together by phronesis — wisdom you can\'t reduce to rules.'],
+      es:['Las decisiones siguieron criterios o instrucciones claras.','Algunas decisiones intuitivas, pero mayormente explicables.','Las decisiones clave vinieron del gusto o instinto que puedes explicar en parte.','Las elecciones centrales vinieron de un juicio que no puedes articular del todo.','El trabajo se sostiene por phronesis — una sabiduría que no se reduce a reglas.'],
+      ca:['Les decisions van seguir criteris o instruccions clares.','Algunes decisions intuïtives, però majoritàriament explicables.','Les decisions clau van venir del gust o instint que pots explicar en part.','Les eleccions centrals van venir d\'un judici que no pots articular del tot.','El treball es manté unit per la phronesis — una saviesa que no es redueix a regles.'],
+      pt:['As decisões seguiram critérios ou instruções claras.','Algumas decisões intuitivas, mas maioritariamente explicáveis.','As decisões-chave vieram do gosto ou instinto que consegue explicar em parte.','As escolhas centrais vieram de um julgamento que não consegue articular por completo.','O trabalho mantém-se unido pela phronesis — uma sabedoria que não se reduz a regras.'],
+      fr:['Les décisions suivaient des critères ou des instructions claires.','Quelques choix intuitifs, mais globalement explicables.','Les décisions clés venaient d\'un goût ou d\'un instinct que vous pouvez en partie expliquer.','Les choix centraux venaient d\'un jugement que vous ne pouvez pas pleinement articuler.','Le travail tient grâce à la phronesis — une sagesse qui ne se réduit pas à des règles.'],
+      de:['Entscheidungen folgten klaren Kriterien oder Anweisungen.','Einige intuitive Entscheidungen, aber meist erklärbar.','Wichtige Entscheidungen kamen aus Geschmack oder Instinkt, den Sie teilweise erklären können.','Zentrale Entscheidungen kamen aus einem Urteilsvermögen, das Sie nicht vollständig artikulieren können.','Die Arbeit wird durch Phronesis zusammengehalten — Weisheit, die sich nicht auf Regeln reduzieren lässt.']
+    }
   }
 ];
 
@@ -535,6 +549,15 @@ function applyTranslations() {
     const idx = parseInt(el.getAttribute('data-dim-idx'));
     el.textContent = LEVEL_NAMES[currentLang][4 - huValues[idx]];
   });
+  // Re-render slider position descriptions
+  AI_DATA.forEach((phase, i) => {
+    const descEl = document.getElementById(`ai-desc-${i}`);
+    if (descEl) descEl.textContent = phase.levels[currentLang][sliderValues[i]];
+  });
+  HU_DATA.forEach((dim, i) => {
+    const descEl = document.getElementById(`hu-desc-${i}`);
+    if (descEl) descEl.textContent = dim.levels[currentLang][huValues[i]];
+  });
 }
 
 function renderLangBars() {
@@ -602,7 +625,7 @@ function buildAIRows() {
           </div>
           <div class="pr-lvl" data-phase-idx="${i}">${LEVEL_NAMES[currentLang][sliderValues[i]]}</div>
         </div>
-        <div class="pr-desc" id="ai-desc-${i}">${phase.levels[sliderValues[i]]}</div>
+        <div class="pr-desc" id="ai-desc-${i}">${phase.levels[currentLang][sliderValues[i]]}</div>
       </div>`;
     container.appendChild(row);
   });
@@ -626,7 +649,7 @@ function buildHURows() {
           </div>
           <div class="pr-lvl" data-dim-idx="${i}">${LEVEL_NAMES[currentLang][4 - huValues[i]]}</div>
         </div>
-        <div class="pr-desc" id="hu-desc-${i}">${dim.levels[huValues[i]]}</div>
+        <div class="pr-desc" id="hu-desc-${i}">${dim.levels[currentLang][huValues[i]]}</div>
       </div>`;
     container.appendChild(row);
   });
@@ -638,7 +661,7 @@ function updAI(i, v) {
   const lvlEl = document.querySelector(`.pr-lvl[data-phase-idx="${i}"]`);
   if (lvlEl) lvlEl.textContent = LEVEL_NAMES[currentLang][v];
   const descEl = document.getElementById(`ai-desc-${i}`);
-  if (descEl) descEl.textContent = AI_DATA[i].levels[v];
+  if (descEl) descEl.textContent = AI_DATA[i].levels[currentLang][v];
   // Live bar update
   const chip = document.getElementById(`liveBarAI-chip-${i}`);
   if (chip) {
@@ -652,7 +675,7 @@ function updHU(i, v) {
   const lvlEl = document.querySelector(`.pr-lvl[data-dim-idx="${i}"]`);
   if (lvlEl) lvlEl.textContent = LEVEL_NAMES[currentLang][4 - v];
   const descEl = document.getElementById(`hu-desc-${i}`);
-  if (descEl) descEl.textContent = HU_DATA[i].levels[v];
+  if (descEl) descEl.textContent = HU_DATA[i].levels[currentLang][v];
   // Live bar update
   const chip = document.getElementById(`liveBarHU-chip-${i}`);
   if (chip) {
