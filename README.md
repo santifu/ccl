@@ -16,7 +16,7 @@ The CCL is not an audit — it's a **reflective practice**. The process of hones
 
 ## CCL v2 — AI-first + Human-first
 
-**[→ Open CCL Generator v2](generator_v2.html)**
+**[→ Open CCL Generator v2](https://santifu.github.io/ccl)**
 
 v2 introduces two complementary perspectives:
 
@@ -55,14 +55,6 @@ Combine both scores to get your archetype:
 | **Delegated** | High | Low |
 | **Craft** | Low | High |
 | **Routine** | Low | Low |
-
----
-
-## CCL v1 — AI-first only
-
-**[→ Open CCL Generator v1](generator.html)**
-
-The original generator: 8 phases, AI-first only. Still available and maintained.
 
 ---
 
